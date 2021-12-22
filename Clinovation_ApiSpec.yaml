@@ -1,0 +1,3074 @@
+openapi: 3.0.3
+info:
+  title: Clinovation API
+  description: API for Hospital Management
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000/api/v1/'
+  - url: 'http://clinovation/api/v1/'
+tags:
+  - name: Medical Staff
+    description: Medical Staff Resources
+  - name: Doctor
+    description: Doctor Resources
+  - name: Nurse
+    description: Nurse Resources
+  - name: Patient
+    description: ptient Resources
+  - name: Schedule
+    description: Schedule Resources
+  - name: Recipe
+    description: Recipe Resources
+  - name: Medical Record Patient
+    description: Medical Record Patient Resources
+  - name: Queue
+    description: Queue Patient Resources
+paths:
+#  Medical staff
+  /medical-staff/login:
+    post:
+      tags:
+        - Medical Staff
+      summary: Medical Staff Login
+      operationId: loginMedicalStaff
+      parameters:
+        - name: email
+          in: query
+          description: The email medical staff for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password medical staff for login
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Login"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/register:
+    post:
+      tags:
+        - Medical Staff
+      summary: Register new Medical Staff
+      parameters:
+        - name: name
+          in: query
+          description: Medical Staff Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: Medical Staff nik
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Medical Staff Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: Medical Staff Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: Medical Staff Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Medical Staff Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: Medical Staff Contact
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/upload-avatar:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Upload avatar Medical Staff
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        description: Created medical staff object
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ResponseAvatar"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/logout:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: logout Medical Staff
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/Logout"
+        "408":
+          description: Request Timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/update:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Update Medical Staff
+      parameters:
+        - name: name
+          in: query
+          description: Medical Staff Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: Medical Staff NIK
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Medical Staff Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: Medical Staff Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: Medical Staff Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Medical Staff Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: Medical Staff Contact
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/getByUuid/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Get medical staff by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Medical Staff uuid
+        - in: query
+          name: medical staff
+          required: true
+          schema:
+            $ref: "#/components/schemas/MedicalStaff"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-staff/getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Get all Medical Staff
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicalStaffResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medical-staff/changePassword:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Update Medical Staff
+      parameters:
+        - name: nik
+          in: query
+          description: Medical Staff NIK
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Medical Staff Password
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Medical Staff Email
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+
+# Doctor
+  /doctor/login:
+    post:
+      tags:
+        - Doctor
+      summary: Doctor Login
+      operationId: loginDoctor
+      parameters:
+        - name: email
+          in: query
+          description: The email doctor for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password doctor for login
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Login"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/register:
+    post:
+      tags:
+        - Doctor
+      summary: Register new Doctor
+      parameters:
+        - name: name
+          in: query
+          description: doctor Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: doctor Nik
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: doctor Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: doctor Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: doctor Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: doctor Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: doctor Contact
+          required: true
+          schema:
+            type: string
+        - name: specialist
+          in: query
+          description: doctor specialist
+          required: true
+          schema:
+            type: string
+        - name: wokrk_experience
+          in: query
+          description: doctor wokrk_experience
+          required: true
+          schema:
+            type: string
+        - name: schedule
+          in: query
+          description: doctor schedule
+          required: true
+          schema:
+            type: string
+        - name: work_hour
+          in: query
+          description: doctor work_hour
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/upload-avatar:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Upload avatar doctor
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        description: Created doctor object
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ResponseAvatar"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/logout:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: logout doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/Logout"
+        "408":
+          description: Request Timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/update:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Update doctor
+      parameters:
+        - name: name
+          in: query
+          description: doctor Name
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: doctor Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: doctor Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: doctor Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: doctor Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: doctor Contact
+          required: true
+          schema:
+            type: string
+        - name: specialist
+          in: query
+          description: doctor specialist
+          required: true
+          schema:
+            type: string
+        - name: wokrk_experience
+          in: query
+          description: doctor wokrk_experience
+          required: true
+          schema:
+            type: string
+        - name: schedule
+          in: query
+          description: doctor schedule
+          required: true
+          schema:
+            type: object
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/delete/{uuid}:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Delete a specified doctor
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of doctor to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: doctor was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/getByUuid/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/getByNik/{nik}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/getByName/{name}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get all Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DoctorResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /doctor/changePassword:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Update Doctor
+      parameters:
+        - name: nik
+          in: query
+          description: Doctor NIK
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Doctor Password
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Doctor Email
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/waitingList:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get all Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DoctorResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
+#Nurse
+  /nurse/login:
+    post:
+      tags:
+        - Nurse
+      summary: Nurse Login
+      operationId: loginNurse
+      parameters:
+        - name: email
+          in: query
+          description: The email Nurse for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password Nurse for login
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Login"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/register:
+    post:
+      tags:
+        - Nurse
+      summary: Register new Nurse
+      parameters:
+        - name: name
+          in: query
+          description: nurse Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: nurse Nik
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: nurse Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: nurse Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: nurse Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: nurse Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: nurse Contact
+          required: true
+          schema:
+            type: string
+        - name: wokrk_experience
+          in: query
+          description: nurse wokrk_experience
+          required: true
+          schema:
+            type: string
+        - name: schedule
+          in: query
+          description: nurse schedule
+          required: true
+          schema:
+            type: string
+        - name: work_hour
+          in: query
+          description: nurse work_hour
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/upload-avatar:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Upload avatar nurse
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        description: Created nurse object
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ResponseAvatar"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/logout:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: logout nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/Logout"
+        "408":
+          description: Request Timeout
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/update:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Update nurse
+      parameters:
+        - name: name
+          in: query
+          description: nurse Name
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: nurse Password
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: nurse Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: nurse Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: nurse Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: nurse Contact
+          required: true
+          schema:
+            type: string
+        - name: wokrk_experience
+          in: query
+          description: nurse wokrk_experience
+          required: true
+          schema:
+            type: string
+        - name: schedule
+          in: query
+          description: nurse schedule
+          required: true
+          schema:
+            type: object
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/delete/{uuid}:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Delete a specified nurse
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of nurse to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: nurse was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/getByUuid/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/getByNik/{nik}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/getByName/{name}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get all Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NurseResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /nurse/changePassword:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Update Nurse
+      parameters:
+        - name: nik
+          in: query
+          description: Nurse NIK
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: Nurse Password
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Nurse Email
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse/waitingList:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get all Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DoctorResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
+#Patient
+  /patient/register:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Register new Patient
+      parameters:
+        - name: name
+          in: query
+          description: Patient Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: Patient NIK
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: Patient Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: Patient Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Patient Email
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: query
+          description: Patient Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: Patient Contact
+          required: true
+          schema:
+            type: string
+        - name: patient_height
+          in: query
+          description: Patient height
+          required: true
+          schema:
+            type: string
+        - name: patient_weight
+          in: query
+          description: Patient weight
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient/update:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Update Patient
+      parameters:
+        - name: name
+          in: query
+          description: Patient Name
+          required: true
+          schema:
+            type: string
+        - name: nik
+          in: query
+          description: Patient NIK
+          required: true
+          schema:
+            type: string
+        - name: dob
+          in: query
+          description: Patient Date of Birth
+          required: true
+          schema:
+            type: string
+        - name: sex
+          in: query
+          description: Patient Sex
+          required: true
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Patient Email
+          required: true
+          schema:
+            type: string
+        - name: address
+          in: query
+          description: Patient Email
+          required: true
+          schema:
+            type: string
+        - name: contact
+          in: query
+          description: Patient Contact
+          required: true
+          schema:
+            type: string
+        - name: patient_height
+          in: query
+          description: Patient height
+          required: true
+          schema:
+            type: string
+        - name: patient_weight
+          in: query
+          description: Patient weight
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient/getByUuid/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient/getByName/{name}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient/getByNik{nik}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient/getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get all Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PatientResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /patient/listLast:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get all list Last Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PatientResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
+#Medical Record
+  /medical-record/patient-newest/{Uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Record Patient
+      summary: Get all Medical Record Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicalStaffResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medical-record/patient/{Uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Record Patient
+      summary: Get all Medical Record Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicalStaffResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medical-record/patient-register/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Record Patient
+      summary: Register new Medical Record Patient
+      parameters:
+        - name: newRecord
+          in: query
+          description: Patient newRecord
+          required: true
+          schema:
+            type: string
+        - name: consulTation
+          in: query
+          description: Patient consulTation
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-record/patient-update/{uuid}:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Record Patient
+      summary: Update  Medical Record Patient
+      parameters:
+        - name: newRecord
+          in: query
+          description: Patient newRecord
+          required: true
+          schema:
+            type: string
+        - name: consulTation
+          in: query
+          description: Patient consulTation
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+
+#Schedule
+  /schedule/doctor-getAll/{day}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/nurse-getAll/{day}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseNurse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/doctor-getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/nurse-getAll:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseNurse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
+#Queue
+  /Queue/nurse/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Get all Schedule Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/QueueResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /Queue/doctor/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Get all Schedule Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/QueueResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
+#Recipe
+  /recipe/patient/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Get all Recipe Patient By uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RecipeResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /recipe/patient/{name}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Get all Recipe Patient By name
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RecipeResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /recipe/patient-register/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Register new Recipe Patient
+      parameters:
+        - name: date
+          in: query
+          description: Recipe date
+          required: true
+          schema:
+            type: string
+        - name: sympthon
+          in: query
+          description: Patient consulTation
+          required: true
+          schema:
+            type: string
+        - name: medication
+          in: query
+          description: Patient medication
+          required: true
+          schema:
+            type: string
+        - name: note
+          in: query
+          description: Patient note
+          required: true
+          schema:
+            type: string
+        - name: newRecord
+          in: query
+          description: Patient note
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/RecipeResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /recipe/patient-update/{uuid}:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Update new Recipe Patient
+      parameters:
+        - name: date
+          in: query
+          description: Recipe date
+          required: true
+          schema:
+            type: string
+        - name: sympthon
+          in: query
+          description: Patient consulTation
+          required: true
+          schema:
+            type: string
+        - name: medication
+          in: query
+          description: Patient medication
+          required: true
+          schema:
+            type: string
+        - name: note
+          in: query
+          description: Patient note
+          required: true
+          schema:
+            type: string
+        - name: newRecord
+          in: query
+          description: Patient note
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/RecipeResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    MedicalRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient:
+          $ref: "#/components/schemas/Patient"
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        recipe:
+          $ref: "#/components/schemas/Recipe"
+        consultation:
+          type: string
+        sympthon:
+          type: string
+        note:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    MedicalRecordResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        patient:
+          $ref: "#/components/schemas/PatientResponses"
+        doctor:
+          $ref: "#/components/schemas/DoctorResponses"
+        recipe:
+          $ref: "#/components/schemas/RecipeResponse"
+        consultation:
+          type: string
+          example: Sakit Perut
+        sympthon:
+          type: string
+          example: Sakit Perut
+        note:
+          type: string
+          example: Jangan Makan banyak pedas
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: integer
+        medicine:
+          $ref: "#/components/schemas/Medicine"
+        consumption_rule:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    RecipeResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        medicine:
+          $ref: "#/components/schemas/MedicineResponse"
+        consumption_rule:
+          type: string
+          example: 3x sehari
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    Medicine:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        price:
+          type: integer
+        stock:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    MedicineResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: aspirin
+        type:
+          type: string
+          example: aspirin
+        price:
+          type: integer
+          example: 10000
+        stock:
+          type: integer
+          example: 209
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    Queue:
+      type: object
+      properties:
+        id:
+          type: integer
+        patient:
+          $ref: "#/components/schemas/Patient"
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        schedule:
+          $ref: "#/components/schemas/Schedule"
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    QueueResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        patient:
+          $ref: "#/components/schemas/Patient"
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        schedule:
+          $ref: "#/components/schemas/ScheduleResponseDoctor"
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    WorkDay:
+      type: object
+      properties:
+        id:
+          type: integer
+        day:
+          type: string
+    WorkDayResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        day:
+          type: string
+          example: senin
+    WorkHour:
+      type: object
+      properties:
+        id:
+          type: integer
+        hour:
+          type: string
+    WorkHourResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        hour:
+          type: string
+          example: 09.00 - 12.00
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: integer
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        workDay:
+          $ref: "#/components/schemas/WorkDay"
+        workHour:
+          $ref: "#/components/schemas/WorkHour"
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    ScheduleResponseDoctor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        doctor:
+          $ref: "#/components/schemas/Doctor"
+        workDay:
+          $ref: "#/components/schemas/WorkDay"
+        workHour:
+          $ref: "#/components/schemas/WorkHour"
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    ScheduleResponseNurse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        doctor:
+          $ref: "#/components/schemas/Nurse"
+        workDay:
+          $ref: "#/components/schemas/WorkDay"
+        workHour:
+          $ref: "#/components/schemas/WorkHour"
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    MedicalStaff:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          type: string
+        name:
+          type: string
+        nik:
+          type: string
+        password:
+          type: string
+        dob:
+          type: string
+        sex:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        contact:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    MedicalStaffResponses:
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+          example: asdklnasldakls
+        name:
+          type: string
+          example: faiz rofi hencya
+        nik:
+          type: string
+          example: 130119230
+        password:
+          type: string
+          example: secret
+        dob:
+          type: string
+          example: 01-10-2001
+        sex:
+          type: string
+          example: Male
+        email:
+          type: string
+          example: faiz.rofi@gmail.com
+        contact:
+          type: string
+          example: 08123845763
+        role:
+          type: string
+          example: medical staff
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: null
+        deleted_at:
+          type: string
+          example: null
+    Doctor:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          type: string
+        schedule:
+          $ref: "#/components/schemas/Schedule"
+        name:
+          type: string
+        nik:
+          type: string
+        password:
+          type: string
+        dob:
+          type: string
+        sex:
+          type: string
+        email:
+          type: string
+        contact:
+          type: string
+        specialist:
+          type: string
+        work_hour:
+          type: string
+        role:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    DoctorResponses:
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+          example: asdklnasldakls
+        schedule:
+          type: object
+          example: "#/components/schemas/ScheduleResponseDoctor"
+        name:
+          type: string
+          example: faiz rofi hencya
+        nik:
+          type: string
+          example: 130119230
+        password:
+          type: string
+          example: secret
+        dob:
+          type: string
+          example: 01-10-2001
+        sex:
+          type: string
+          example: Male
+        email:
+          type: string
+          example: faiz.rofi@gmail.com
+        contact:
+          type: string
+          example: 08123845763
+        specialist:
+          type: string
+          example: radiology
+        wokrk_experience:
+          type: string
+          example: 10 tahun
+        role:
+          type: string
+          example: docotr
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    Nurse:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          type: string
+        schedule:
+          $ref: "#/components/schemas/Schedule"
+        name:
+          type: string
+        nik:
+          type: string
+        password:
+          type: string
+        dob:
+          type: string
+        sex:
+          type: string
+        email:
+          type: string
+        contact:
+          type: string
+        wokrk_experience:
+          type: string
+        role:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    NurseResponses:
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+          example: asdklnasldakls
+        name:
+          type: string
+          example: faiz rofi hencya
+        schedule:
+          type: object
+          example: "#/components/schemas/ScheduleResponseNurse"
+        nik:
+          type: string
+          example: 130119230
+        password:
+          type: string
+          example: secret
+        dob:
+          type: string
+          example: 01-10-2001
+        sex:
+          type: string
+          example: Male
+        email:
+          type: string
+          example: faiz.rofi@gmail.com
+        contact:
+          type: string
+          example: 08123845763
+        wokrk_experience:
+          type: string
+          example: 10 tahun
+        role:
+          type: string
+          example: nurse
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+        uuid:
+          type: string
+        name:
+          type: string
+        nik:
+          type: string
+        password:
+          type: string
+        dob:
+          type: string
+        sex:
+          type: string
+        email:
+          type: string
+        contact:
+          type: string
+        role:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        deleted_at:
+          type: string
+    PatientResponses:
+      properties:
+        id:
+          type: integer
+          example: 1
+        uuid:
+          type: string
+          format: uuid
+          example: asdklnasldakls
+        name:
+          type: string
+          example: faiz rofi hencya
+        nik:
+          type: string
+          example: 130119230
+        password:
+          type: string
+          example: secret
+        dob:
+          type: string
+          example: 01-10-2001
+        sex:
+          type: string
+          example: Male
+        email:
+          type: string
+          example: faiz.rofi@gmail.com
+        contact:
+          type: string
+          example: 08123845763
+        role:
+          type: string
+          example: patient
+        created_at:
+          type: string
+          example: 01-10-2001
+        updated_at:
+          type: string
+          example: 01-10-2001
+        deleted_at:
+          type: string
+          example: 01-10-2001
+    ResponseAvatar:
+      type: object
+      properties:
+        avatar:
+          type: string
+          example: images/avatar/avatarProfile.png
+    Login:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: successful to login
+            token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzIyMTU5ODUsInVzZXJpZCI6MTF9.N72CvB3ffoZKvntUC4MAtDPpzQTQjIfzvnNSTNBuC7A
+    Logout:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: you have successfully logged out
+            data:
+              type: object
+              example: null
+    SuccessResponse:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Success
+    FailResponse400:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: Error
+            messages:
+              type: array
+              items:
+                example: Error message goes here
+        data:
+          type: string
+          example: null
+    FailResponse403:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 403
+            message:
+              type: string
+              example: Error
+            messages:
+              type: array
+              items:
+                example: User Unauthorized
+        data:
+          type: string
+          example: null
+    FailResponse404:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: Error
+            messages:
+              type: array
+              items:
+                example: Error message goes here
+        data:
+          type: string
+          example: null
+    FailResponse500:
+      type: object
+      properties:
+        meta:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              example: Error
+            messages:
+              type: array
+              items:
+                example: Error message goes here
+        data:
+          type: string
+          example: null
