@@ -42,16 +42,23 @@ func (cj *ConfigJWT) GenerateToken(userID string, UserRole string) string {
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(int64(cj.ExpDuration))).Unix(),
 		},
 	}
-	// CreateCalorie token with claims
+	// Create token with claims
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, _ := t.SignedString([]byte(cj.SecretJWT))
 
 	return token
 }
 
-//get user
-func GetUser(c echo.Context) *JwtCustomClaims {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(*JwtCustomClaims)
+//get Doctor
+func GetDoctor(c echo.Context) *JwtCustomClaims {
+	doctor := c.Get("user").(*jwt.Token)
+	claims := doctor.Claims.(*JwtCustomClaims)
+	return claims
+}
+
+//get Medical Staff
+func GetMedicalStaff(c echo.Context) *JwtCustomClaims {
+	medicalStaff := c.Get("user").(*jwt.Token)
+	claims := medicalStaff.Claims.(*JwtCustomClaims)
 	return claims
 }

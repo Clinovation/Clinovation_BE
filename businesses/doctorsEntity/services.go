@@ -1,43 +1,53 @@
 package doctorsEntity
 
 import (
+	"context"
+	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/helpers"
-	"context"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"strings"
 	"time"
 )
 
-
 type DoctorsServices struct {
 	DoctorsRepository Repository
-	jwtAuth        *auth.ConfigJWT
-	ContextTimeout time.Duration
+	jwtAuth           *auth.ConfigJWT
+	ContextTimeout    time.Duration
 }
 
 func NewDoctorsServices(repoDoctor Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
 	return &DoctorsServices{
 		DoctorsRepository: repoDoctor,
-		jwtAuth:        auth,
-		ContextTimeout: timeout,
+		jwtAuth:           auth,
+		ContextTimeout:    timeout,
 	}
 }
 
-func (us *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (*Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	existedDoctor, err := us.DoctorsRepository.GetByEmail(ctx, doctorDomain.Email)
+	existedDoctorByNik, err := ds.DoctorsRepository.GetByNik(ctx, doctorDomain.Nik)
 	if err != nil {
 		if !strings.Contains(err.Error(), "not found") {
 			return nil, err
 		}
 	}
 
-	if existedDoctor != (Domain{}) {
+	if existedDoctorByNik != (Domain{}) {
+		return nil, businesses.ErrDuplicateNik
+	}
+
+	existedDoctorByEmail, err := ds.DoctorsRepository.GetByEmail(ctx, doctorDomain.Email)
+	if err != nil {
+		if !strings.Contains(err.Error(), "not found") {
+			return nil, err
+		}
+	}
+
+	if existedDoctorByEmail != (Domain{}) {
 		return nil, businesses.ErrDuplicateEmail
 	}
 
@@ -46,7 +56,7 @@ func (us *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (
 		return nil, businesses.ErrInternalServer
 	}
 
-	res, err := us.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
+	res, err := ds.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
 	if err != nil {
 		return nil, businesses.ErrInternalServer
 	}
@@ -54,15 +64,15 @@ func (us *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (
 	return res, nil
 }
 
-func (us *DoctorsServices) Login(ctx context.Context, email string, password string) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) Login(ctx context.Context, email string, password string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
 	if strings.TrimSpace(email) == "" && strings.TrimSpace(password) == "" {
 		return "", businesses.ErrEmailPasswordNotFound
 	}
 
-	doctorDomain, err := us.DoctorsRepository.GetByEmail(ctx, email)
+	doctorDomain, err := ds.DoctorsRepository.GetByEmail(ctx, email)
 	if err != nil {
 		return "", businesses.ErrEmailNotRegistered
 	}
@@ -71,12 +81,12 @@ func (us *DoctorsServices) Login(ctx context.Context, email string, password str
 		return "", businesses.ErrPassword
 	}
 
-	token := us.jwtAuth.GenerateToken(doctorDomain.Uuid.String(), doctorDomain.Role)
+	token := ds.jwtAuth.GenerateToken(doctorDomain.Uuid.String(), doctorDomain.Role)
 
 	return token, nil
 }
 
-func (us *DoctorsServices) Logout(ctx echo.Context) error {
+func (ds *DoctorsServices) Logout(ctx echo.Context) error {
 	cookie, err := auth.LogoutCookie(ctx)
 	fmt.Println(cookie)
 	if err != nil {
@@ -86,11 +96,11 @@ func (us *DoctorsServices) Logout(ctx echo.Context) error {
 	return nil
 }
 
-func (us *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	result, err := us.DoctorsRepository.GetByUuid(ctx, uuid)
+	result, err := ds.DoctorsRepository.GetByUuid(ctx, uuid)
 	if err != nil {
 		return Domain{}, err
 	}
@@ -98,8 +108,8 @@ func (us *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain,
 	return result, nil
 }
 
-func (us *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain, id string) (*Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
 	passwordHash, err := helpers.HashPassword(doctorDomain.Password)
@@ -108,37 +118,48 @@ func (us *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain,
 	}
 
 	doctorDomain.Password = passwordHash
-	result, err := us.DoctorsRepository.UpdateDoctor(ctx, id, doctorDomain)
+	result, err := ds.DoctorsRepository.UpdateDoctor(ctx, id, doctorDomain)
 	if err != nil {
 		return &Domain{}, err
 	}
 	return result, nil
 }
 
-func (us *DoctorsServices) UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) UploadAvatar(ctx context.Context, id string, imageLink string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	doctor, err := us.DoctorsRepository.GetByUuid(ctx, id)
+	doctor, err := ds.DoctorsRepository.GetByUuid(ctx, id)
 	if err != nil {
 		return &Domain{}, err
 	}
 
-	doctor.Avatar = fileLocation
-	updateAvatar, err := us.DoctorsRepository.UploadAvatar(ctx, id, &doctor)
+	doctor.Avatar = imageLink
+	updateAvatar, err := ds.DoctorsRepository.UploadAvatar(ctx, id, &doctor)
 	if err != nil {
 		return &Domain{}, err
 	}
 	return updateAvatar, nil
 }
 
-func (us *DoctorsServices) DeleteDoctor(ctx context.Context, id string) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, us.ContextTimeout)
+func (ds *DoctorsServices) DeleteDoctor(ctx context.Context, id string) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	res, err := us.DoctorsRepository.DeleteDoctorByUuid(ctx, id)
+	res, err := ds.DoctorsRepository.DeleteDoctorByUuid(ctx, id)
 	if err != nil {
 		return "", businesses.ErrNotFoundDoctor
+	}
+	return res, nil
+}
+
+func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	res, err := ds.DoctorsRepository.GetDoctors(ctx)
+	if err != nil {
+		return &[]Domain{}, err
 	}
 	return res, nil
 }
