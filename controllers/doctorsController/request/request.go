@@ -7,12 +7,16 @@ import (
 )
 
 type DoctorRegistration struct {
-	Name        string `json:"name" validate:"required"`
-	Username    string `json:"username" validate:"required"`
-	Email       string `json:"email" validate:"required,email"`
-	PhoneNumber string `json:"phone_number"`
-	Avatar      string `json:"avatar"`
-	Password    string `json:"password" validate:"required,password"`
+	Nik            string `json:"nik" validate:"required"`
+	Name           string `json:"name" validate:"required"`
+	Email          string `json:"email" validate:"required,email"`
+	Dob            string `json:"dob" validate:"required"`
+	Sex            string `json:"sex" validate:"required"`
+	Contact        string `json:"contact" validate:"required"`
+	Password       string `json:"password" validate:"required,password"`
+	Specialist     string `json:"specialist" validate:"required"`
+	WorkExperience string `json:"work_experience" validate:"required"`
+	Avatar         string `json:"avatar"`
 }
 
 type DoctorLogin struct {
@@ -22,16 +26,20 @@ type DoctorLogin struct {
 }
 
 type DoctorUploadAvatar struct {
-	Avatar string `json:"avatar"`
+	Avatar string `json:"avatar" validate:"required"`
 }
 
 func (rec *DoctorRegistration) ToDomain() *doctorsEntity.Domain {
 	return &doctorsEntity.Domain{
-		Name:        rec.Name,
-		Username:    rec.Username,
-		Email:       rec.Email,
-		PhoneNumber: rec.PhoneNumber,
-		Avatar:      rec.Avatar,
-		Password:    rec.Password,
+		Nik:            rec.Nik,
+		Name:           rec.Name,
+		Email:          rec.Email,
+		Dob:            rec.Dob,
+		Sex:            rec.Sex,
+		Contact:        rec.Contact,
+		Password:       rec.Password,
+		Specialist:     rec.Specialist,
+		WorkExperience: rec.WorkExperience,
+		Avatar:         rec.Avatar,
 	}
 }

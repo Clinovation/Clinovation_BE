@@ -48,6 +48,6 @@ func main() {
 	}
 	routesInit.RouteRegister(echoApp)
 
-	dbPort := os.Getenv("DB_PORT")
-	log.Fatal(echoApp.Start(":" + dbPort))
+	port := os.Getenv("PORT")
+	log.Fatal(echoApp.Start(":" + port))
 }

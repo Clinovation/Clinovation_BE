@@ -9,6 +9,7 @@ var (
 	ErrIdNotFound            = errors.New("Id Not Found")
 	ErrDuplicateData         = errors.New("Data already exist")
 	ErrDuplicateEmail        = errors.New("Email already used")
+	ErrDuplicateNik          = errors.New("NIK already used")
 	ErrEmailPasswordNotFound = errors.New("(Email) or (Password) empty")
 	ErrEmailNotRegistered    = errors.New("Email not registered")
 	ErrPassword              = errors.New("Wrong Password")

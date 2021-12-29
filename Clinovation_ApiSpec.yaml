@@ -956,7 +956,7 @@ paths:
       security:
         - bearerAuth: []
       tags:
-        - Doctor
+        - Medical Staff
       summary: Get all Doctor
       responses:
         "200":
