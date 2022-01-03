@@ -11,3 +11,4 @@ func NewDoctorRepository(db *gorm.DB) doctorsEntity.Repository {
 	return doctorsRepo.NewDoctorsRepository(db)
 }
 
+

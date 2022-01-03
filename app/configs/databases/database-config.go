@@ -38,9 +38,6 @@ func SetupDatabaseConnection() *gorm.DB {
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
 
-	//db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-	//	Logger: logger.Default.LogMode(logger.Silent),
-	//})
 	if err != nil {
 		panic(err.Error())
 	}

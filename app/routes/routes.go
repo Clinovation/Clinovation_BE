@@ -21,7 +21,6 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctors := echo.Group("api/v1/doctor")
 	doctors.POST("/register", cl.DoctorsController.Registration)
 	doctors.POST("/login", cl.DoctorsController.LoginDoctor)
-	doctors.POST("/logout", cl.DoctorsController.LogoutDoctor)
 	doctors.GET("/:uuid", cl.DoctorsController.FindDoctorByUuid)
 
 	//doctor with doctor role

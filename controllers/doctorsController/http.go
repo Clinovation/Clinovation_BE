@@ -94,27 +94,7 @@ func (ctrl *DoctorController) LoginDoctor(c echo.Context) error {
 			res))
 }
 
-func (ctrl *DoctorController) LogoutDoctor(c echo.Context) error {
-	err := ctrl.doctorsService.Logout(c)
-	if err != nil {
-		return c.JSON(http.StatusRequestTimeout,
-			helpers.BuildSuccessResponse("You are not Logged In",
-				nil))
-	}
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("You Have Successfully Logged Out",
-			nil))
-}
-
 func (ctrl *DoctorController) FindDoctorByUuid(c echo.Context) error {
-	//checking cookie is the doctor was login or not
-	_, errLogIn := c.Cookie("is-login")
-	if errLogIn != nil {
-		return c.JSON(http.StatusForbidden,
-			helpers.BuildErrorResponse("you are not logged in",
-				errLogIn, helpers.EmptyObj{}))
-	}
-
 	uuid := c.Param("uuid")
 
 	doctor, err := ctrl.doctorsService.FindByUuid(c.Request().Context(), uuid)
@@ -130,14 +110,6 @@ func (ctrl *DoctorController) FindDoctorByUuid(c echo.Context) error {
 }
 
 func (ctrl *DoctorController) GetDoctors(c echo.Context) error {
-	//checking cookie is the doctor was login or not
-	_, errLogIn := c.Cookie("is-login")
-	if errLogIn != nil {
-		return c.JSON(http.StatusForbidden,
-			helpers.BuildErrorResponse("you are not logged in",
-				errLogIn, helpers.EmptyObj{}))
-	}
-
 	doctor, err := ctrl.doctorsService.GetDoctors(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
@@ -151,13 +123,6 @@ func (ctrl *DoctorController) GetDoctors(c echo.Context) error {
 }
 
 func (ctrl *DoctorController) UpdateDoctorById(c echo.Context) error {
-	_, errC := c.Cookie("is-login")
-	if errC != nil {
-		return c.JSON(http.StatusForbidden,
-			helpers.BuildErrorResponse("you are not logged in",
-				errC, helpers.EmptyObj{}))
-	}
-
 	ctx := c.Request().Context()
 	req := new(request.DoctorRegistration)
 
@@ -187,13 +152,6 @@ func (ctrl *DoctorController) UpdateDoctorById(c echo.Context) error {
 }
 
 func (ctrl *DoctorController) UploadAvatar(c echo.Context) error {
-	_, errC := c.Cookie("is-login")
-	if errC != nil {
-		return c.JSON(http.StatusForbidden,
-			helpers.BuildErrorResponse("you are not logged in",
-				errC, helpers.EmptyObj{}))
-	}
-	//var err error
 	ctx := c.Request().Context()
 	//file := new(request.UserUploadAvatar)
 	file, err := c.FormFile("avatar")
@@ -243,14 +201,6 @@ func (ctrl *DoctorController) UploadAvatar(c echo.Context) error {
 }
 
 func (ctrl *DoctorController) DeleteDoctorByUuid(c echo.Context) error {
-	//checking login doctor
-	_, errC := c.Cookie("is-login")
-	if errC != nil {
-		return c.JSON(http.StatusForbidden,
-			helpers.BuildErrorResponse("you are not logged in",
-				errC, helpers.EmptyObj{}))
-	}
-
 	doctor := auth.GetDoctor(c)
 	doctorId := doctor.Uuid
 

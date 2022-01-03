@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type Domain struct {
@@ -31,7 +30,6 @@ type Service interface {
 	Register(ctx context.Context, data *Domain) (*Domain, error)
 	Login(ctx context.Context, email string, password string) (string, error)
 	FindByUuid(ctx context.Context, uuid string) (Domain, error)
-	Logout(ctx echo.Context) error
 	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteDoctor(ctx context.Context, id string) (string, error)

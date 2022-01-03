@@ -2,11 +2,9 @@ package doctorsEntity
 
 import (
 	"context"
-	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/helpers"
-	"github.com/labstack/echo/v4"
 	"strings"
 	"time"
 )
@@ -84,16 +82,6 @@ func (ds *DoctorsServices) Login(ctx context.Context, email string, password str
 	token := ds.jwtAuth.GenerateToken(doctorDomain.Uuid.String(), doctorDomain.Role)
 
 	return token, nil
-}
-
-func (ds *DoctorsServices) Logout(ctx echo.Context) error {
-	cookie, err := auth.LogoutCookie(ctx)
-	fmt.Println(cookie)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (ds *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain, error) {
