@@ -22,8 +22,8 @@ func NewDoctorsRepository(db *gorm.DB) doctorsEntity.Repository {
 func (r *DoctorsRepository) CreateNewDoctor(ctx context.Context, doctorDomain *doctorsEntity.Domain) (*doctorsEntity.Domain, error) {
 	rec := FromDomain(doctorDomain)
 	rec.Uuid, _ = uuid.NewRandom()
-	//rec.Role = "approve_waiting_list"
-	rec.Role = "doctor"
+	rec.Role = "approve_waiting_list"
+	// 	rec.Role = "doctor"
 	err := r.db.Create(&rec).Error
 	if err != nil {
 		fmt.Println(err)
@@ -138,5 +138,3 @@ func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string) ([]
 
 	return result, nil
 }
-
-

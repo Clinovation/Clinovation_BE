@@ -78,7 +78,7 @@ func DoctorOrMedicalStaffValidation() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			user := auth.GetDoctor(c)
 
-			if user.Role != "doctor" && user.Role != "medical staff"  {
+			if user.Role != "doctor" && user.Role != "medical staff" {
 				return c.JSON(http.StatusForbidden,
 					helpers.BuildErrorResponse("You are not a Doctor or Medical Staff",
 						errors.New("Please Login as Doctor or Medical Stafff"), helpers.EmptyObj{}))

@@ -152,7 +152,6 @@ func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
 	return res, nil
 }
 
-
 func (ds *DoctorsServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
