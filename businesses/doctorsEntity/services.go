@@ -84,6 +84,16 @@ func (ds *DoctorsServices) Login(ctx context.Context, email string, password str
 	return token, nil
 }
 
+func (ds *DoctorsServices) Logout(ctx echo.Context) error {
+	cookie, err := auth.LogoutCookie(ctx)
+	fmt.Println(cookie)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (ds *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
@@ -152,7 +162,6 @@ func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
 	return res, nil
 }
 
-
 func (ds *DoctorsServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
@@ -176,3 +185,4 @@ func (ds *DoctorsServices) FindByNik(ctx context.Context, nik string) ([]Domain,
 
 	return res, nil
 }
+
