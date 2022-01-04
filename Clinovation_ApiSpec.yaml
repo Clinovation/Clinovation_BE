@@ -4,8 +4,8 @@ info:
   description: API for Hospital Management
   version: 1.0.0
 servers:
-  - url: 'http://localhost:8000/api/v1/'
-  - url: 'http://clinovation/api/v1/'
+  - url: "http://localhost:8000/api/v1/"
+  - url: "http://clinovation/api/v1/"
 tags:
   - name: Medical Staff
     description: Medical Staff Resources
@@ -24,7 +24,7 @@ tags:
   - name: Queue
     description: Queue Patient Resources
 paths:
-#  Medical staff
+  #  Medical staff
   /medical-staff/login:
     post:
       tags:
@@ -137,9 +137,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
   /medical-staff/upload-avatar:
-    post:
+    put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Staff
       summary: Upload avatar Medical Staff
@@ -177,7 +177,7 @@ paths:
   /medical-staff/logout:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Staff
       summary: logout Medical Staff
@@ -204,10 +204,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /medical-staff/update:
+  /medical-staff:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Staff
       summary: Update Medical Staff
@@ -283,10 +283,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /medical-staff/getByUuid/{uuid}:
-    post:
+    get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
+      tags:
+        - Medical Staff
+      summary: Get all Medical Staff
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicalStaffResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medical-staff?uuid={uuid}:
+    get:
+      security:
+        - bearerAuth: []
       tags:
         - Medical Staff
       summary: Get medical staff by uuid
@@ -325,36 +350,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /medical-staff/getAll:
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Medical Staff
-      summary: Get all Medical Staff
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/MedicalStaffResponses"
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse404"
   /medical-staff/changePassword:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Staff
       summary: Update Medical Staff
@@ -407,7 +406,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
 
-# Doctor
+  # Doctor
   /doctor/login:
     post:
       tags:
@@ -545,9 +544,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
   /doctor/upload-avatar:
-    post:
+    put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Doctor
       summary: Upload avatar doctor
@@ -583,9 +582,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
   /doctor/logout:
-    put:
+    post:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Doctor
       summary: logout doctor
@@ -612,10 +611,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /doctor/update:
-    put:
+  /doctor:
+    get:
       security:
         - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Get all Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DoctorResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Doctor
+      summary: Delete a specified doctor
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of doctor to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: doctor was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: []
       tags:
         - Doctor
       summary: Update doctor
@@ -703,183 +770,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /doctor/delete/{uuid}:
-    delete:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Doctor
-      summary: Delete a specified doctor
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          description: uuid of doctor to be deleted
-          required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: string
-                    example: doctor was Deleted
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse403"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /doctor/getByUuid/{uuid}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Doctor
-      summary: Get Doctor by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Doctor uuid
-        - in: query
-          name: doctor
-          required: true
-          schema:
-            $ref: "#/components/schemas/Doctor"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/DoctorResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /doctor/getByNik/{nik}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Doctor
-      summary: Get Doctor by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Doctor uuid
-        - in: query
-          name: doctor
-          required: true
-          schema:
-            $ref: "#/components/schemas/Doctor"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/DoctorResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /doctor/getByName/{name}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Doctor
-      summary: Get Doctor by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Doctor uuid
-        - in: query
-          name: doctor
-          required: true
-          schema:
-            $ref: "#/components/schemas/Doctor"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/DoctorResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /doctor/getAll:
+  /doctor/{uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Doctor
-      summary: Get all Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
       responses:
         "200":
           description: OK
@@ -890,19 +799,107 @@ paths:
                   meta:
                     $ref: "#/components/schemas/SuccessResponse"
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/DoctorResponses"
-        "404":
-          description: Not Found
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FailResponse404"
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/?nik={nik}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /doctor/?name={name}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Doctor
+      summary: Get Doctor by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Doctor uuid
+        - in: query
+          name: doctor
+          required: true
+          schema:
+            $ref: "#/components/schemas/Doctor"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/DoctorResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
   /doctor/changePassword:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Doctor
       summary: Update Doctor
@@ -957,9 +954,9 @@ paths:
   /doctor/waitingList:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
-        - Doctor
+        - Medical Staff
       summary: Get all Doctor
       responses:
         "200":
@@ -981,7 +978,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
 
-#Nurse
+  #Nurse
   /nurse/login:
     post:
       tags:
@@ -1113,9 +1110,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
   /nurse/upload-avatar:
-    post:
+    put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Nurse
       summary: Upload avatar nurse
@@ -1153,7 +1150,7 @@ paths:
   /nurse/logout:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Nurse
       summary: logout nurse
@@ -1180,10 +1177,78 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /nurse/update:
-    put:
+  /nurse:
+    get:
       security:
         - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Get all Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/NurseResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Nurse
+      summary: Delete a specified nurse
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of nurse to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: nurse was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: []
       tags:
         - Nurse
       summary: Update nurse
@@ -1265,183 +1330,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /nurse/delete/{uuid}:
-    delete:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Nurse
-      summary: Delete a specified nurse
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          description: uuid of nurse to be deleted
-          required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: string
-                    example: nurse was Deleted
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse403"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /nurse/getByUuid/{uuid}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Nurse
-      summary: Get Nurse by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Nurse uuid
-        - in: query
-          name: Nurse
-          required: true
-          schema:
-            $ref: "#/components/schemas/Nurse"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/NurseResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /nurse/getByNik/{nik}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Nurse
-      summary: Get Nurse by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Nurse uuid
-        - in: query
-          name: Nurse
-          required: true
-          schema:
-            $ref: "#/components/schemas/Nurse"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/NurseResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /nurse/getByName/{name}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Nurse
-      summary: Get Nurse by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Nurse uuid
-        - in: query
-          name: Nurse
-          required: true
-          schema:
-            $ref: "#/components/schemas/Nurse"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/NurseResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /nurse/getAll:
+  /nurse?uuid={uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Nurse
-      summary: Get all Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
       responses:
         "200":
           description: OK
@@ -1452,19 +1359,107 @@ paths:
                   meta:
                     $ref: "#/components/schemas/SuccessResponse"
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/NurseResponses"
-        "404":
-          description: Not Found
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FailResponse404"
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse?nik={nik}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /nurse?name={name}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Nurse
+      summary: Get Nurse by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Nurse uuid
+        - in: query
+          name: Nurse
+          required: true
+          schema:
+            $ref: "#/components/schemas/Nurse"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/NurseResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
   /nurse/changePassword:
     put:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Nurse
       summary: Update Nurse
@@ -1519,7 +1514,7 @@ paths:
   /nurse/waitingList:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Nurse
       summary: Get all Nurse
@@ -1543,11 +1538,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
 
-#Patient
+  #Patient
   /patient/register:
     post:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Patient
       summary: Register new Patient
@@ -1629,10 +1624,35 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /patient/update:
-    put:
+  /patient:
+    get:
       security:
         - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Get all Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PatientResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+    put:
+      security:
+        - bearerAuth: []
       tags:
         - Patient
       summary: Update Patient
@@ -1720,139 +1740,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /patient/getByUuid/{uuid}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Patient
-      summary: Get Patient by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Patient uuid
-        - in: query
-          name: Patient
-          required: true
-          schema:
-            $ref: "#/components/schemas/Patient"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/PatientResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /patient/getByName/{name}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Patient
-      summary: Get Patient by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Patient uuid
-        - in: query
-          name: Patient
-          required: true
-          schema:
-            $ref: "#/components/schemas/Patient"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/PatientResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /patient/getByNik{nik}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Patient
-      summary: Get Patient by uuid
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          required: true
-          description: Patient uuid
-        - in: query
-          name: Patient
-          required: true
-          schema:
-            $ref: "#/components/schemas/Patient"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/PatientResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /patient/getAll:
+  /patient?uuid={uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Patient
-      summary: Get all Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
       responses:
         "200":
           description: OK
@@ -1863,19 +1769,107 @@ paths:
                   meta:
                     $ref: "#/components/schemas/SuccessResponse"
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/PatientResponses"
-        "404":
-          description: Not Found
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FailResponse404"
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient?name={name}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /patient?nik={nik}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Patient
+      summary: Get Patient by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Patient uuid
+        - in: query
+          name: Patient
+          required: true
+          schema:
+            $ref: "#/components/schemas/Patient"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/PatientResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
   /patient/listLast:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Patient
       summary: Get all list Last Patient
@@ -1899,11 +1893,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
 
-#Medical Record
-  /medical-record/patient-newest/{Uuid}:
+  #Medical Record
+  /medical-record/patient-newest?uuid={Uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Record Patient
       summary: Get all Medical Record Patient
@@ -1926,10 +1920,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /medical-record/patient/{Uuid}:
+  /medical-record/patient?uuid={Uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Medical Record Patient
       summary: Get all Medical Record Patient
@@ -1952,50 +1946,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /medical-record/patient-register/{uuid}:
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Medical Record Patient
-      summary: Register new Medical Record Patient
-      parameters:
-        - name: newRecord
-          in: query
-          description: Patient newRecord
-          required: true
-          schema:
-            type: string
-        - name: consulTation
-          in: query
-          description: Patient consulTation
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/MedicalStaffResponses"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /medical-record/patient-update/{uuid}:
+  /medical-record/patient:
     put:
       security:
         - bearerAuth: [ ]
@@ -2038,12 +1989,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-
-#Schedule
-  /schedule/doctor-getAll/{day}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Medical Record Patient
+      summary: Register new Medical Record Patient
+      parameters:
+        - name: newRecord
+          in: query
+          description: Patient newRecord
+          required: true
+          schema:
+            type: string
+        - name: consulTation
+          in: query
+          description: Patient consulTation
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  #Schedule
+  /schedule/doctor-getAll?day={day}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Schedule
       summary: Get all Schedule Doctor
@@ -2066,10 +2058,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/nurse-getAll/{day}:
+  /schedule/nurse-getAll?day={day}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Schedule
       summary: Get all Schedule Nurse
@@ -2092,10 +2084,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/doctor-getAll:
+  /schedule/doctor:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Schedule
       summary: Get all Schedule Doctor
@@ -2118,10 +2110,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/nurse-getAll:
+  /schedule/nurse:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Schedule
       summary: Get all Schedule Nurse
@@ -2145,11 +2137,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
 
-#Queue
-  /Queue/nurse/{uuid}:
+  #Queue
+  /Queue/nurse?uuid={uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Queue
       summary: Get all Schedule Nurse
@@ -2172,10 +2164,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /Queue/doctor/{uuid}:
+  /Queue/doctor?uuid={uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Queue
       summary: Get all Schedule Nurse
@@ -2199,11 +2191,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
 
-#Recipe
-  /recipe/patient/{uuid}:
+  #Recipe
+  /recipe/patient?uuid{uuid}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Recipe
       summary: Get all Recipe Patient By uuid
@@ -2226,10 +2218,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /recipe/patient/{name}:
+  /recipe/patient?nama={name}:
     get:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Recipe
       summary: Get all Recipe Patient By name
@@ -2252,13 +2244,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /recipe/patient-register/{uuid}:
-    post:
+  /recipe/patient/{uuid}:
+    put:
       security:
         - bearerAuth: [ ]
       tags:
         - Recipe
-      summary: Register new Recipe Patient
+      summary: Update new Recipe Patient
       parameters:
         - name: date
           in: query
@@ -2313,13 +2305,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /recipe/patient-update/{uuid}:
     post:
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       tags:
         - Recipe
-      summary: Update new Recipe Patient
+      summary: Register new Recipe Patient
       parameters:
         - name: date
           in: query
