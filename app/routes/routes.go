@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"net/http"
 
@@ -12,8 +13,9 @@ import (
 )
 
 type ControllerList struct {
-	DoctorsController doctorsController.DoctorController
-	JWTMiddleware     middleware.JWTConfig
+	DoctorsController      doctorsController.DoctorController
+	MedicalStaffController medicalStaffController.MedicalStaffController
+	JWTMiddleware          middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
@@ -37,6 +39,22 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNikQuery)
 	doctorAndMedicalStaff.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
 
+	//medical staff
+	medicalStaffs := echo.Group("api/v1/medicalStaff")
+	medicalStaffs.POST("/register", cl.MedicalStaffController.Registration)
+	medicalStaffs.POST("/login", cl.MedicalStaffController.LoginMedicalStaff)
+
+	//medical staff with medical staff role
+	medicalStaff := medicalStaffs
+	medicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	medicalStaff.PUT("/", cl.MedicalStaffController.UpdateMedicalStaffById)
+	medicalStaff.GET("/:uuid", cl.MedicalStaffController.FindMedicalStaffByUuid)
+	medicalStaff.GET("/", cl.MedicalStaffController.GetMedicalStaff)
+	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNameQuery)
+	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNikQuery)
+	medicalStaff.DELETE("/", cl.MedicalStaffController.DeleteMedicalStaffByUuid)
+	medicalStaff.PUT("/", cl.MedicalStaffController.UpdateMedicalStaffById)
+	medicalStaff.PUT("/uploadAvatar", cl.MedicalStaffController.UploadAvatar)
 }
 
 func MedicalStaffValidation() echo.MiddlewareFunc {
