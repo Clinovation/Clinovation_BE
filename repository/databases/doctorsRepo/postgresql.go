@@ -115,4 +115,28 @@ func (r *DoctorsRepository) GetDoctors(ctx context.Context) (*[]doctorsEntity.Do
 	return &result, nil
 }
 
+func (r *DoctorsRepository) GetByName(ctx context.Context, name string) ([]doctorsEntity.Domain, error) {
+	rec := []Doctors{}
+
+	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	if err != nil {
+		return nil, err
+	}
+	result := toDomainArray(rec)
+
+	return result, nil
+}
+
+func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string) ([]doctorsEntity.Domain, error) {
+	rec := []Doctors{}
+
+	err := r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	if err != nil {
+		return nil, err
+	}
+	result := toDomainArray(rec)
+
+	return result, nil
+}
+
 

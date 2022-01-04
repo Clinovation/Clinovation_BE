@@ -21,23 +21,30 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctors := echo.Group("api/v1/doctor")
 	doctors.POST("/register", cl.DoctorsController.Registration)
 	doctors.POST("/login", cl.DoctorsController.LoginDoctor)
-	doctors.GET("/:uuid", cl.DoctorsController.FindDoctorByUuid)
 
 	//doctor with doctor role
 	doctor := doctors
 	doctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorValidation())
 	doctors.PUT("/", cl.DoctorsController.UpdateDoctorById)
-	doctors.GET("/", cl.DoctorsController.GetDoctors)
-	doctors.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
 	doctors.PUT("/uploadAvatar", cl.DoctorsController.UploadAvatar)
+
+	//doctor with doctor or medical staff  role
+	doctorAndMedicalStaff := echo.Group("api/v1/doctor")
+	doctorAndMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
+	doctorAndMedicalStaff.GET("/:uuid", cl.DoctorsController.FindDoctorByUuid)
+	doctorAndMedicalStaff.GET("/", cl.DoctorsController.GetDoctors)
+	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNameQuery)
+	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNikQuery)
+	doctorAndMedicalStaff.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
+
 }
 
 func MedicalStaffValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			medicalStaff := auth.GetMedicalStaff(c)
+			user := auth.GetMedicalStaff(c)
 
-			if medicalStaff.Role != "medical staff" {
+			if user.Role != "medical staff" {
 				return c.JSON(http.StatusForbidden,
 					helpers.BuildErrorResponse("you are not a Medical Staff",
 						errors.New("Please Login as Medical Staff"), helpers.EmptyObj{}))
@@ -52,9 +59,9 @@ func MedicalStaffValidation() echo.MiddlewareFunc {
 func DoctorValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			doctor := auth.GetDoctor(c)
+			user := auth.GetDoctor(c)
 
-			if doctor.Role != "doctor" {
+			if user.Role != "doctor" {
 				return c.JSON(http.StatusForbidden,
 					helpers.BuildErrorResponse("You are not a Doctor",
 						errors.New("Please Login as Doctor"), helpers.EmptyObj{}))
@@ -69,16 +76,15 @@ func DoctorValidation() echo.MiddlewareFunc {
 func DoctorOrMedicalStaffValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			doctor := auth.GetDoctor(c)
+			user := auth.GetDoctor(c)
 
-			if doctor.Role != "doctor" {
+			if user.Role != "doctor" && user.Role != "medical staff"  {
 				return c.JSON(http.StatusForbidden,
-					helpers.BuildErrorResponse("You are not a Doctor",
-						errors.New("Please Login as Doctor"), helpers.EmptyObj{}))
+					helpers.BuildErrorResponse("You are not a Doctor or Medical Staff",
+						errors.New("Please Login as Doctor or Medical Stafff"), helpers.EmptyObj{}))
 			} else {
 				return hf(c)
 			}
-
 		}
 	}
 }

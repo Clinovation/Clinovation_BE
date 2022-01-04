@@ -109,6 +109,36 @@ func (ctrl *DoctorController) FindDoctorByUuid(c echo.Context) error {
 			response.FromDomain(&doctor)))
 }
 
+func (ctrl *DoctorController) FindDoctorByNameQuery(c echo.Context) error {
+	name := c.QueryParam("name")
+
+	doctor, err := ctrl.doctorsService.FindByName(c.Request().Context(), name)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get doctor By Name",
+			response.FromDomainArray(doctor)))
+}
+
+func (ctrl *DoctorController) FindDoctorByNikQuery(c echo.Context) error {
+	nik := c.QueryParam("nik")
+
+	doctor, err := ctrl.doctorsService.FindByNik(c.Request().Context(), nik)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get doctor By Nik",
+			response.FromDomainArray(doctor)))
+}
+
 func (ctrl *DoctorController) GetDoctors(c echo.Context) error {
 	doctor, err := ctrl.doctorsService.GetDoctors(c.Request().Context())
 	if err != nil {

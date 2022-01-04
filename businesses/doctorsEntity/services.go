@@ -151,3 +151,28 @@ func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
 	}
 	return res, nil
 }
+
+
+func (ds *DoctorsServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	res, err := ds.DoctorsRepository.GetByName(ctx, name)
+	if err != nil {
+		return []Domain{}, businesses.ErrNotFoundDoctor
+	}
+
+	return res, nil
+}
+
+func (ds *DoctorsServices) FindByNik(ctx context.Context, nik string) ([]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	res, err := ds.DoctorsRepository.GetByNikByQuery(ctx, nik)
+	if err != nil {
+		return []Domain{}, businesses.ErrNotFoundDoctor
+	}
+
+	return res, nil
+}
