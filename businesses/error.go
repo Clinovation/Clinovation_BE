@@ -15,5 +15,8 @@ var (
 	ErrPassword              = errors.New("Wrong Password")
 
 	//Doctors errors
-	ErrNotFoundDoctor = errors.New("doctors doesn't exist")
+	ErrNotFoundDoctor = errors.New("doctor doesn't exist")
+
+	//Doctors errors
+	ErrNotFoundMedicalStaff = errors.New("medical staff doesn't exist")
 )
