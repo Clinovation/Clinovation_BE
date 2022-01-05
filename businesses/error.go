@@ -19,4 +19,7 @@ var (
 
 	//Doctors errors
 	ErrNotFoundMedicalStaff = errors.New("medical staff doesn't exist")
+
+	//Patient errors
+	ErrNotFoundPatient = errors.New("patient doesn't exist")
 )
