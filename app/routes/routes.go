@@ -5,6 +5,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
+	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"net/http"
 
@@ -15,6 +16,7 @@ import (
 type ControllerList struct {
 	DoctorsController      doctorsController.DoctorController
 	MedicalStaffController medicalStaffController.MedicalStaffController
+	PatientController      patientController.PatientsController
 	JWTMiddleware          middleware.JWTConfig
 }
 
@@ -53,8 +55,24 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNameQuery)
 	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNikQuery)
 	medicalStaff.DELETE("/", cl.MedicalStaffController.DeleteMedicalStaffByUuid)
-	medicalStaff.PUT("/", cl.MedicalStaffController.UpdateMedicalStaffById)
 	medicalStaff.PUT("/uploadAvatar", cl.MedicalStaffController.UploadAvatar)
+
+	//patient with medical staff role
+	patientMedicalStaff := echo.Group("api/v1/patient")
+	patientMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	patientMedicalStaff.POST("/register", cl.PatientController.Registration)
+	patientMedicalStaff.PUT("/:uuid", cl.PatientController.UpdatePatientById)
+	patientMedicalStaff.DELETE("/:uuid", cl.PatientController.DeletePatientByUuid)
+	patientMedicalStaff.PUT("/uploadAvatar/:uuid", cl.PatientController.UploadAvatar)
+
+	//patient with doctor and medical staff role
+	patientDoctorOrMedicalStaff := echo.Group("api/v1/patient")
+	patientDoctorOrMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
+	patientDoctorOrMedicalStaff.GET("/:uuid", cl.PatientController.FindPatientByUuid)
+	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.GetPatients)
+	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNameQuery)
+	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNikQuery)
+
 }
 
 func MedicalStaffValidation() echo.MiddlewareFunc {

@@ -139,7 +139,7 @@ paths:
   /medical-staff/upload-avatar:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Staff
       summary: Upload avatar Medical Staff
@@ -174,40 +174,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /medical-staff/logout:
-    put:
-      security:
-        - bearerAuth: []
-      tags:
-        - Medical Staff
-      summary: logout Medical Staff
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/Logout"
-        "408":
-          description: Request Timeout
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
   /medical-staff:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Staff
       summary: Update Medical Staff
@@ -285,7 +255,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse500"
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Staff
       summary: Get all Medical Staff
@@ -308,10 +278,53 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Delete a specified medical staff
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of medical staff to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: medical staff was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
   /medical-staff?uuid={uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Staff
       summary: Get medical staff by uuid
@@ -353,7 +366,7 @@ paths:
   /medical-staff/changePassword:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Staff
       summary: Update Medical Staff
@@ -546,7 +559,7 @@ paths:
   /doctor/upload-avatar:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Upload avatar doctor
@@ -571,36 +584,6 @@ paths:
                     $ref: "#/components/schemas/ResponseAvatar"
         "400":
           description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-  /doctor/logout:
-    post:
-      security:
-        - bearerAuth: []
-      tags:
-        - Doctor
-      summary: logout doctor
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/Logout"
-        "408":
-          description: Request Timeout
           content:
             application/json:
               schema:
@@ -682,7 +665,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse500"
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Update doctor
@@ -773,7 +756,7 @@ paths:
   /doctor/{uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Get Doctor by uuid
@@ -815,7 +798,7 @@ paths:
   /doctor/?nik={nik}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Get Doctor by uuid
@@ -857,7 +840,7 @@ paths:
   /doctor/?name={name}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Get Doctor by uuid
@@ -899,7 +882,7 @@ paths:
   /doctor/changePassword:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Doctor
       summary: Update Doctor
@@ -954,9 +937,9 @@ paths:
   /doctor/waitingList:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
-        - Medical Staff
+        - Doctor
       summary: Get all Doctor
       responses:
         "200":
@@ -1112,7 +1095,7 @@ paths:
   /nurse/upload-avatar:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Upload avatar nurse
@@ -1150,7 +1133,7 @@ paths:
   /nurse/logout:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: logout nurse
@@ -1248,7 +1231,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse500"
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Update nurse
@@ -1333,7 +1316,7 @@ paths:
   /nurse?uuid={uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Get Nurse by uuid
@@ -1375,7 +1358,7 @@ paths:
   /nurse?nik={nik}:
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Get Nurse by uuid
@@ -1417,7 +1400,7 @@ paths:
   /nurse?name={name}:
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Get Nurse by uuid
@@ -1459,7 +1442,7 @@ paths:
   /nurse/changePassword:
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Update Nurse
@@ -1514,7 +1497,7 @@ paths:
   /nurse/waitingList:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Nurse
       summary: Get all Nurse
@@ -1542,7 +1525,7 @@ paths:
   /patient/register:
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Register new Patient
@@ -1625,6 +1608,49 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
   /patient:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Delete a specified patient
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of patient to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: patient was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
     get:
       security:
         - bearerAuth: [ ]
@@ -1652,7 +1678,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse404"
     put:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Update Patient
@@ -1743,7 +1769,7 @@ paths:
   /patient?uuid={uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Get Patient by uuid
@@ -1785,7 +1811,7 @@ paths:
   /patient?name={name}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Get Patient by uuid
@@ -1827,7 +1853,7 @@ paths:
   /patient?nik={nik}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Get Patient by uuid
@@ -1869,7 +1895,7 @@ paths:
   /patient/listLast:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Patient
       summary: Get all list Last Patient
@@ -1894,10 +1920,132 @@ paths:
                 $ref: "#/components/schemas/FailResponse404"
 
   #Medical Record
-  /medical-record/patient-newest?uuid={Uuid}:
+  /medicalStaff/?name={name}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Get medical staff by name
+      parameters:
+        - in: path
+          name: name
+          schema:
+            type: string
+          required: true
+          description: Doctor name
+        - in: query
+          name: medicalStaff
+          required: true
+          schema:
+            $ref: "#/components/schemas/MedicalStaff"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medicalStaff/?nik={nik}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Staff
+      summary: Get medical staff by nik
+      parameters:
+        - in: path
+          name: nik
+          schema:
+            type: string
+          required: true
+          description: Doctor Nik
+        - in: query
+          name: medicalStaff
+          required: true
+          schema:
+            $ref: "#/components/schemas/MedicalStaff"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicalStaffResponses"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /Patient/upload-avatar:
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Patient
+      summary: Upload avatar Patient
+      requestBody:
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        description: Created Patient object
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ResponseAvatar"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /medical-record/patient-newest/{Uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
       tags:
         - Medical Record Patient
       summary: Get all Medical Record Patient
@@ -1923,7 +2071,7 @@ paths:
   /medical-record/patient?uuid={Uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Record Patient
       summary: Get all Medical Record Patient
@@ -1991,7 +2139,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse500"
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Medical Record Patient
       summary: Register new Medical Record Patient
@@ -2035,7 +2183,7 @@ paths:
   /schedule/doctor-getAll?day={day}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Schedule
       summary: Get all Schedule Doctor
@@ -2061,7 +2209,7 @@ paths:
   /schedule/nurse-getAll?day={day}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Schedule
       summary: Get all Schedule Nurse
@@ -2087,7 +2235,7 @@ paths:
   /schedule/doctor:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Schedule
       summary: Get all Schedule Doctor
@@ -2113,7 +2261,7 @@ paths:
   /schedule/nurse:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Schedule
       summary: Get all Schedule Nurse
@@ -2141,7 +2289,7 @@ paths:
   /Queue/nurse?uuid={uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Queue
       summary: Get all Schedule Nurse
@@ -2167,7 +2315,7 @@ paths:
   /Queue/doctor?uuid={uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Queue
       summary: Get all Schedule Nurse
@@ -2195,7 +2343,7 @@ paths:
   /recipe/patient?uuid{uuid}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Recipe
       summary: Get all Recipe Patient By uuid
@@ -2221,7 +2369,7 @@ paths:
   /recipe/patient?nama={name}:
     get:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Recipe
       summary: Get all Recipe Patient By name
@@ -2307,7 +2455,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse500"
     post:
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       tags:
         - Recipe
       summary: Register new Recipe Patient
