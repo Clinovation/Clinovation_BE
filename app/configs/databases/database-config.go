@@ -13,10 +13,10 @@ import (
 )
 
 func SetupDatabaseConnection() *gorm.DB {
-	errEnv := godotenv.Load()
-	if errEnv != nil {
-		panic("Failed to load env file")
-	}
+	//errEnv := godotenv.Load()
+	//if errEnv != nil {
+	//	panic("Failed to load env file")
+	//}
 
 	//var dbName string
 	//if os.Getenv("ENV") == "TESTING"{
