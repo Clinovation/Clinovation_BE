@@ -5,7 +5,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
-	"github.com/joho/godotenv"
+	//"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
