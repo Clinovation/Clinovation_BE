@@ -34,7 +34,7 @@ func SetupDatabaseConnection() *gorm.DB {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Jakarta", dbHost, dbUser, dbPass, dbName, dbPort)
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
-		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+		//PreferSimpleProtocol: true, // disables implicit prepared statement usage
 	}), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})
