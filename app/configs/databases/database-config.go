@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
@@ -9,7 +11,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"os"
 )
 
 func SetupDatabaseConnection() *gorm.DB {
@@ -28,7 +29,7 @@ func SetupDatabaseConnection() *gorm.DB {
 	dbPort := os.Getenv("DB_PORT")
 
 	// https://github.com/go-gorm/postgres
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta", dbHost, dbUser, dbPass, dbName, dbPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require TimeZone=Asia/Jakarta", dbHost, dbUser, dbPass, dbName, dbPort)
 	db, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		//PreferSimpleProtocol: true, // disables implicit prepared statement usage
