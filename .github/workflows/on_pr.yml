@@ -80,7 +80,7 @@ jobs:
           export JWT_EXPIRE='"'$JWT_EXPIRE'"' && \
           docker rm -vf $(docker ps -a -q) || true && \
           docker pull hencya/clinovation-api:1.0.0 && \
-          docker run -d -p 8000:8000 --name clinovation-api \
+          docker run -d -p 8080:8080 --name clinovation-api \
           -e PORT=$PORT \
           -e DB_HOST=$DB_HOST \
           -e DB_PORT=$DB_PORT \
