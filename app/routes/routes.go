@@ -5,7 +5,10 @@ import (
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
+	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
+	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
+	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"net/http"
 
@@ -15,8 +18,11 @@ import (
 
 type ControllerList struct {
 	DoctorsController      doctorsController.DoctorController
+	NurseController        nursesController.NurseController
 	MedicalStaffController medicalStaffController.MedicalStaffController
 	PatientController      patientController.PatientsController
+	WorkDayController      workDayController.WorkDayController
+	WorkHourController     workHourController.WorkHourController
 	JWTMiddleware          middleware.JWTConfig
 }
 
@@ -29,8 +35,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	//doctor with doctor role
 	doctor := doctors
 	doctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorValidation())
-	doctors.PUT("/", cl.DoctorsController.UpdateDoctorById)
-	doctors.PUT("/uploadAvatar", cl.DoctorsController.UploadAvatar)
+	doctor.PUT("/", cl.DoctorsController.UpdateDoctorById)
+	doctor.PUT("/uploadAvatar", cl.DoctorsController.UploadAvatar)
 
 	//doctor with doctor or medical staff  role
 	doctorAndMedicalStaff := echo.Group("api/v1/doctor")
@@ -40,6 +46,26 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNameQuery)
 	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNikQuery)
 	doctorAndMedicalStaff.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
+
+	//nurse
+	nurses := echo.Group("api/v1/nurse")
+	nurses.POST("/register", cl.NurseController.Registration)
+	nurses.POST("/login", cl.NurseController.LoginNurse)
+
+	//nurse with nurse role
+	nurse := nurses
+	nurse.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseValidation())
+	nurse.PUT("/", cl.NurseController.UpdateNurseById)
+	nurse.PUT("/uploadAvatar", cl.NurseController.UploadAvatar)
+
+	//nurse with nurse or medical staff  role
+	nurseAndMedicalStaff := echo.Group("api/v1/nurse")
+	nurseAndMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseOrMedicalStaffValidation())
+	nurseAndMedicalStaff.GET("/:uuid", cl.NurseController.FindNurseByUuid)
+	nurseAndMedicalStaff.GET("/", cl.NurseController.GetNurses)
+	nurseAndMedicalStaff.GET("/", cl.NurseController.FindNurseByNameQuery)
+	nurseAndMedicalStaff.GET("/", cl.NurseController.FindNurseByNikQuery)
+	nurseAndMedicalStaff.DELETE("/", cl.NurseController.DeleteNurseByUuid)
 
 	//medical staff
 	medicalStaffs := echo.Group("api/v1/medicalStaff")
@@ -65,13 +91,33 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	patientMedicalStaff.DELETE("/:uuid", cl.PatientController.DeletePatientByUuid)
 	patientMedicalStaff.PUT("/uploadAvatar/:uuid", cl.PatientController.UploadAvatar)
 
-	//patient with doctor and medical staff role
-	patientDoctorOrMedicalStaff := echo.Group("api/v1/patient")
-	patientDoctorOrMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
-	patientDoctorOrMedicalStaff.GET("/:uuid", cl.PatientController.FindPatientByUuid)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.GetPatients)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNameQuery)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNikQuery)
+	//patient with doctor,medical staff and nurse role
+	patientAllRole := echo.Group("api/v1/patient")
+	patientAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
+	patientAllRole.GET("/:uuid", cl.PatientController.FindPatientByUuid)
+	patientAllRole.GET("/", cl.PatientController.GetPatients)
+	patientAllRole.GET("/", cl.PatientController.FindPatientByNameQuery)
+	patientAllRole.GET("/", cl.PatientController.FindPatientByNikQuery)
+
+	//work day with medical staff role
+	workDays := echo.Group("api/v1/workDay")
+	workDays.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	workDays.POST("/", cl.WorkDayController.CreateNewWorkDay)
+	workDays.PUT("/:uuid", cl.WorkDayController.UpdateWorkDayById)
+	workDays.GET("/:uuid", cl.WorkDayController.FindWorkDayByUuid)
+	workDays.GET("/", cl.WorkDayController.GetWorkDays)
+	workDays.GET("/:day", cl.WorkDayController.FindWorkDayByDay)
+	workDays.DELETE("/:uuid", cl.WorkDayController.DeleteWorkDayByUuid)
+
+	//work Hour with medical staff role
+	workHours := echo.Group("api/v1/workHour")
+	workHours.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	workHours.POST("/", cl.WorkHourController.CreateNewWorkHour)
+	workHours.PUT("/:uuid", cl.WorkHourController.UpdateWorkHourById)
+	workHours.GET("/:uuid", cl.WorkHourController.FindWorkHourByUuid)
+	workHours.GET("/", cl.WorkHourController.GetWorkHours)
+	workHours.GET("/:dour", cl.WorkHourController.FindWorkHourByHour)
+	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
 
 }
 
@@ -112,12 +158,61 @@ func DoctorValidation() echo.MiddlewareFunc {
 func DoctorOrMedicalStaffValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user := auth.GetDoctor(c)
+			user := auth.GetUser(c)
 
 			if user.Role != "doctor" && user.Role != "medical staff" {
 				return c.JSON(http.StatusForbidden,
 					helpers.BuildErrorResponse("You are not a Doctor or Medical Staff",
 						errors.New("Please Login as Doctor or Medical Stafff"), helpers.EmptyObj{}))
+			} else {
+				return hf(c)
+			}
+		}
+	}
+}
+
+func NurseValidation() echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			user := auth.GetNurse(c)
+
+			if user.Role != "nurse" {
+				return c.JSON(http.StatusForbidden,
+					helpers.BuildErrorResponse("You are not a Nurse",
+						errors.New("Please Login as Nurse"), helpers.EmptyObj{}))
+			} else {
+				return hf(c)
+			}
+
+		}
+	}
+}
+
+func NurseOrMedicalStaffValidation() echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			user := auth.GetUser(c)
+
+			if user.Role != "nurse" && user.Role != "medical staff" {
+				return c.JSON(http.StatusForbidden,
+					helpers.BuildErrorResponse("You are not a Nurse or Medical Staff",
+						errors.New("Please Login as Nurse or Medical Stafff"), helpers.EmptyObj{}))
+			} else {
+				return hf(c)
+			}
+		}
+	}
+}
+
+func AllRole() echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			user := auth.GetUser(c)
+
+			if user.Role != "nurse" && user.Role != "medical staff" && user.Role != "doctor" {
+				return c.JSON(http.StatusForbidden,
+					helpers.BuildErrorResponse("You are not a Nurse or Medical Staff or doctor",
+						errors.New("Please Login as Nurse or Medical Stafff or doctor"), helpers.EmptyObj{}))
 			} else {
 				return hf(c)
 			}

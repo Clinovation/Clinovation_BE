@@ -4,7 +4,7 @@ info:
   description: API for Hospital Management
   version: 1.0.0
 servers:
-  - url: "http://localhost:8000/api/v1/"
+  - url: "http://localhost:8080/api/v1/"
   - url: "http://clinovation/api/v1/"
 tags:
   - name: Medical Staff
@@ -17,6 +17,10 @@ tags:
     description: ptient Resources
   - name: Schedule
     description: Schedule Resources
+  - name: Work Day
+    description: Work Day Resources
+  - name: Work Hour
+    description: Work Hour Resources
   - name: Recipe
     description: Recipe Resources
   - name: Medical Record Patient
@@ -1283,7 +1287,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /nurse?uuid={uuid}:
+  /nurse/{uuid}:
     get:
       security:
         - bearerAuth: [ ]
@@ -2149,8 +2153,397 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
+  #work day
+  /workDay:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Make New Day
+      parameters:
+        - name: day
+          in: query
+          description: new work day
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkDayResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Update Work Day
+      parameters:
+        - name: day
+          in: query
+          description: new day
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkDayResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Delete a specified day
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of work day to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: work day was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Get all Work Day
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkDayResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /WorkDay/{day}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Get Work Day by day
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkDayResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /WorkDay/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Get Work Day by uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkDayResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  #  work hour
+  /workHour:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Make New Hour
+      parameters:
+        - name: hour
+          in: query
+          description: new work hour
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkHourResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Update Work Hour
+      parameters:
+        - name: Hour
+          in: query
+          description: new Hour
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkHourResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Delete a specified Hour
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of work Hour to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: work hour was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Get all Work Hour
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkHourResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /WorkHour/{hour}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Get Work Day by Hour
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkHourResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /WorkHour/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Get Work Hour by uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WorkHourResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
   #Schedule
-  /schedule/doctor-getAll?day={day}:
+  /schedule/doctor/{day}:
     get:
       security:
         - bearerAuth: [ ]
@@ -2176,7 +2569,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/nurse-getAll?day={day}:
+  /schedule/nurse/{day}:
     get:
       security:
         - bearerAuth: [ ]

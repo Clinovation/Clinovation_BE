@@ -1,11 +1,11 @@
-package medicalStaffController
+package nursesController
 
 import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
-	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
-	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController/request"
-	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController/response"
+	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
+	"github.com/Clinovation/Clinovation_BE/controllers/nursesController/request"
+	"github.com/Clinovation/Clinovation_BE/controllers/nursesController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"github.com/labstack/echo/v4"
 	"io"
@@ -14,21 +14,21 @@ import (
 	"time"
 )
 
-type MedicalStaffController struct {
-	medicalStaffService medicalStaffEntity.Service
-	jwtAuth             *auth.ConfigJWT
+type NurseController struct {
+	nursesService nursesEntity.Service
+	jwtAuth       *auth.ConfigJWT
 }
 
-func NewMedicalStaffController(mss medicalStaffEntity.Service, jwtAuth *auth.ConfigJWT) *MedicalStaffController {
-	return &MedicalStaffController{
-		medicalStaffService: mss,
-		jwtAuth:             jwtAuth,
+func NewNursesController(ns nursesEntity.Service, jwtAuth *auth.ConfigJWT) *NurseController {
+	return &NurseController{
+		nursesService: ns,
+		jwtAuth:       jwtAuth,
 	}
 }
 
-func (ctrl *MedicalStaffController) Registration(c echo.Context) error {
+func (ctrl *NurseController) Registration(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := new(request.MedicalStaffRegistration)
+	req := new(request.NurseRegistration)
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
@@ -42,7 +42,7 @@ func (ctrl *MedicalStaffController) Registration(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	res, err := ctrl.medicalStaffService.Register(ctx, req.ToDomain())
+	res, err := ctrl.nursesService.Register(ctx, req.ToDomain())
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -50,13 +50,13 @@ func (ctrl *MedicalStaffController) Registration(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated,
-		helpers.BuildSuccessResponse("Successfully created medical staff account",
+		helpers.BuildSuccessResponse("Successfully created nurse account",
 			response.FromDomain(res)))
 }
 
-func (ctrl *MedicalStaffController) LoginMedicalStaff(c echo.Context) error {
+func (ctrl *NurseController) LoginNurse(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := new(request.MedicalStaffLogin)
+	req := new(request.NurseLogin)
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
@@ -70,10 +70,10 @@ func (ctrl *MedicalStaffController) LoginMedicalStaff(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	token, err := ctrl.medicalStaffService.Login(ctx, req.Email, req.Password)
+	token, err := ctrl.nursesService.Login(ctx, req.Email, req.Password)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
@@ -94,67 +94,67 @@ func (ctrl *MedicalStaffController) LoginMedicalStaff(c echo.Context) error {
 			res))
 }
 
-func (ctrl *MedicalStaffController) FindMedicalStaffByUuid(c echo.Context) error {
+func (ctrl *NurseController) FindNurseByUuid(c echo.Context) error {
 	uuid := c.Param("uuid")
 
-	medicalStaff, err := ctrl.medicalStaffService.FindByUuid(c.Request().Context(), uuid)
+	nurse, err := ctrl.nursesService.FindByUuid(c.Request().Context(), uuid)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
 	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medical Staff By id",
-			response.FromDomain(&medicalStaff)))
+		helpers.BuildSuccessResponse("Successfully Get Nurse By id",
+			response.FromDomain(&nurse)))
 }
 
-func (ctrl *MedicalStaffController) FindMedicalStaffByNameQuery(c echo.Context) error {
+func (ctrl *NurseController) FindNurseByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
 
-	medicalStaff, err := ctrl.medicalStaffService.FindByName(c.Request().Context(), name)
+	nurse, err := ctrl.nursesService.FindByName(c.Request().Context(), name)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
 	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medical Staff  By Name",
-			response.FromDomainArray(medicalStaff)))
+		helpers.BuildSuccessResponse("Successfully Get Nurse By Name",
+			response.FromDomainArray(nurse)))
 }
 
-func (ctrl *MedicalStaffController) FindMedicalStaffByNikQuery(c echo.Context) error {
+func (ctrl *NurseController) FindNurseByNikQuery(c echo.Context) error {
 	nik := c.QueryParam("nik")
 
-	medicalStaff, err := ctrl.medicalStaffService.FindByNik(c.Request().Context(), nik)
+	nurse, err := ctrl.nursesService.FindByNik(c.Request().Context(), nik)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
 	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medical Staff By Nik",
-			response.FromDomainArray(medicalStaff)))
+		helpers.BuildSuccessResponse("Successfully Get Nurse By Nik",
+			response.FromDomainArray(nurse)))
 }
 
-func (ctrl *MedicalStaffController) GetMedicalStaff(c echo.Context) error {
-	medicalStaff, err := ctrl.medicalStaffService.GetMedicalStaff(c.Request().Context())
+func (ctrl *NurseController) GetNurses(c echo.Context) error {
+	nurse, err := ctrl.nursesService.GetNurses(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
 	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Medical Staff",
-			response.FromDomainArray(*medicalStaff)))
+		helpers.BuildSuccessResponse("Successfully Get all Nurse",
+			response.FromDomainArray(*nurse)))
 }
 
-func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error {
+func (ctrl *NurseController) UpdateNurseById(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := new(request.MedicalStaffRegistration)
+	req := new(request.NurseRegistration)
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
@@ -167,10 +167,10 @@ func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error
 				err, helpers.EmptyObj{}))
 	}
 
-	medicalStaff := auth.GetMedicalStaff(c)
-	medicalStaffId := medicalStaff.Uuid
+	nurse := auth.GetNurse(c)
+	nurseId := nurse.Uuid
 
-	res, err := ctrl.medicalStaffService.UpdateById(ctx, req.ToDomain(), medicalStaffId)
+	res, err := ctrl.nursesService.UpdateById(ctx, req.ToDomain(), nurseId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -181,7 +181,7 @@ func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error
 			response.FromDomain(res)))
 }
 
-func (ctrl *MedicalStaffController) UploadAvatar(c echo.Context) error {
+func (ctrl *NurseController) UploadAvatar(c echo.Context) error {
 	ctx := c.Request().Context()
 	//file := new(request.UserUploadAvatar)
 	file, err := c.FormFile("avatar")
@@ -191,10 +191,10 @@ func (ctrl *MedicalStaffController) UploadAvatar(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	medicalStaff := auth.GetMedicalStaff(c)
-	medicalStaffId := medicalStaff.Uuid
+	nurse := auth.GetNurse(c)
+	nurseId := nurse.Uuid
 
-	path := fmt.Sprintf("images/avatar/%v-%s", medicalStaffId, file.Filename)
+	path := fmt.Sprintf("images/avatar/%v-%s", nurseId, file.Filename)
 
 	src, err := file.Open()
 	if err != nil {
@@ -218,10 +218,10 @@ func (ctrl *MedicalStaffController) UploadAvatar(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	res, err := ctrl.medicalStaffService.UploadAvatar(ctx, medicalStaffId, path)
+	res, err := ctrl.nursesService.UploadAvatar(ctx, nurseId, path)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest,
-			helpers.BuildErrorResponse("Upload Avatar Failed",
+			helpers.BuildErrorResponse("Uploud Avatar Failed",
 				err, helpers.EmptyObj{}))
 	}
 
@@ -230,18 +230,18 @@ func (ctrl *MedicalStaffController) UploadAvatar(c echo.Context) error {
 			response.FromDomain(res)))
 }
 
-func (ctrl *MedicalStaffController) DeleteMedicalStaffByUuid(c echo.Context) error {
-	medicalStaff := auth.GetMedicalStaff(c)
-	medicalStaffId := medicalStaff.Uuid
+func (ctrl *NurseController) DeleteNurseByUuid(c echo.Context) error {
+	nurse := auth.GetNurse(c)
+	nurseId := nurse.Uuid
 
-	_, errGet := ctrl.medicalStaffService.FindByUuid(c.Request().Context(), medicalStaffId)
+	_, errGet := ctrl.nursesService.FindByUuid(c.Request().Context(), nurseId)
 	if errGet != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff doesn't exist",
+			helpers.BuildErrorResponse("Nurse doesn't exist",
 				errGet, helpers.EmptyObj{}))
 	}
 
-	_, err := ctrl.medicalStaffService.DeleteMedicalStaff(c.Request().Context(), medicalStaffId)
+	_, err := ctrl.nursesService.DeleteNurse(c.Request().Context(), nurseId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -249,6 +249,6 @@ func (ctrl *MedicalStaffController) DeleteMedicalStaffByUuid(c echo.Context) err
 	}
 
 	return c.JSON(http.StatusCreated,
-		helpers.BuildSuccessResponse("Successfully Deleted a Medical Staff",
+		helpers.BuildSuccessResponse("Successfully Deleted a Nurse",
 			nil))
 }
