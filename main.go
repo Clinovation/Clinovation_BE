@@ -4,9 +4,11 @@ import (
 	"github.com/Clinovation/Clinovation_BE/app/routes"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
+	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 
@@ -45,6 +47,11 @@ func main() {
 	doctorService := doctorsEntity.NewDoctorsServices(doctorRepo, &jwt, timeoutContext)
 	doctorCtrl := doctorsController.NewDoctorController(doctorService, &jwt)
 
+	//nurse
+	nurseRepo := _domainFactory.NewNurseRepository(db)
+	nurseService := nursesEntity.NewNursesServices(nurseRepo, &jwt, timeoutContext)
+	nurseCtrl := nursesController.NewNursesController(nurseService, &jwt)
+
 	//medical staff
 	medicalStaffRepo := _domainFactory.NewMedicalStaffRepository(db)
 	medicalStaffService := medicalStaffEntity.NewMedicalStaffServices(medicalStaffRepo, &jwt, timeoutContext)
@@ -59,6 +66,7 @@ func main() {
 	routesInit := routes.ControllerList{
 		JWTMiddleware:          jwt.Init(),
 		DoctorsController:      *doctorCtrl,
+		NurseController:        *nurseCtrl,
 		PatientController:      *patientCtrl,
 		MedicalStaffController: *medicalStaffCtrl,
 	}
