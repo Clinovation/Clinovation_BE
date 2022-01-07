@@ -19,9 +19,9 @@ type NurseController struct {
 	jwtAuth       *auth.ConfigJWT
 }
 
-func NewNursesController(de nursesEntity.Service, jwtAuth *auth.ConfigJWT) *NurseController {
+func NewNursesController(ns nursesEntity.Service, jwtAuth *auth.ConfigJWT) *NurseController {
 	return &NurseController{
-		nursesService: de,
+		nursesService: ns,
 		jwtAuth:       jwtAuth,
 	}
 }

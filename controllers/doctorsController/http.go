@@ -19,9 +19,9 @@ type DoctorController struct {
 	jwtAuth        *auth.ConfigJWT
 }
 
-func NewDoctorController(de doctorsEntity.Service, jwtAuth *auth.ConfigJWT) *DoctorController {
+func NewDoctorController(ds doctorsEntity.Service, jwtAuth *auth.ConfigJWT) *DoctorController {
 	return &DoctorController{
-		doctorsService: de,
+		doctorsService: ds,
 		jwtAuth:        jwtAuth,
 	}
 }
