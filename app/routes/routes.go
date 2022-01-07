@@ -8,6 +8,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
+	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"net/http"
 
@@ -21,6 +22,7 @@ type ControllerList struct {
 	MedicalStaffController medicalStaffController.MedicalStaffController
 	PatientController      patientController.PatientsController
 	WorkDayController      workDayController.WorkDayController
+	WorkHourController     workHourController.WorkHourController
 	JWTMiddleware          middleware.JWTConfig
 }
 
@@ -106,6 +108,16 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	workDays.GET("/", cl.WorkDayController.GetWorkDays)
 	workDays.GET("/:day", cl.WorkDayController.FindWorkDayByDay)
 	workDays.DELETE("/:uuid", cl.WorkDayController.DeleteWorkDayByUuid)
+
+	//work Hour with medical staff role
+	workHours := echo.Group("api/v1/workHour")
+	workHours.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	workHours.POST("/", cl.WorkHourController.CreateNewWorkHour)
+	workHours.PUT("/:uuid", cl.WorkHourController.UpdateWorkHourById)
+	workHours.GET("/:uuid", cl.WorkHourController.FindWorkHourByUuid)
+	workHours.GET("/", cl.WorkHourController.GetWorkHours)
+	workHours.GET("/:dour", cl.WorkHourController.FindWorkHourByHour)
+	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
 
 }
 
