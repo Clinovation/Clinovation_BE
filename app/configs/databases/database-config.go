@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/workDayRepo"
 	"os"
 
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
@@ -48,5 +49,11 @@ func SetupDatabaseConnection() *gorm.DB {
 
 func dbMigrate(db *gorm.DB) {
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
-	db.AutoMigrate(&doctorsRepo.Doctors{}, &medicalStaffRepo.MedicalStaff{}, &patientRepo.Patient{}, &nursesRepo.Nurses{})
+	db.AutoMigrate(
+		&doctorsRepo.Doctors{},
+		&medicalStaffRepo.MedicalStaff{},
+		&patientRepo.Patient{},
+		&nursesRepo.Nurses{},
+		&workDayRepo.WorkDays{},
+	)
 }

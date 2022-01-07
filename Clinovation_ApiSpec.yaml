@@ -4,7 +4,7 @@ info:
   description: API for Hospital Management
   version: 1.0.0
 servers:
-  - url: "http://localhost:8000/api/v1/"
+  - url: "http://localhost:8080/api/v1/"
   - url: "http://clinovation/api/v1/"
 tags:
   - name: Medical Staff
@@ -17,6 +17,10 @@ tags:
     description: ptient Resources
   - name: Schedule
     description: Schedule Resources
+  - name: Work Day
+    description: Work Day Resources
+  - name: Work Hour
+    description: Work Hour Resources
   - name: Recipe
     description: Recipe Resources
   - name: Medical Record Patient
@@ -2179,8 +2183,86 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
+  #work day
+  /workDay:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Day
+      summary: Make New Day
+      parameters:
+        - name: day
+          in: query
+          description: new work day
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkDayResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+
+  #  work hour
+  /workHour:
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Work Hour
+      summary: Make New Hour
+      parameters:
+        - name: hour
+          in: query
+          description: new work hour
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/WorkHourResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+
   #Schedule
-  /schedule/doctor-getAll?day={day}:
+  /schedule/doctor/{day}:
     get:
       security:
         - bearerAuth: [ ]
@@ -2206,7 +2288,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/nurse-getAll?day={day}:
+  /schedule/nurse/{day}:
     get:
       security:
         - bearerAuth: [ ]

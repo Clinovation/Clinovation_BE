@@ -5,10 +5,12 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/workDayRepo"
 
 	"gorm.io/gorm"
 )
@@ -27,4 +29,8 @@ func NewPatientRepository(db *gorm.DB) patientEntity.Repository {
 
 func NewNurseRepository(db *gorm.DB) nursesEntity.Repository {
 	return nursesRepo.NewNursesRepository(db)
+}
+
+func NewWorkDayRepository(db *gorm.DB) workDayEntity.Repository {
+	return workDayRepo.NewWorkDaysRepository(db)
 }

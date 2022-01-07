@@ -9,20 +9,24 @@ var (
 	ErrIdNotFound            = errors.New("Id Not Found")
 	ErrDuplicateData         = errors.New("Data already exist")
 	ErrDuplicateEmail        = errors.New("Email already used")
-	ErrDuplicateNik          = errors.New("NIK already used")
-	ErrEmailPasswordNotFound = errors.New("(Email) or (Password) empty")
-	ErrEmailNotRegistered    = errors.New("Email not registered")
+	ErrDuplicateNik          = errors.New("NIK Already Used")
+	ErrEmailPasswordNotFound = errors.New("(Email) Or (Password) Empty")
+	ErrEmailNotRegistered    = errors.New("Email Not Registered")
 	ErrPassword              = errors.New("Wrong Password")
 
 	//Doctors errors
-	ErrNotFoundDoctor = errors.New("doctor doesn't exist")
+	ErrNotFoundDoctor = errors.New("Doctor Doesn't Exist")
 
 	//Medical Staff> errors
-	ErrNotFoundMedicalStaff = errors.New("medical staff doesn't exist")
+	ErrNotFoundMedicalStaff = errors.New("Medical Staff Doesn't Exist")
 
 	//Nurse errors
-	ErrNotFoundNurse = errors.New("nurse doesn't exist")
+	ErrNotFoundNurse = errors.New("Nurse Doesn't Exist")
 
 	//Patient errors
-	ErrNotFoundPatient = errors.New("patient doesn't exist")
+	ErrNotFoundPatient = errors.New("Patient Doesn't Exist")
+
+	//ErrDuplicateWorkDay
+	ErrDuplicateWorkDay = errors.New("Work Day Already Exist")
+	ErrNotFoundWorkDay  = errors.New("Work Day Doesn't Exist")
 )

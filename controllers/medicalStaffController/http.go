@@ -19,9 +19,9 @@ type MedicalStaffController struct {
 	jwtAuth             *auth.ConfigJWT
 }
 
-func NewMedicalStaffController(de medicalStaffEntity.Service, jwtAuth *auth.ConfigJWT) *MedicalStaffController {
+func NewMedicalStaffController(mss medicalStaffEntity.Service, jwtAuth *auth.ConfigJWT) *MedicalStaffController {
 	return &MedicalStaffController{
-		medicalStaffService: de,
+		medicalStaffService: mss,
 		jwtAuth:             jwtAuth,
 	}
 }

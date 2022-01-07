@@ -7,6 +7,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
+	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"net/http"
 
@@ -19,6 +20,7 @@ type ControllerList struct {
 	NurseController        nursesController.NurseController
 	MedicalStaffController medicalStaffController.MedicalStaffController
 	PatientController      patientController.PatientsController
+	WorkDayController      workDayController.WorkDayController
 	JWTMiddleware          middleware.JWTConfig
 }
 
@@ -87,13 +89,23 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	patientMedicalStaff.DELETE("/:uuid", cl.PatientController.DeletePatientByUuid)
 	patientMedicalStaff.PUT("/uploadAvatar/:uuid", cl.PatientController.UploadAvatar)
 
-	//patient with doctor and medical staff role
-	patientDoctorOrMedicalStaff := echo.Group("api/v1/patient")
-	patientDoctorOrMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
-	patientDoctorOrMedicalStaff.GET("/:uuid", cl.PatientController.FindPatientByUuid)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.GetPatients)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNameQuery)
-	patientDoctorOrMedicalStaff.GET("/", cl.PatientController.FindPatientByNikQuery)
+	//patient with doctor,medical staff and nurse role
+	patientAllRole := echo.Group("api/v1/patient")
+	patientAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
+	patientAllRole.GET("/:uuid", cl.PatientController.FindPatientByUuid)
+	patientAllRole.GET("/", cl.PatientController.GetPatients)
+	patientAllRole.GET("/", cl.PatientController.FindPatientByNameQuery)
+	patientAllRole.GET("/", cl.PatientController.FindPatientByNikQuery)
+
+	//work day with medical staff role
+	workDays := echo.Group("api/v1/workDay")
+	workDays.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	workDays.POST("/", cl.WorkDayController.CreateNewWorkDay)
+	workDays.PUT("/:uuid", cl.WorkDayController.UpdateWorkDayById)
+	workDays.GET("/:uuid", cl.WorkDayController.FindWorkDayByUuid)
+	workDays.GET("/", cl.WorkDayController.GetWorkDays)
+	workDays.GET("/:day", cl.WorkDayController.FindWorkDayByDay)
+	workDays.DELETE("/:uuid", cl.WorkDayController.DeleteWorkDayByUuid)
 
 }
 
@@ -134,7 +146,7 @@ func DoctorValidation() echo.MiddlewareFunc {
 func DoctorOrMedicalStaffValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user := auth.GetDoctor(c)
+			user := auth.GetUser(c)
 
 			if user.Role != "doctor" && user.Role != "medical staff" {
 				return c.JSON(http.StatusForbidden,
@@ -150,7 +162,7 @@ func DoctorOrMedicalStaffValidation() echo.MiddlewareFunc {
 func NurseValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user := auth.GetDoctor(c)
+			user := auth.GetNurse(c)
 
 			if user.Role != "nurse" {
 				return c.JSON(http.StatusForbidden,
@@ -167,12 +179,28 @@ func NurseValidation() echo.MiddlewareFunc {
 func NurseOrMedicalStaffValidation() echo.MiddlewareFunc {
 	return func(hf echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			user := auth.GetDoctor(c)
+			user := auth.GetUser(c)
 
 			if user.Role != "nurse" && user.Role != "medical staff" {
 				return c.JSON(http.StatusForbidden,
 					helpers.BuildErrorResponse("You are not a Nurse or Medical Staff",
 						errors.New("Please Login as Nurse or Medical Stafff"), helpers.EmptyObj{}))
+			} else {
+				return hf(c)
+			}
+		}
+	}
+}
+
+func AllRole() echo.MiddlewareFunc {
+	return func(hf echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			user := auth.GetUser(c)
+
+			if user.Role != "nurse" && user.Role != "medical staff" && user.Role != "doctor" {
+				return c.JSON(http.StatusForbidden,
+					helpers.BuildErrorResponse("You are not a Nurse or Medical Staff or doctor",
+						errors.New("Please Login as Nurse or Medical Stafff or doctor"), helpers.EmptyObj{}))
 			} else {
 				return hf(c)
 			}

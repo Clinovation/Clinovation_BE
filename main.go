@@ -6,10 +6,12 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
+	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 
 	ConfigJWT "github.com/Clinovation/Clinovation_BE/app/configs/auth"
@@ -62,12 +64,18 @@ func main() {
 	patientService := patientEntity.NewPatientServices(patientRepo, medicalStaffRepo, &jwt, timeoutContext)
 	patientCtrl := patientController.NewPatientsController(patientService, &jwt)
 
+	//work Day
+	workDayRepo := _domainFactory.NewWorkDayRepository(db)
+	workDayService := workDayEntity.NewWorkDaysServices(workDayRepo, &jwt, timeoutContext)
+	workDayCtrl := workDayController.NewWorkDayController(workDayService, &jwt)
+
 	//routes
 	routesInit := routes.ControllerList{
 		JWTMiddleware:          jwt.Init(),
 		DoctorsController:      *doctorCtrl,
 		NurseController:        *nurseCtrl,
 		PatientController:      *patientCtrl,
+		WorkDayController:      *workDayCtrl,
 		MedicalStaffController: *medicalStaffCtrl,
 	}
 	routesInit.RouteRegister(echoApp)
