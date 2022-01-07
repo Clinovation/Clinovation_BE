@@ -56,6 +56,13 @@ func GetDoctor(c echo.Context) *JwtCustomClaims {
 	return claims
 }
 
+//get Doctor
+func GetNurse(c echo.Context) *JwtCustomClaims {
+	doctor := c.Get("user").(*jwt.Token)
+	claims := doctor.Claims.(*JwtCustomClaims)
+	return claims
+}
+
 //get Medical Staff
 func GetMedicalStaff(c echo.Context) *JwtCustomClaims {
 	medicalStaff := c.Get("user").(*jwt.Token)

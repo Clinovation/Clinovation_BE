@@ -17,8 +17,11 @@ var (
 	//Doctors errors
 	ErrNotFoundDoctor = errors.New("doctor doesn't exist")
 
-	//Doctors errors
+	//Medical Staff> errors
 	ErrNotFoundMedicalStaff = errors.New("medical staff doesn't exist")
+
+	//Nurse errors
+	ErrNotFoundNurse = errors.New("nurse doesn't exist")
 
 	//Patient errors
 	ErrNotFoundPatient = errors.New("patient doesn't exist")
