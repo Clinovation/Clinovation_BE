@@ -1130,36 +1130,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /nurse/logout:
-    put:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Nurse
-      summary: logout nurse
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/Logout"
-        "408":
-          description: Request Timeout
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
   /nurse:
     get:
       security:
@@ -2233,6 +2203,145 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
   /schedule/doctor:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Delete a specified doctor schedule
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of doctor schedule to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: schedule was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Make New Doctor Schedule
+      parameters:
+        - name: doctorId
+          in: query
+          description: new doctor id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkDayId
+          in: query
+          description: new work day id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkHourId
+          in: query
+          description: new work hour id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Update Doctor Schedule
+      parameters:
+        - name: doctorId
+          in: query
+          description: new doctor id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkDayId
+          in: query
+          description: new work day id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkHourId
+          in: query
+          description: new work hour id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
     get:
       security:
         - bearerAuth: [ ]
@@ -2259,6 +2368,145 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
   /schedule/nurse:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Delete a specified nurse schedule
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of nurse schedule to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: schedule was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Update nurse Schedule
+      parameters:
+        - name: nurseId
+          in: query
+          description: new nurse id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkDayId
+          in: query
+          description: new work day id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkHourId
+          in: query
+          description: new work hour id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Make New Nurse Schedule
+      parameters:
+        - name: nurseId
+          in: query
+          description: new nurse id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkDayId
+          in: query
+          description: new work day id
+          required: true
+          schema:
+            type: string
+        - name: doctorworkHourId
+          in: query
+          description: new work hour id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/ScheduleResponseNurse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
     get:
       security:
         - bearerAuth: [ ]
