@@ -29,4 +29,8 @@ var (
 	//ErrDuplicateWorkDay
 	ErrDuplicateWorkDay = errors.New("Work Day Already Exist")
 	ErrNotFoundWorkDay  = errors.New("Work Day Doesn't Exist")
+
+	//ErrDuplicateWorkHour
+	ErrDuplicateWorkHour = errors.New("Work Hour Already Exist")
+	ErrNotFoundWorkHour  = errors.New("Work Hour Doesn't Exist")
 )

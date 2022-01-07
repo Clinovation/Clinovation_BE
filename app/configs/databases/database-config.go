@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/workDayRepo"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/workHourRepo"
 	"os"
 
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
@@ -55,5 +56,6 @@ func dbMigrate(db *gorm.DB) {
 		&patientRepo.Patient{},
 		&nursesRepo.Nurses{},
 		&workDayRepo.WorkDays{},
+		&workHourRepo.WorkHours{},
 	)
 }
