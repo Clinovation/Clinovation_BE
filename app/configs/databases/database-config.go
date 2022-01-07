@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
@@ -9,14 +11,10 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"os"
 )
 
 func SetupDatabaseConnection() *gorm.DB {
-	//errEnv := godotenv.Load()
-	//if errEnv != nil {
-	//	panic("Failed to load env file")
-	//}
+	_ = godotenv.Load()
 
 	//var dbName string
 	//if os.Getenv("ENV") == "TESTING"{
