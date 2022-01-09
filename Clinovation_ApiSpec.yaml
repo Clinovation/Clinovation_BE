@@ -2867,13 +2867,13 @@ paths:
                 $ref: "#/components/schemas/FailResponse404"
 
   #Queue
-  /queue/nurse?uuid={uuid}:
+  /queue/{uuid}:
     get:
       security:
         - bearerAuth: [ ]
       tags:
         - Queue
-      summary: Get all Schedule Nurse
+      summary: Get Queue By uuid
       responses:
         "200":
           description: OK
@@ -2893,13 +2893,179 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /queue/doctor?uuid={uuid}:
+  /queue:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Delete a specified Queue
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of Queue to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: Queue was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Make New Doctor or Nurse Queue
+      parameters:
+        - name: userId
+          in: query
+          description: new doctor id
+          required: true
+          schema:
+            type: string
+        - name: patientId
+          in: query
+          description: new patient id
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: query
+          description: new schedule id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/QueueResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Update Doctor or Nurse Queue
+      parameters:
+        - name: userId
+          in: query
+          description: new doctor id
+          required: true
+          schema:
+            type: string
+        - name: patientId
+          in: query
+          description: new patient id
+          required: true
+          schema:
+            type: string
+        - name: scheduleId
+          in: query
+          description: new schedule id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/QueueResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  /queue/nurse/:
     get:
       security:
         - bearerAuth: [ ]
       tags:
         - Queue
-      summary: Get all Schedule Nurse
+      summary: Get all Queue Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/QueueResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /queue/doctor/:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Queue
+      summary: Get all Queue Doctor
       responses:
         "200":
           description: OK

@@ -39,8 +39,10 @@ func (ss *ScheduleServices) CreateSchedule(ctx context.Context, scheduleDomain *
 	ctx, cancel := context.WithTimeout(ctx, ss.ContextTimeout)
 	defer cancel()
 
-	user, err := ss.SchedulesRepository.GetByUuid(ctx, userID)
-	if err != nil {
+	doctor, errDoctor := ss.DoctorsRepository.GetByUuid(ctx, userID)
+	nurse, errNurse := ss.NursesRepository.GetByUuid(ctx, userID)
+
+	if errDoctor != nil && errNurse != nil {
 		return &Domain{}, errors.New("User Doen't Exist")
 	}
 
@@ -54,8 +56,16 @@ func (ss *ScheduleServices) CreateSchedule(ctx context.Context, scheduleDomain *
 		return &Domain{}, errors.New("Work Hour Doen't Exist")
 	}
 
-	scheduleDomain.UserID = user.ID
-	scheduleDomain.Role = user.Role
+	if doctor.Role != "" && doctor.Role != "approve_waiting_list" {
+		scheduleDomain.Role = "doctor"
+		scheduleDomain.UserID = doctor.ID
+	}
+
+	if nurse.Role != "" && nurse.Role != "approve_waiting_list" {
+		scheduleDomain.Role = "nurse"
+		scheduleDomain.UserID = nurse.ID
+	}
+
 	scheduleDomain.WorkHourID = workHour.ID
 	scheduleDomain.WorkDayID = workDay.ID
 
@@ -83,8 +93,15 @@ func (ss *ScheduleServices) UpdateById(ctx context.Context, scheduleDomain *Doma
 	ctx, cancel := context.WithTimeout(ctx, ss.ContextTimeout)
 	defer cancel()
 
-	user, err := ss.SchedulesRepository.GetByUuid(ctx, userID)
+	_, err := ss.SchedulesRepository.GetByUuid(ctx, id)
 	if err != nil {
+		return &Domain{}, errors.New("Schedule Doen't Exist")
+	}
+
+	doctor, errDoctor := ss.DoctorsRepository.GetByUuid(ctx, userID)
+	nurse, errNurse := ss.NursesRepository.GetByUuid(ctx, userID)
+
+	if errDoctor != nil && errNurse != nil {
 		return &Domain{}, errors.New("User Doen't Exist")
 	}
 
@@ -98,8 +115,16 @@ func (ss *ScheduleServices) UpdateById(ctx context.Context, scheduleDomain *Doma
 		return &Domain{}, errors.New("Work Hour Doen't Exist")
 	}
 
-	scheduleDomain.UserID = user.ID
-	scheduleDomain.Role = user.Role
+	if doctor.Role != "" && doctor.Role != "approve_waiting_list" {
+		scheduleDomain.Role = "doctor"
+		scheduleDomain.UserID = doctor.ID
+	}
+
+	if nurse.Role != "" && nurse.Role != "approve_waiting_list" {
+		scheduleDomain.Role = "nurse"
+		scheduleDomain.UserID = nurse.ID
+	}
+
 	scheduleDomain.WorkHourID = workHour.ID
 	scheduleDomain.WorkDayID = workDay.ID
 
