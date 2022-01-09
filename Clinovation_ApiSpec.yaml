@@ -2595,6 +2595,84 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
+  /schedule/doctor/{hour}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseDoctor"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/nurse/{hour}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Nurse
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseNurse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get Schedule By Uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseNurse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
   /schedule/:
     delete:
       security:
@@ -2646,19 +2724,19 @@ paths:
         - Schedule
       summary: Make New Doctor or Nurse Schedule
       parameters:
-        - name: doctorId
+        - name: userId
           in: query
           description: new doctor id
           required: true
           schema:
             type: string
-        - name: doctorworkDayId
+        - name: userWorkDayId
           in: query
           description: new work day id
           required: true
           schema:
             type: string
-        - name: doctorworkHourId
+        - name: userWorkHourId
           in: query
           description: new work hour id
           required: true
@@ -2700,13 +2778,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: doctorworkDayId
+        - name: userWorkDayId
           in: query
           description: new work day id
           required: true
           schema:
             type: string
-        - name: doctorworkHourId
+        - name: userWorkHourId
           in: query
           description: new work hour id
           required: true
@@ -2735,31 +2813,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Schedule
-      summary: Get all Schedule Doctor or Nurse
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/ScheduleResponseDoctor"
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse404"
   /schedule/nurse/:
     get:
       security:
@@ -2814,7 +2867,7 @@ paths:
                 $ref: "#/components/schemas/FailResponse404"
 
   #Queue
-  /Queue/nurse?uuid={uuid}:
+  /queue/nurse?uuid={uuid}:
     get:
       security:
         - bearerAuth: [ ]
@@ -2840,7 +2893,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /Queue/doctor?uuid={uuid}:
+  /queue/doctor?uuid={uuid}:
     get:
       security:
         - bearerAuth: [ ]

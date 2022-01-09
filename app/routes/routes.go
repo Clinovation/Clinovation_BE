@@ -118,8 +118,34 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	workHours.PUT("/:uuid", cl.WorkHourController.UpdateWorkHourById)
 	workHours.GET("/:uuid", cl.WorkHourController.FindWorkHourByUuid)
 	workHours.GET("/", cl.WorkHourController.GetWorkHours)
-	workHours.GET("/:dour", cl.WorkHourController.FindWorkHourByHour)
+	workHours.GET("/:hour", cl.WorkHourController.FindWorkHourByHour)
 	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
+
+	//schedule with medical staff role
+	schedule := echo.Group("api/v1/schedule")
+	schedule.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	schedule.POST("/", cl.ScheduleController.CreateSchedule)
+	schedule.PUT("/:uuid", cl.ScheduleController.UpdateScheduleById)
+	schedule.DELETE("/:uuid", cl.ScheduleController.DeleteScheduleByUuid)
+
+	//schedule with doctor or nurse role
+	scheduleWithAllRole := echo.Group("api/v1/schedule")
+	scheduleWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
+	scheduleWithAllRole.GET("/:uuid", cl.ScheduleController.FindScheduleByUuid)
+
+	//schedule with doctor role
+	scheduleWithMedialStaffOrDoctor := echo.Group("api/v1/schedule")
+	scheduleWithMedialStaffOrDoctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
+	scheduleWithMedialStaffOrDoctor.GET("/doctor", cl.ScheduleController.GetDoctorSchedules)
+	scheduleWithMedialStaffOrDoctor.GET("doctor/:day", cl.ScheduleController.GetDoctorSchedulesByDay)
+	scheduleWithMedialStaffOrDoctor.GET("doctor/:hour", cl.ScheduleController.GetDoctorSchedulesByHour)
+
+	//schedule with nurse role
+	scheduleWithMedialStaffOrNurse := echo.Group("api/v1/schedule")
+	scheduleWithMedialStaffOrNurse.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseOrMedicalStaffValidation())
+	scheduleWithMedialStaffOrNurse.GET("/nurse", cl.ScheduleController.GetNurseSchedules)
+	scheduleWithMedialStaffOrNurse.GET("nurse/:day", cl.ScheduleController.GetNurseSchedulesByDay)
+	scheduleWithMedialStaffOrNurse.GET("nurse/:hour", cl.ScheduleController.GetNurseSchedulesByHour)
 
 }
 
