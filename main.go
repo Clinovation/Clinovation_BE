@@ -6,12 +6,14 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/scheduleEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
+	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
@@ -76,6 +78,11 @@ func main() {
 	workHourService := workHourEntity.NewWorkHoursServices(workHourRepo, &jwt, timeoutContext)
 	workHourCtrl := workHourController.NewWorkHourController(workHourService, &jwt)
 
+	//work Hour
+	scheduleRepo := _domainFactory.NewScheduleRepository(db)
+	scheduleService := scheduleEntity.NewScheduleServices(scheduleRepo, doctorRepo, nurseRepo, workDayRepo, workHourRepo, &jwt, timeoutContext)
+	scheduleCtrl := scheduleController.NewSchedulesController(scheduleService, &jwt)
+
 	//routes
 	routesInit := routes.ControllerList{
 		JWTMiddleware:          jwt.Init(),
@@ -84,6 +91,7 @@ func main() {
 		PatientController:      *patientCtrl,
 		WorkDayController:      *workDayCtrl,
 		WorkHourController:     *workHourCtrl,
+		ScheduleController:     *scheduleCtrl,
 		MedicalStaffController: *medicalStaffCtrl,
 	}
 	routesInit.RouteRegister(echoApp)

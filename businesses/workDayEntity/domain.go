@@ -30,6 +30,7 @@ type Repository interface {
 	GetByDay(ctx context.Context, day string) (Domain, error)
 	UpdateWorkDay(ctx context.Context, id string, data *Domain) (*Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
+	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetWorkDays(ctx context.Context) (*[]Domain, error)
 	DeleteWorkDayByUuid(ctx context.Context, id string) (string, error)
 }

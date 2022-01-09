@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -40,6 +39,16 @@ func (r *MedicalStaffRepository) GetByNik(ctx context.Context, nik string) (medi
 		return medicalStaffEntity.Domain{}, err
 	}
 
+	return ToDomain(&rec), nil
+}
+
+func (r *MedicalStaffRepository) GetByID(ctx context.Context, id uint) (medicalStaffEntity.Domain, error) {
+	rec := MedicalStaff{}
+
+	err := r.db.Where("id = ?", id).First(&rec).Error
+	if err != nil {
+		return medicalStaffEntity.Domain{}, err
+	}
 	return ToDomain(&rec), nil
 }
 

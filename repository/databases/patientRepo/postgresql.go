@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -66,6 +65,16 @@ func (r *PatientRepository) UpdatePatient(ctx context.Context, id string, patien
 
 	return &result, nil
 
+}
+
+func (r *PatientRepository) GetByID(ctx context.Context, id uint) (patientEntity.Domain, error) {
+	rec := Patient{}
+
+	err := r.db.Where("id = ?", id).First(&rec).Error
+	if err != nil {
+		return patientEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
 }
 
 func (r *PatientRepository) UploadAvatar(ctx context.Context, id string, patientDomain *patientEntity.Domain) (*patientEntity.Domain, error) {

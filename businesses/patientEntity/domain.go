@@ -43,6 +43,7 @@ type Repository interface {
 	UpdatePatient(ctx context.Context, id string, data *Domain) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, data *Domain) (*Domain, error)
 	GetByNik(ctx context.Context, nik string) (Domain, error)
+	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
 	GetPatients(ctx context.Context) (*[]Domain, error)
 	GetByName(ctx context.Context, name string) ([]Domain, error)

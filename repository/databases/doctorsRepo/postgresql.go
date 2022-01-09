@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -52,6 +51,16 @@ func (r *DoctorsRepository) GetByEmail(ctx context.Context, email string) (docto
 		return doctorsEntity.Domain{}, err
 	}
 
+	return ToDomain(&rec), nil
+}
+
+func (r *DoctorsRepository) GetByID(ctx context.Context, id uint) (doctorsEntity.Domain, error) {
+	rec := Doctors{}
+
+	err := r.db.Where("id = ?", id).First(&rec).Error
+	if err != nil {
+		return doctorsEntity.Domain{}, err
+	}
 	return ToDomain(&rec), nil
 }
 
