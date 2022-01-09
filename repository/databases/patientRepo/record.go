@@ -42,21 +42,21 @@ func ToDomain(rec *Patient) patientEntity.Domain {
 	}
 }
 
-func FromDomain(doctorDomain *patientEntity.Domain) *Patient {
+func FromDomain(patientDomain *patientEntity.Domain) *Patient {
 	return &Patient{
-		ID:            doctorDomain.ID,
-		Uuid:          doctorDomain.Uuid,
-		Nik:           doctorDomain.Nik,
-		Name:          doctorDomain.Name,
-		Dob:           doctorDomain.Dob,
-		Sex:           doctorDomain.Sex,
-		Contact:       doctorDomain.Contact,
-		StatusMartial: doctorDomain.StatusMartial,
-		Address:       doctorDomain.Address,
-		Height:        doctorDomain.Height,
-		Weight:        doctorDomain.Weight,
-		Avatar:        doctorDomain.Avatar,
-		Role:          doctorDomain.Role,
+		ID:            patientDomain.ID,
+		Uuid:          patientDomain.Uuid,
+		Nik:           patientDomain.Nik,
+		Name:          patientDomain.Name,
+		Dob:           patientDomain.Dob,
+		Sex:           patientDomain.Sex,
+		Contact:       patientDomain.Contact,
+		StatusMartial: patientDomain.StatusMartial,
+		Address:       patientDomain.Address,
+		Height:        patientDomain.Height,
+		Weight:        patientDomain.Weight,
+		Avatar:        patientDomain.Avatar,
+		Role:          patientDomain.Role,
 	}
 }
 

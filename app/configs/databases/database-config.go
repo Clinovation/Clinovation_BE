@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/medicineRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/queueRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/scheduleRepo"
@@ -61,5 +62,6 @@ func dbMigrate(db *gorm.DB) {
 		&workHourRepo.WorkHours{},
 		&scheduleRepo.Schedule{},
 		&queueRepo.Queue{},
+		&medicineRepo.Medicine{},
 	)
 }

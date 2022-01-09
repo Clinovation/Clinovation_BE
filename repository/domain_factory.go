@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/queueEntity"
@@ -11,6 +12,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/medicineRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/queueRepo"
@@ -51,4 +53,8 @@ func NewScheduleRepository(db *gorm.DB) scheduleEntity.Repository {
 
 func NewQueueRepository(db *gorm.DB) queueEntity.Repository {
 	return queueRepo.NewQueueRepository(db)
+}
+
+func NewMedicineRepository(db *gorm.DB) medicineEntity.Repository {
+	return medicineRepo.NewMedicineRepository(db)
 }

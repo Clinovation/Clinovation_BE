@@ -27,14 +27,14 @@ func ToDomain(rec *Schedule) scheduleEntity.Domain {
 	}
 }
 
-func FromDomain(doctorDomain *scheduleEntity.Domain) *Schedule {
+func FromDomain(scheduleDomain *scheduleEntity.Domain) *Schedule {
 	return &Schedule{
-		ID:         doctorDomain.ID,
-		Uuid:       doctorDomain.Uuid,
-		WorkDayID:  doctorDomain.WorkDayID,
-		UserID:     doctorDomain.UserID,
-		WorkHourID: doctorDomain.WorkHourID,
-		Role:       doctorDomain.Role,
+		ID:         scheduleDomain.ID,
+		Uuid:       scheduleDomain.Uuid,
+		WorkDayID:  scheduleDomain.WorkDayID,
+		UserID:     scheduleDomain.UserID,
+		WorkHourID: scheduleDomain.WorkHourID,
+		Role:       scheduleDomain.Role,
 	}
 }
 

@@ -39,20 +39,20 @@ func ToDomain(rec *MedicalStaff) medicalStaffEntity.Domain {
 	}
 }
 
-func FromDomain(doctorDomain *medicalStaffEntity.Domain) *MedicalStaff {
+func FromDomain(medicalStaffDomain *medicalStaffEntity.Domain) *MedicalStaff {
 	return &MedicalStaff{
-		ID:             doctorDomain.ID,
-		Uuid:           doctorDomain.Uuid,
-		Nik:            doctorDomain.Nik,
-		Name:           doctorDomain.Name,
-		Email:          doctorDomain.Email,
-		Dob:            doctorDomain.Dob,
-		Sex:            doctorDomain.Sex,
-		Contact:        doctorDomain.Contact,
-		Password:       doctorDomain.Password,
-		WorkExperience: doctorDomain.WorkExperience,
-		Avatar:         doctorDomain.Avatar,
-		Role:           doctorDomain.Role,
+		ID:             medicalStaffDomain.ID,
+		Uuid:           medicalStaffDomain.Uuid,
+		Nik:            medicalStaffDomain.Nik,
+		Name:           medicalStaffDomain.Name,
+		Email:          medicalStaffDomain.Email,
+		Dob:            medicalStaffDomain.Dob,
+		Sex:            medicalStaffDomain.Sex,
+		Contact:        medicalStaffDomain.Contact,
+		Password:       medicalStaffDomain.Password,
+		WorkExperience: medicalStaffDomain.WorkExperience,
+		Avatar:         medicalStaffDomain.Avatar,
+		Role:           medicalStaffDomain.Role,
 	}
 }
 
