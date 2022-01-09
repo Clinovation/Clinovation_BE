@@ -4,6 +4,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/app/routes"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/queueEntity"
@@ -12,6 +13,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicineController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/controllers/queueController"
@@ -90,6 +92,11 @@ func main() {
 	queueService := queueEntity.NewQueueServices(queueRepo, doctorRepo, nurseRepo, scheduleRepo, patientRepo, &jwt, timeoutContext)
 	queueCtrl := queueController.NewQueuesController(queueService, &jwt)
 
+	//medicine
+	medicineRepo := _domainFactory.NewMedicineRepository(db)
+	medicineService := medicineEntity.NewMedicineServices(medicineRepo, &jwt, timeoutContext)
+	medicineCtrl := medicineController.NewMedicineController(medicineService, &jwt)
+
 	//routes
 	routesInit := routes.ControllerList{
 		JWTMiddleware:          jwt.Init(),
@@ -100,6 +107,7 @@ func main() {
 		WorkHourController:     *workHourCtrl,
 		ScheduleController:     *scheduleCtrl,
 		QueueController:        *queueCtrl,
+		MedicineController:     *medicineCtrl,
 		MedicalStaffController: *medicalStaffCtrl,
 	}
 	routesInit.RouteRegister(echoApp)

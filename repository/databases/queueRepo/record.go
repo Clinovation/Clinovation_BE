@@ -27,14 +27,14 @@ func ToDomain(rec *Queue) queueEntity.Domain {
 	}
 }
 
-func FromDomain(doctorDomain *queueEntity.Domain) *Queue {
+func FromDomain(queueDomain *queueEntity.Domain) *Queue {
 	return &Queue{
-		ID:         doctorDomain.ID,
-		Uuid:       doctorDomain.Uuid,
-		PatientID:  doctorDomain.PatientID,
-		UserID:     doctorDomain.UserID,
-		ScheduleID: doctorDomain.ScheduleID,
-		Role:       doctorDomain.Role,
+		ID:         queueDomain.ID,
+		Uuid:       queueDomain.Uuid,
+		PatientID:  queueDomain.PatientID,
+		UserID:     queueDomain.UserID,
+		ScheduleID: queueDomain.ScheduleID,
+		Role:       queueDomain.Role,
 	}
 }
 

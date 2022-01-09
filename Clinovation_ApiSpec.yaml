@@ -27,6 +27,8 @@ tags:
     description: Medical Record Patient Resources
   - name: Queue
     description: Queue Patient Resources
+  - name: Medicine
+    description: Medicine Resources
 paths:
   #  Medical staff
   /medical-staff/login:
@@ -2867,6 +2869,252 @@ paths:
                 $ref: "#/components/schemas/FailResponse404"
 
   #Queue
+  /Medicine/{uuid}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Get Medicine By uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicineResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medicine:
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Delete a specified Medicine
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of Medicine to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: Medicine was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    post:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Make New Medicine
+      parameters:
+        - name: name
+          in: query
+          description: new name medicine
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: new type of medicine
+          required: true
+          schema:
+            type: string
+        - name: price
+          in: query
+          description: new price of medicine
+          required: true
+          schema:
+            type: integer
+        - name: stock
+          in: query
+          description: new stock of medicine
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicineResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    put:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Update Medicine
+      parameters:
+        - name: name
+          in: query
+          description: new name of medicine
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: new type of medicine
+          required: true
+          schema:
+            type: string
+        - name: price
+          in: query
+          description: new price of medicine
+          required: true
+          schema:
+            type: integer
+        - name: stock
+          in: query
+          description: new stock of medicine
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicineResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Get all Medicine
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicineResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /medicine?name={name}:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medicine
+      summary: Get Medicine by uuid
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          required: true
+          description: Medicine uuid
+        - in: query
+          name: Medicine
+          required: true
+          schema:
+            $ref: "#/components/schemas/Medicine"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    $ref: "#/components/schemas/MedicineResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+  #Queue
   /queue/{uuid}:
     get:
       security:
@@ -3085,7 +3333,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-
   #Recipe
   /recipe/patient?uuid{uuid}:
     get:
