@@ -3,8 +3,8 @@ package medicineController
 import (
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
-	"github.com/Clinovation/Clinovation_BE/controllers/MedicineController/request"
-	"github.com/Clinovation/Clinovation_BE/controllers/MedicineController/response"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicineController/request"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicineController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"github.com/labstack/echo/v4"
 	"net/http"
