@@ -52,6 +52,16 @@ func (r *WorkHoursRepository) GetByUuid(ctx context.Context, uuid string) (workH
 	return ToDomain(&rec), nil
 }
 
+func (r *WorkHoursRepository) GetByID(ctx context.Context, id uint) (workHourEntity.Domain, error) {
+	rec := WorkHours{}
+
+	err := r.db.Where("id = ?", id).First(&rec).Error
+	if err != nil {
+		return workHourEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
+}
+
 func (r *WorkHoursRepository) UpdateWorkHour(ctx context.Context, id string, workHourDomain *workHourEntity.Domain) (*workHourEntity.Domain, error) {
 	rec := FromDomain(workHourDomain)
 

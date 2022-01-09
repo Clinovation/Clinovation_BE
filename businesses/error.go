@@ -26,6 +26,9 @@ var (
 	//Patient errors
 	ErrNotFoundPatient = errors.New("Patient Doesn't Exist")
 
+	//Schedule errors
+	ErrNotFoundSchedule = errors.New("Schedule Doesn't Exist")
+
 	//ErrDuplicateWorkDay
 	ErrDuplicateWorkDay = errors.New("Work Day Already Exist")
 	ErrNotFoundWorkDay  = errors.New("Work Day Doesn't Exist")

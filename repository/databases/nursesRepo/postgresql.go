@@ -126,6 +126,16 @@ func (r *NursesRepository) GetByName(ctx context.Context, name string) ([]nurses
 	return result, nil
 }
 
+func (r *NursesRepository) GetByID(ctx context.Context, id uint) (nursesEntity.Domain, error) {
+	rec := Nurses{}
+
+	err := r.db.Where("id = ?", id).First(&rec).Error
+	if err != nil {
+		return nursesEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
+}
+
 func (r *NursesRepository) GetByNikByQuery(ctx context.Context, nik string) ([]nursesEntity.Domain, error) {
 	rec := []Nurses{}
 

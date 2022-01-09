@@ -30,6 +30,7 @@ type Repository interface {
 	GetByHour(ctx context.Context, hour string) (Domain, error)
 	UpdateWorkHour(ctx context.Context, id string, data *Domain) (*Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
+	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetWorkHours(ctx context.Context) (*[]Domain, error)
 	DeleteWorkHourByUuid(ctx context.Context, id string) (string, error)
 }

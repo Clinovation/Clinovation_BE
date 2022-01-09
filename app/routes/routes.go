@@ -7,6 +7,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
+	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
@@ -23,6 +24,7 @@ type ControllerList struct {
 	PatientController      patientController.PatientsController
 	WorkDayController      workDayController.WorkDayController
 	WorkHourController     workHourController.WorkHourController
+	ScheduleController     scheduleController.SchedulesController
 	JWTMiddleware          middleware.JWTConfig
 }
 

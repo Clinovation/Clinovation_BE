@@ -2595,7 +2595,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/doctor:
+  /schedule/:
     delete:
       security:
         - bearerAuth: [ ]
@@ -2644,7 +2644,7 @@ paths:
         - bearerAuth: [ ]
       tags:
         - Schedule
-      summary: Make New Doctor Schedule
+      summary: Make New Doctor or Nurse Schedule
       parameters:
         - name: doctorId
           in: query
@@ -2692,7 +2692,7 @@ paths:
         - bearerAuth: [ ]
       tags:
         - Schedule
-      summary: Update Doctor Schedule
+      summary: Update Doctor or Nurse Schedule
       parameters:
         - name: doctorId
           in: query
@@ -2740,7 +2740,7 @@ paths:
         - bearerAuth: [ ]
       tags:
         - Schedule
-      summary: Get all Schedule Doctor
+      summary: Get all Schedule Doctor or Nurse
       responses:
         "200":
           description: OK
@@ -2760,146 +2760,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /schedule/nurse:
-    delete:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Schedule
-      summary: Delete a specified nurse schedule
-      parameters:
-        - in: path
-          name: uuid
-          schema:
-            type: string
-          description: uuid of nurse schedule to be deleted
-          required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: string
-                    example: schedule was Deleted
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse403"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-    put:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Schedule
-      summary: Update nurse Schedule
-      parameters:
-        - name: nurseId
-          in: query
-          description: new nurse id
-          required: true
-          schema:
-            type: string
-        - name: doctorworkDayId
-          in: query
-          description: new work day id
-          required: true
-          schema:
-            type: string
-        - name: doctorworkHourId
-          in: query
-          description: new work hour id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/ScheduleResponseDoctor"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
-    post:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Schedule
-      summary: Make New Nurse Schedule
-      parameters:
-        - name: nurseId
-          in: query
-          description: new nurse id
-          required: true
-          schema:
-            type: string
-        - name: doctorworkDayId
-          in: query
-          description: new work day id
-          required: true
-          schema:
-            type: string
-        - name: doctorworkHourId
-          in: query
-          description: new work hour id
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    $ref: "#/components/schemas/ScheduleResponseNurse"
-        "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse400"
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse500"
+  /schedule/nurse/:
     get:
       security:
         - bearerAuth: [ ]
@@ -2919,6 +2780,32 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/ScheduleResponseNurse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+  /schedule/doctor/:
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Schedule
+      summary: Get all Schedule Doctor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScheduleResponseDoctor"
         "404":
           description: Not Found
           content:
