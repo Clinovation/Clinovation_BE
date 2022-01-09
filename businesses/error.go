@@ -29,6 +29,9 @@ var (
 	//Schedule errors
 	ErrNotFoundSchedule = errors.New("Schedule Doesn't Exist")
 
+	//Schedule errors
+	ErrNotFoundQueue = errors.New("Queue Doesn't Exist")
+
 	//ErrDuplicateWorkDay
 	ErrDuplicateWorkDay = errors.New("Work Day Already Exist")
 	ErrNotFoundWorkDay  = errors.New("Work Day Doesn't Exist")

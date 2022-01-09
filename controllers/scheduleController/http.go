@@ -26,13 +26,12 @@ func (ctrl *SchedulesController) CreateSchedule(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.ScheduleRegistration)
 
-	user := auth.GetUser(c)
-	userID := user.Uuid
+	uuid := c.Param("uuid")
 
 	workDayID := c.QueryParam("workDayId")
 	workHourID := c.QueryParam("workHourId")
 
-	res, err := ctrl.schedulesService.CreateSchedule(ctx, req.ToDomain(), userID, workDayID, workHourID)
+	res, err := ctrl.schedulesService.CreateSchedule(ctx, req.ToDomain(), uuid, workDayID, workHourID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
