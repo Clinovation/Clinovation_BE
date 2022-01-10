@@ -35,6 +35,9 @@ var (
 	//medicine errors
 	ErrNotFoundMedicine = errors.New("Medicine Doesn't Exist")
 
+	//recipe errors
+	ErrNotFoundRecipe = errors.New("Recipe Doesn't Exist")
+
 	//ErrDuplicateWorkDay
 	ErrDuplicateWorkDay = errors.New("Work Day Already Exist")
 	ErrNotFoundWorkDay  = errors.New("Work Day Doesn't Exist")
