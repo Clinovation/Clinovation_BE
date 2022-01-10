@@ -8,6 +8,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/queueEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/recipeEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/scheduleEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
@@ -17,6 +18,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/controllers/queueController"
+	"github.com/Clinovation/Clinovation_BE/controllers/recipeController"
 	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
@@ -97,6 +99,11 @@ func main() {
 	medicineService := medicineEntity.NewMedicineServices(medicineRepo, &jwt, timeoutContext)
 	medicineCtrl := medicineController.NewMedicineController(medicineService, &jwt)
 
+	//Recipe
+	recipeRepo := _domainFactory.NewRecipeRepository(db)
+	recipeService := recipeEntity.NewRecipeServices(recipeRepo, &jwt, timeoutContext)
+	recipeCtrl := recipeController.NewRecipeController(recipeService, &jwt)
+
 	//routes
 	routesInit := routes.ControllerList{
 		JWTMiddleware:          jwt.Init(),
@@ -108,6 +115,7 @@ func main() {
 		ScheduleController:     *scheduleCtrl,
 		QueueController:        *queueCtrl,
 		MedicineController:     *medicineCtrl,
+		RecipeController:       *recipeCtrl,
 		MedicalStaffController: *medicalStaffCtrl,
 	}
 	routesInit.RouteRegister(echoApp)

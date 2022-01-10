@@ -9,6 +9,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
 	"github.com/Clinovation/Clinovation_BE/controllers/queueController"
+	"github.com/Clinovation/Clinovation_BE/controllers/recipeController"
 	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
@@ -29,6 +30,7 @@ type ControllerList struct {
 	ScheduleController     scheduleController.SchedulesController
 	QueueController        queueController.QueuesController
 	MedicineController     medicineController.MedicineController
+	RecipeController       recipeController.RecipeController
 	JWTMiddleware          middleware.JWTConfig
 }
 
@@ -185,7 +187,21 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	medicineWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
 	medicineWithAllRole.GET("/:uuid", cl.MedicineController.FindMedicineByUuid)
 	medicineWithAllRole.GET("/:name", cl.MedicineController.FindMedicineByNameQuery)
-	medicineWithAllRole.GET("/:name", cl.MedicineController.GetMedicine)
+	medicineWithAllRole.GET("/", cl.MedicineController.GetMedicine)
+
+	//recipe with medical staff role
+	recipe := echo.Group("api/v1/recipe")
+	recipe.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	recipe.POST("/", cl.RecipeController.CreateNewRecipe)
+	recipe.PUT("/:uuid", cl.RecipeController.UpdateRecipeById)
+	recipe.DELETE("/:uuid", cl.RecipeController.DeleteRecipeByUuid)
+
+	//recipe with doctor,medical staff and nurse role
+	recipeWithAllRole := echo.Group("api/v1/recipe")
+	recipeWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
+	recipeWithAllRole.GET("/:uuid", cl.RecipeController.FindRecipeByUuid)
+	recipeWithAllRole.GET("/:name", cl.RecipeController.FindRecipeByUuid)
+	recipeWithAllRole.GET("/", cl.RecipeController.GetRecipe)
 
 }
 
