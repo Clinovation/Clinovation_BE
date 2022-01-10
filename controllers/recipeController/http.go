@@ -3,8 +3,8 @@ package recipeController
 import (
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses/recipeEntity"
-	"github.com/Clinovation/Clinovation_BE/controllers/RecipeController/request"
-	"github.com/Clinovation/Clinovation_BE/controllers/RecipeController/response"
+	"github.com/Clinovation/Clinovation_BE/controllers/recipeController/request"
+	"github.com/Clinovation/Clinovation_BE/controllers/recipeController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"github.com/labstack/echo/v4"
 	"net/http"
