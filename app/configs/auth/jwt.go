@@ -9,10 +9,7 @@ import (
 )
 
 func SetupJwt() auth.ConfigJWT {
-	errEnv := godotenv.Load()
-	if errEnv != nil {
-		panic("Failed to load env file")
-	}
+	_ = godotenv.Load()
 
 	jwtSecret := os.Getenv("JWT_SECRET")
 	jwtExp := os.Getenv("JWT_EXPIRE")
