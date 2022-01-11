@@ -3334,7 +3334,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
   #Recipe
-  /recipe/patient?uuid{uuid}:
+  /recipe/{uuid}:
     get:
       security:
         - bearerAuth: [ ]
@@ -3360,33 +3360,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /recipe/patient?nama={name}:
-    get:
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - Recipe
-      summary: Get all Recipe Patient By name
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  meta:
-                    $ref: "#/components/schemas/SuccessResponse"
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/RecipeResponse"
-        "404":
-          description: Not Found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FailResponse404"
-  /recipe/patient/{uuid}:
+  /recipe:
     put:
       security:
         - bearerAuth: [ ]
@@ -3447,6 +3421,31 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Get all Recipe
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RecipeResponse"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
     post:
       security:
         - bearerAuth: [ ]
@@ -3501,6 +3500,49 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse400"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
+    delete:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Recipe
+      summary: Delete a specified Recipe
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of Recipe to be deleted
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: string
+                    example: Recipe was Deleted
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
         "500":
           description: Internal Server Error
           content:
