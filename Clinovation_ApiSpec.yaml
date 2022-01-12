@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 servers:
   - url: "http://localhost:8080/api/v1/"
-  - url: "http://clinovation/api/v1/"
+  - url: "http://3.83.92.188:8080/api/v1/"
 tags:
   - name: Medical Staff
     description: Medical Staff Resources
@@ -23,7 +23,7 @@ tags:
     description: Work Hour Resources
   - name: Recipe
     description: Recipe Resources
-  - name: Medical Record Patient
+  - name: Medical Record
     description: Medical Record Patient Resources
   - name: Queue
     description: Queue Patient Resources
@@ -2018,12 +2018,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
-  /medical-record/patient-newest/{Uuid}:
+  /medicalRecord/patient/{uuid}:
     get:
       security:
         - bearerAuth: [ ]
       tags:
-        - Medical Record Patient
+        - Medical Record
       summary: Get all Medical Record Patient
       responses:
         "200":
@@ -2044,13 +2044,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse404"
-  /medical-record/patient?uuid={Uuid}:
-    get:
+    delete:
       security:
         - bearerAuth: [ ]
       tags:
-        - Medical Record Patient
-      summary: Get all Medical Record Patient
+        - Medical Record
+      summary: Delete a specified medical record
+      parameters:
+        - in: path
+          name: uuid
+          schema:
+            type: string
+          description: uuid of medical record to be deleted
+          required: true
       responses:
         "200":
           description: OK
@@ -2061,21 +2067,31 @@ paths:
                   meta:
                     $ref: "#/components/schemas/SuccessResponse"
                   data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/MedicalStaffResponses"
-        "404":
-          description: Not Found
+                    type: string
+                    example: Medical Record was Deleted
+        "400":
+          description: Bad Request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FailResponse404"
-  /medical-record/patient:
+                $ref: "#/components/schemas/FailResponse400"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse403"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse500"
     put:
       security:
         - bearerAuth: [ ]
       tags:
-        - Medical Record Patient
+        - Medical Record
       summary: Update  Medical Record Patient
       parameters:
         - name: newRecord
@@ -2113,11 +2129,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FailResponse500"
+
+  /medicalRecord/patient/:
+
+    get:
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - Medical Record
+      summary: Get all Medical Record Patient
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  meta:
+                    $ref: "#/components/schemas/SuccessResponse"
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MedicalStaffResponses"
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailResponse404"
+
     post:
       security:
         - bearerAuth: [ ]
       tags:
-        - Medical Record Patient
+        - Medical Record
       summary: Register new Medical Record Patient
       parameters:
         - name: newRecord

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicalRecordController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
@@ -21,17 +22,18 @@ import (
 )
 
 type ControllerList struct {
-	DoctorsController      doctorsController.DoctorController
-	NurseController        nursesController.NurseController
-	MedicalStaffController medicalStaffController.MedicalStaffController
-	PatientController      patientController.PatientsController
-	WorkDayController      workDayController.WorkDayController
-	WorkHourController     workHourController.WorkHourController
-	ScheduleController     scheduleController.SchedulesController
-	QueueController        queueController.QueuesController
-	MedicineController     medicineController.MedicineController
-	RecipeController       recipeController.RecipeController
-	JWTMiddleware          middleware.JWTConfig
+	DoctorsController       doctorsController.DoctorController
+	NurseController         nursesController.NurseController
+	MedicalStaffController  medicalStaffController.MedicalStaffController
+	PatientController       patientController.PatientsController
+	WorkDayController       workDayController.WorkDayController
+	WorkHourController      workHourController.WorkHourController
+	ScheduleController      scheduleController.SchedulesController
+	QueueController         queueController.QueuesController
+	MedicineController      medicineController.MedicineController
+	RecipeController        recipeController.RecipeController
+	MedicalRecordController medicalRecordController.MedicalRecordsController
+	JWTMiddleware           middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
@@ -191,7 +193,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 
 	//recipe with medical staff role
 	recipe := echo.Group("api/v1/recipe")
-	recipe.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	recipe.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorValidation())
 	recipe.POST("/", cl.RecipeController.CreateNewRecipe)
 	recipe.PUT("/:uuid", cl.RecipeController.UpdateRecipeById)
 	recipe.DELETE("/:uuid", cl.RecipeController.DeleteRecipeByUuid)
@@ -203,6 +205,14 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	recipeWithAllRole.GET("/:name", cl.RecipeController.FindRecipeByUuid)
 	recipeWithAllRole.GET("/", cl.RecipeController.GetRecipe)
 
+	//medical Record with doctor role
+	medicalRecord := echo.Group("api/v1/medicalRecord/patient")
+	medicalRecord.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
+	medicalRecord.POST("/", cl.MedicalRecordController.CreateMedicalRecord)
+	medicalRecord.GET("/", cl.MedicalRecordController.GetMedicalRecords)
+	medicalRecord.PUT("/:uuid", cl.MedicalRecordController.UpdateMedicalRecordById)
+	medicalRecord.DELETE("/:uuid", cl.MedicalRecordController.DeleteMedicalRecordByUuid)
+	queueWithAllRole.GET("/:uuid", cl.MedicalRecordController.FindMedicalRecordByUuid)
 }
 
 func MedicalStaffValidation() echo.MiddlewareFunc {

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalRecordRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicineRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/queueRepo"
@@ -23,12 +24,6 @@ import (
 func SetupDatabaseConnection() *gorm.DB {
 	_ = godotenv.Load()
 
-	//var dbName string
-	//if os.Getenv("ENV") == "TESTING"{
-	//	dbName = os.Getenv("DB_NAME_TESTING")
-	//} else {
-	//	dbName = os.Getenv("DB_NAME")
-	//}
 	dbUser := os.Getenv("DB_USER")
 	dbName := os.Getenv("DB_NAME")
 	dbPass := os.Getenv("DB_PASS")
@@ -65,5 +60,6 @@ func dbMigrate(db *gorm.DB) {
 		&queueRepo.Queue{},
 		&medicineRepo.Medicine{},
 		&recipeRepo.Recipe{},
+		&medicalRecordRepo.MedicalRecord{},
 	)
 }
