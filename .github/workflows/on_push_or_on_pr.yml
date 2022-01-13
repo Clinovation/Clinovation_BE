@@ -81,6 +81,8 @@ jobs:
           export JWT_SECRET='"'$JWT_SECRET'"' && \
           export JWT_EXPIRE='"'$JWT_EXPIRE'"' && \
           docker rm -vf $(docker ps -a -q) || true && \
+          docker pull hencya/fe-clinovation:1.0.0 && \
+          docker run -d -p 3000:3000 --name fe-clinovation \
           docker pull hencya/clinovation-api:1.0.0 && \
           docker run -d -p 8080:8080 --name clinovation-api \
           -e PORT=$PORT \
