@@ -28,14 +28,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build Docker Image
-        run: docker build -t hencya/clinovation-api:1.0.0 .
+        run: docker build -t hencya/clinovation-api:latest .
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Push image to Docker Hub
-        run: docker push hencya/clinovation-api:1.0.0
+        run: docker push hencya/clinovation-api:latest
 
   deployment-ec2-aws:
     name: Deploy to AWS EC2
@@ -81,9 +81,7 @@ jobs:
           export JWT_SECRET='"'$JWT_SECRET'"' && \
           export JWT_EXPIRE='"'$JWT_EXPIRE'"' && \
           docker rm -vf $(docker ps -a -q) || true && \
-          docker pull hencya/fe-clinovation:1.0.0 && \
-          docker run -d -p 3000:3000 --name fe-clinovation \
-          docker pull hencya/clinovation-api:1.0.0 && \
+          docker pull hencya/clinovation-api:latest && \
           docker run -d -p 8080:8080 --name clinovation-api \
           -e PORT=$PORT \
           -e CONTEXT_TIMEOUT=$CONTEXT_TIMEOUT \
@@ -94,4 +92,4 @@ jobs:
           -e DB_NAME=$DB_NAME \
           -e JWT_SECRET=$JWT_SECRET \
           -e JWT_EXPIRE=$JWT_EXPIRE \
-          hencya/clinovation-api:1.0.0'
+          hencya/clinovation-api:latest'
