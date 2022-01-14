@@ -11,7 +11,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 )
 
 type MedicalStaffController struct {
@@ -81,17 +80,71 @@ func (ctrl *MedicalStaffController) LoginMedicalStaff(c echo.Context) error {
 		Token string `json:"token"`
 	}{Token: token}
 
-	expire := time.Now().Add(1 * 24 * time.Hour)
-	cookie := http.Cookie{
-		Name:    "is-login",
-		Value:   token,
-		Expires: expire,
-	}
-	c.SetCookie(&cookie)
+	//expire := time.Now().Add(1 * 24 * time.Hour)
+	//cookie := http.Cookie{
+	//	Name:    "is-login",
+	//	Value:   token,
+	//	Expires: expire,
+	//}
+	//c.SetCookie(&cookie)
 
 	return c.JSON(http.StatusOK,
 		helpers.BuildSuccessResponse("successful to login",
 			res))
+}
+
+func (ctrl *MedicalStaffController) ChangePassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := new(request.ChangePassword)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while input the data",
+				err, helpers.EmptyObj{}))
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while validating the request data",
+				err, helpers.EmptyObj{}))
+	}
+
+	uuid := c.Param("uuid")
+
+	res, err := ctrl.medicalStaffService.ChangePassword(ctx, req.ToDomainChange(), uuid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
+				err, helpers.EmptyObj{}))
+	}
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully update an account",
+			response.FromDomain(res)))
+}
+
+func (ctrl *MedicalStaffController) ForgetPassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := new(request.ForgetPassword)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while input the data",
+				err, helpers.EmptyObj{}))
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while validating the request data",
+				err, helpers.EmptyObj{}))
+	}
+
+	res, err := ctrl.medicalStaffService.ForgetPassword(ctx, req.ToDomainForget())
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
+				err, helpers.EmptyObj{}))
+	}
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully update an account",
+			response.FromDomain(res)))
 }
 
 func (ctrl *MedicalStaffController) FindMedicalStaffByUuid(c echo.Context) error {

@@ -41,6 +41,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctors := echo.Group("api/v1/doctor")
 	doctors.POST("/register", cl.DoctorsController.Registration)
 	doctors.POST("/login", cl.DoctorsController.LoginDoctor)
+	doctors.GET("/forgetPassword", cl.DoctorsController.ForgetPassword)
+	doctors.PUT("/changePassword", cl.DoctorsController.ChangePassword)
 
 	//doctor with doctor role
 	doctor := doctors
@@ -61,6 +63,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurses := echo.Group("api/v1/nurse")
 	nurses.POST("/register", cl.NurseController.Registration)
 	nurses.POST("/login", cl.NurseController.LoginNurse)
+	nurses.GET("/forgetPassword", cl.NurseController.ForgetPassword)
+	nurses.PUT("/changePassword", cl.NurseController.ChangePassword)
 
 	//nurse with nurse role
 	nurse := nurses
@@ -81,6 +85,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	medicalStaffs := echo.Group("api/v1/medicalStaff")
 	medicalStaffs.POST("/register", cl.MedicalStaffController.Registration)
 	medicalStaffs.POST("/login", cl.MedicalStaffController.LoginMedicalStaff)
+	medicalStaffs.GET("/forgetPassword", cl.MedicalStaffController.ForgetPassword)
+	medicalStaffs.PUT("/changePassword", cl.MedicalStaffController.ChangePassword)
 
 	//medical staff with medical staff role
 	medicalStaff := medicalStaffs

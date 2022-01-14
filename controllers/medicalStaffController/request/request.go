@@ -23,6 +23,15 @@ type MedicalStaffLogin struct {
 	Password string    `json:"password" validate:"required,password"`
 }
 
+type ForgetPassword struct {
+	Email string `json:"email" validate:"required,email"`
+	Nik   string `json:"nik" validate:"required"`
+}
+
+type ChangePassword struct {
+	Password string `json:"password" validate:"required,password"`
+}
+
 type MedicalStaffUploadAvatar struct {
 	Avatar string `json:"avatar" validate:"required"`
 }
@@ -38,5 +47,18 @@ func (rec *MedicalStaffRegistration) ToDomain() *medicalStaffEntity.Domain {
 		Password:       rec.Password,
 		WorkExperience: rec.WorkExperience,
 		Avatar:         rec.Avatar,
+	}
+}
+
+func (rec *ForgetPassword) ToDomainForget() *medicalStaffEntity.Domain {
+	return &medicalStaffEntity.Domain{
+		Nik:   rec.Nik,
+		Email: rec.Email,
+	}
+}
+
+func (rec *ChangePassword) ToDomainChange() *medicalStaffEntity.Domain {
+	return &medicalStaffEntity.Domain{
+		Password: rec.Password,
 	}
 }
