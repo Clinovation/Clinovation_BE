@@ -73,6 +73,15 @@ func (r *DoctorsRepository) GetByUuid(ctx context.Context, uuid string) (doctors
 	return ToDomain(&rec), nil
 }
 
+func (r *DoctorsRepository) ForgetPassword(ctx context.Context, nik string, email string) (doctorsEntity.Domain, error) {
+	rec := Doctors{}
+	err := r.db.Where("nik = ? AND email = ?", nik, email).Find(&rec).Error
+	if err != nil {
+		return doctorsEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
+}
+
 func (r *DoctorsRepository) UpdateDoctor(ctx context.Context, id string, doctorDomain *doctorsEntity.Domain) (*doctorsEntity.Domain, error) {
 	rec := FromDomain(doctorDomain)
 

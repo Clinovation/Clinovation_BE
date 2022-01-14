@@ -96,6 +96,34 @@ func (ns *NursesServices) FindByUuid(ctx context.Context, uuid string) (Domain, 
 	return result, nil
 }
 
+func (ds *NursesServices) ChangePassword(ctx context.Context, nurserDomain *Domain, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	passwordHash, err := helpers.HashPassword(nurserDomain.Password)
+	if err != nil {
+		panic(err)
+	}
+
+	nurserDomain.Password = passwordHash
+	result, err := ds.NursesRepository.UpdateNurse(ctx, id, nurserDomain)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
+func (ds *NursesServices) ForgetPassword(ctx context.Context, nurserDomain *Domain) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	result, err := ds.NursesRepository.ForgetPassword(ctx, nurserDomain.Nik, nurserDomain.Email)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return &result, nil
+}
+
 func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()

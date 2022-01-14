@@ -84,6 +84,34 @@ func (mss *MedicalStaffServices) Login(ctx context.Context, email string, passwo
 	return token, nil
 }
 
+func (ds *MedicalStaffServices) ChangePassword(ctx context.Context, medicalStaffDomain *Domain, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	passwordHash, err := helpers.HashPassword(medicalStaffDomain.Password)
+	if err != nil {
+		panic(err)
+	}
+
+	medicalStaffDomain.Password = passwordHash
+	result, err := ds.MedicalStaffsRepository.UpdateMedicalStaff(ctx, id, medicalStaffDomain)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
+func (ds *MedicalStaffServices) ForgetPassword(ctx context.Context, medicalStaffDomain *Domain) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	result, err := ds.MedicalStaffsRepository.ForgetPassword(ctx, medicalStaffDomain.Nik, medicalStaffDomain.Email)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return &result, nil
+}
+
 func (mss *MedicalStaffServices) FindByUuid(ctx context.Context, uuid string) (Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, mss.ContextTimeout)
 	defer cancel()

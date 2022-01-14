@@ -25,6 +25,15 @@ type DoctorLogin struct {
 	Password string    `json:"password" validate:"required,password"`
 }
 
+type ForgetPassword struct {
+	Email string `json:"email" validate:"required,email"`
+	Nik   string `json:"nik" validate:"required"`
+}
+
+type ChangePassword struct {
+	Password string `json:"password" validate:"required,password"`
+}
+
 type DoctorUploadAvatar struct {
 	Avatar string `json:"avatar" validate:"required"`
 }
@@ -41,5 +50,18 @@ func (rec *DoctorRegistration) ToDomain() *doctorsEntity.Domain {
 		Specialist:     rec.Specialist,
 		WorkExperience: rec.WorkExperience,
 		Avatar:         rec.Avatar,
+	}
+}
+
+func (rec *ForgetPassword) ToDomainForget() *doctorsEntity.Domain {
+	return &doctorsEntity.Domain{
+		Nik:   rec.Nik,
+		Email: rec.Email,
+	}
+}
+
+func (rec *ChangePassword) ToDomainChange() *doctorsEntity.Domain {
+	return &doctorsEntity.Domain{
+		Password: rec.Password,
 	}
 }

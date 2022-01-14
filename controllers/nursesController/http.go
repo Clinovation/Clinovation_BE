@@ -54,6 +54,60 @@ func (ctrl *NurseController) Registration(c echo.Context) error {
 			response.FromDomain(res)))
 }
 
+func (ctrl *NurseController) ChangePassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := new(request.ChangePassword)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while input the data",
+				err, helpers.EmptyObj{}))
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while validating the request data",
+				err, helpers.EmptyObj{}))
+	}
+
+	uuid := c.Param("uuid")
+
+	res, err := ctrl.nursesService.ChangePassword(ctx, req.ToDomainChange(), uuid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
+				err, helpers.EmptyObj{}))
+	}
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully update an account",
+			response.FromDomain(res)))
+}
+
+func (ctrl *NurseController) ForgetPassword(c echo.Context) error {
+	ctx := c.Request().Context()
+	req := new(request.ForgetPassword)
+
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while input the data",
+				err, helpers.EmptyObj{}))
+	}
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An error occurred while validating the request data",
+				err, helpers.EmptyObj{}))
+	}
+
+	res, err := ctrl.nursesService.ForgetPassword(ctx, req.ToDomainForget())
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
+				err, helpers.EmptyObj{}))
+	}
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully update an account",
+			response.FromDomain(res)))
+}
+
 func (ctrl *NurseController) LoginNurse(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.NurseLogin)

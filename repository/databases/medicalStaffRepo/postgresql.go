@@ -104,6 +104,15 @@ func (r *MedicalStaffRepository) UploadAvatar(ctx context.Context, id string, me
 	return &result, nil
 }
 
+func (r *MedicalStaffRepository) ForgetPassword(ctx context.Context, nik string, email string) (medicalStaffEntity.Domain, error) {
+	rec := MedicalStaff{}
+	err := r.db.Where("nik = ? AND email = ?", nik, email).Find(&rec).Error
+	if err != nil {
+		return medicalStaffEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
+}
+
 func (r *MedicalStaffRepository) DeleteMedicalStaffByUuid(ctx context.Context, id string) (string, error) {
 	rec := MedicalStaff{}
 

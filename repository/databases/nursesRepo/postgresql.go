@@ -43,6 +43,15 @@ func (r *NursesRepository) GetByNik(ctx context.Context, nik string) (nursesEnti
 	return ToDomain(&rec), nil
 }
 
+func (r *NursesRepository) ForgetPassword(ctx context.Context, nik string, email string) (nursesEntity.Domain, error) {
+	rec := Nurses{}
+	err := r.db.Where("nik = ? AND email = ?", nik, email).Find(&rec).Error
+	if err != nil {
+		return nursesEntity.Domain{}, err
+	}
+	return ToDomain(&rec), nil
+}
+
 func (r *NursesRepository) GetByEmail(ctx context.Context, email string) (nursesEntity.Domain, error) {
 	rec := Nurses{}
 

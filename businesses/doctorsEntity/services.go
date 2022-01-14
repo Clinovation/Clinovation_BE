@@ -113,6 +113,34 @@ func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain,
 	return result, nil
 }
 
+func (ds *DoctorsServices) ChangePassword(ctx context.Context, doctorDomain *Domain, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	passwordHash, err := helpers.HashPassword(doctorDomain.Password)
+	if err != nil {
+		panic(err)
+	}
+
+	doctorDomain.Password = passwordHash
+	result, err := ds.DoctorsRepository.UpdateDoctor(ctx, id, doctorDomain)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
+func (ds *DoctorsServices) ForgetPassword(ctx context.Context, doctorDomain *Domain) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	result, err := ds.DoctorsRepository.ForgetPassword(ctx, doctorDomain.Nik, doctorDomain.Email)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return &result, nil
+}
+
 func (ds *DoctorsServices) UploadAvatar(ctx context.Context, id string, imageLink string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
