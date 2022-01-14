@@ -113,6 +113,23 @@ func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain,
 	return result, nil
 }
 
+func (ds *DoctorsServices) AcceptDoctor(ctx context.Context, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	doctor, err := ds.DoctorsRepository.GetByUuid(ctx, id)
+	if err != nil {
+		return &Domain{}, err
+	}
+
+	doctor.Role = "doctor"
+	result, err := ds.DoctorsRepository.AcceptDoctor(ctx, id, &doctor)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
 func (ds *DoctorsServices) ChangePassword(ctx context.Context, doctorDomain *Domain, id string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()

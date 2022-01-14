@@ -54,6 +54,21 @@ func (ctrl *NurseController) Registration(c echo.Context) error {
 			response.FromDomain(res)))
 }
 
+func (ctrl *NurseController) AcceptNurse(c echo.Context) error {
+	uuid := c.Param("uuid")
+
+	doctor, err := ctrl.nursesService.AcceptNurse(c.Request().Context(), uuid)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Accept Nurse By id",
+			response.FromDomain(doctor)))
+}
+
 func (ctrl *NurseController) ChangePassword(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.ChangePassword)
