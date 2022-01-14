@@ -124,6 +124,23 @@ func (ds *NursesServices) ForgetPassword(ctx context.Context, nurserDomain *Doma
 	return &result, nil
 }
 
+func (ds *NursesServices) AcceptNurse(ctx context.Context, id string) (*Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	nurse, err := ds.NursesRepository.GetByUuid(ctx, id)
+	if err != nil {
+		return &Domain{}, err
+	}
+
+	nurse.Role = "nurse"
+	result, err := ds.NursesRepository.AcceptNurse(ctx, id, &nurse)
+	if err != nil {
+		return &Domain{}, err
+	}
+	return result, nil
+}
+
 func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()

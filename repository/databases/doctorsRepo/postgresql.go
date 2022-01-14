@@ -98,6 +98,22 @@ func (r *DoctorsRepository) UpdateDoctor(ctx context.Context, id string, doctorD
 
 }
 
+func (r *DoctorsRepository) AcceptDoctor(ctx context.Context, id string, doctorDomain *doctorsEntity.Domain) (*doctorsEntity.Domain, error) {
+	rec := FromDomain(doctorDomain)
+
+	if err := r.db.Where("uuid = ?", id).Updates(&rec).Error; err != nil {
+		return &doctorsEntity.Domain{}, err
+	}
+	if err := r.db.Where("uuid = ?", id).First(&rec).Error; err != nil {
+		return &doctorsEntity.Domain{}, err
+	}
+
+	result := ToDomain(rec)
+
+	return &result, nil
+
+}
+
 func (r *DoctorsRepository) UploadAvatar(ctx context.Context, id string, doctorDomain *doctorsEntity.Domain) (*doctorsEntity.Domain, error) {
 	rec := FromDomain(doctorDomain)
 

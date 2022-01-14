@@ -44,6 +44,11 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctors.GET("/forgetPassword", cl.DoctorsController.ForgetPassword)
 	doctors.PUT("/changePassword", cl.DoctorsController.ChangePassword)
 
+	//doctor with medical staff role
+	doctorMedicalStaff := echo.Group("api/v1/doctor")
+	doctorMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	doctorMedicalStaff.PUT("/accept", cl.DoctorsController.AcceptDoctor)
+
 	//doctor with doctor role
 	doctor := doctors
 	doctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorValidation())
@@ -65,6 +70,11 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurses.POST("/login", cl.NurseController.LoginNurse)
 	nurses.GET("/forgetPassword", cl.NurseController.ForgetPassword)
 	nurses.PUT("/changePassword", cl.NurseController.ChangePassword)
+
+	//nurse with medical staff role
+	nurseMedicalStaff := echo.Group("api/v1/nurse")
+	nurseMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	nurseMedicalStaff.PUT("/accept", cl.NurseController.AcceptNurse)
 
 	//nurse with nurse role
 	nurse := nurses

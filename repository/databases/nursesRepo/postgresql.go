@@ -63,6 +63,22 @@ func (r *NursesRepository) GetByEmail(ctx context.Context, email string) (nurses
 	return ToDomain(&rec), nil
 }
 
+func (r *NursesRepository) AcceptNurse(ctx context.Context, id string, nurseDomain *nursesEntity.Domain) (*nursesEntity.Domain, error) {
+	rec := FromDomain(nurseDomain)
+
+	if err := r.db.Where("uuid = ?", id).Updates(&rec).Error; err != nil {
+		return &nursesEntity.Domain{}, err
+	}
+	if err := r.db.Where("uuid = ?", id).First(&rec).Error; err != nil {
+		return &nursesEntity.Domain{}, err
+	}
+
+	result := ToDomain(rec)
+
+	return &result, nil
+
+}
+
 func (r *NursesRepository) GetByUuid(ctx context.Context, uuid string) (nursesEntity.Domain, error) {
 	rec := Nurses{}
 	err := r.db.Where("uuid = ?", uuid).First(&rec).Error

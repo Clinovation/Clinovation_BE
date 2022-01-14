@@ -34,6 +34,7 @@ type Service interface {
 	ForgetPassword(ctx context.Context,data *Domain) (*Domain, error)
 	ChangePassword(ctx context.Context, data *Domain, id string) (*Domain, error)
 	FindByNik(ctx context.Context, name string) ([]Domain, error)
+	AcceptNurse(ctx context.Context,  id string) (*Domain, error)
 	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteNurse(ctx context.Context, id string) (string, error)
@@ -44,6 +45,7 @@ type Repository interface {
 	// Databases postgresql
 	CreateNewNurse(ctx context.Context, data *Domain) (*Domain, error)
 	UpdateNurse(ctx context.Context, id string, data *Domain) (*Domain, error)
+	AcceptNurse(ctx context.Context, id string, data *Domain) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, data *Domain) (*Domain, error)
 	ForgetPassword(ctx context.Context, nik string, email string) (Domain, error)
 	GetByNik(ctx context.Context, nik string) (Domain, error)
