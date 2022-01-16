@@ -162,6 +162,22 @@ func (ctrl *MedicalStaffController) FindMedicalStaffByUuid(c echo.Context) error
 			response.FromDomain(&medicalStaff)))
 }
 
+func (ctrl *MedicalStaffController) FindByJwt(c echo.Context) error {
+	medicalStaff := auth.GetMedicalStaff(c)
+	medicalStaffId := medicalStaff.Uuid
+
+	res, err := ctrl.medicalStaffService.FindByUuid(c.Request().Context(), medicalStaffId)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get Medical Staff By id with JWT",
+			response.FromDomain(&res)))
+}
+
 func (ctrl *MedicalStaffController) FindMedicalStaffByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
 

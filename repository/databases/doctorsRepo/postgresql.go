@@ -142,7 +142,16 @@ func (r *DoctorsRepository) DeleteDoctorByUuid(ctx context.Context, id string) (
 
 func (r *DoctorsRepository) GetDoctors(ctx context.Context) (*[]doctorsEntity.Domain, error) {
 	var doctors []Doctors
-	if err := r.db.Find(&doctors).Error; err != nil {
+	if err := r.db.Find(&doctors, "role = ?", "doctor").Error; err != nil {
+		return &[]doctorsEntity.Domain{}, err
+	}
+	result := toDomainArray(doctors)
+	return &result, nil
+}
+
+func (r *DoctorsRepository) GetWaitingList(ctx context.Context) (*[]doctorsEntity.Domain, error) {
+	var doctors []Doctors
+	if err := r.db.Find(&doctors, "role = ?", "approve_waiting_list").Error; err != nil {
 		return &[]doctorsEntity.Domain{}, err
 	}
 	result := toDomainArray(doctors)
@@ -152,7 +161,7 @@ func (r *DoctorsRepository) GetDoctors(ctx context.Context) (*[]doctorsEntity.Do
 func (r *DoctorsRepository) GetByName(ctx context.Context, name string) ([]doctorsEntity.Domain, error) {
 	rec := []Doctors{}
 
-	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	err := r.db.Find(&rec, "name LIKE ? AND role = ?", "%"+name+"%", "doctor").Error
 	if err != nil {
 		return nil, err
 	}
@@ -164,7 +173,7 @@ func (r *DoctorsRepository) GetByName(ctx context.Context, name string) ([]docto
 func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string) ([]doctorsEntity.Domain, error) {
 	rec := []Doctors{}
 
-	err := r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	err := r.db.Find(&rec, "nik LIKE ? AND role = ?", "%"+nik+"%", "doctor").Error
 	if err != nil {
 		return nil, err
 	}

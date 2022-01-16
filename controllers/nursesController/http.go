@@ -11,7 +11,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 )
 
 type NurseController struct {
@@ -150,13 +149,13 @@ func (ctrl *NurseController) LoginNurse(c echo.Context) error {
 		Token string `json:"token"`
 	}{Token: token}
 
-	expire := time.Now().Add(1 * 24 * time.Hour)
-	cookie := http.Cookie{
-		Name:    "is-login",
-		Value:   token,
-		Expires: expire,
-	}
-	c.SetCookie(&cookie)
+	//expire := time.Now().Add(1 * 24 * time.Hour)
+	//cookie := http.Cookie{
+	//	Name:    "is-login",
+	//	Value:   token,
+	//	Expires: expire,
+	//}
+	//c.SetCookie(&cookie)
 
 	return c.JSON(http.StatusOK,
 		helpers.BuildSuccessResponse("successful to login",
@@ -176,6 +175,22 @@ func (ctrl *NurseController) FindNurseByUuid(c echo.Context) error {
 	return c.JSON(http.StatusOK,
 		helpers.BuildSuccessResponse("Successfully Get Nurse By id",
 			response.FromDomain(&nurse)))
+}
+
+func (ctrl *NurseController) FindByJwt(c echo.Context) error {
+	nurse := auth.GetNurse(c)
+	nurseId := nurse.Uuid
+
+	res, err := ctrl.nursesService.FindByUuid(c.Request().Context(), nurseId)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get Nurse By id With JWt",
+			response.FromDomain(&res)))
 }
 
 func (ctrl *NurseController) FindNurseByNameQuery(c echo.Context) error {
@@ -210,6 +225,19 @@ func (ctrl *NurseController) FindNurseByNikQuery(c echo.Context) error {
 
 func (ctrl *NurseController) GetNurses(c echo.Context) error {
 	nurse, err := ctrl.nursesService.GetNurses(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get all Nurse",
+			response.FromDomainArray(*nurse)))
+}
+
+func (ctrl *NurseController) GetWaitingList(c echo.Context) error {
+	nurse, err := ctrl.nursesService.GetWaitingList(c.Request().Context())
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Nurse Doesn't Exist",
