@@ -39,6 +39,7 @@ type Service interface {
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteNurse(ctx context.Context, id string) (string, error)
 	GetNurses(ctx context.Context) (*[]Domain, error)
+	GetWaitingList(ctx context.Context) (*[]Domain, error)
 }
 
 type Repository interface {
@@ -53,6 +54,7 @@ type Repository interface {
 	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
 	GetNurses(ctx context.Context) (*[]Domain, error)
+	GetWaitingList(ctx context.Context) (*[]Domain, error)
 	GetByName(ctx context.Context, name string) ([]Domain, error)
 	GetByNikByQuery(ctx context.Context, nik string) ([]Domain, error)
 	DeleteNurseByUuid(ctx context.Context, id string) (string, error)

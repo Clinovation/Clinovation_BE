@@ -75,6 +75,10 @@ func (ds *DoctorsServices) Login(ctx context.Context, email string, password str
 		return "", businesses.ErrEmailNotRegistered
 	}
 
+	if doctorDomain.Role != "doctor" {
+		return "",businesses.ErrDoctorNotAcc
+	}
+
 	if !helpers.ValidateHash(password, doctorDomain.Password) {
 		return "", businesses.ErrPassword
 	}
@@ -191,6 +195,17 @@ func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
 	defer cancel()
 
 	res, err := ds.DoctorsRepository.GetDoctors(ctx)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+	return res, nil
+}
+
+func (ds *DoctorsServices) GetWaitingList(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	res, err := ds.DoctorsRepository.GetWaitingList(ctx)
 	if err != nil {
 		return &[]Domain{}, err
 	}

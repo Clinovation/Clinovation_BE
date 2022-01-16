@@ -108,6 +108,22 @@ func (ctrl *DoctorController) FindDoctorByUuid(c echo.Context) error {
 			response.FromDomain(&doctor)))
 }
 
+func (ctrl *DoctorController) FindByJwt(c echo.Context) error {
+	doctor := auth.GetDoctor(c)
+	doctorId := doctor.Uuid
+
+	res, err := ctrl.doctorsService.FindByUuid(c.Request().Context(), doctorId)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get doctor By id With Jwt",
+			response.FromDomain(&res)))
+}
+
 func (ctrl *DoctorController) AcceptDoctor(c echo.Context) error {
 	uuid := c.Param("uuid")
 
@@ -163,6 +179,19 @@ func (ctrl *DoctorController) GetDoctors(c echo.Context) error {
 
 	return c.JSON(http.StatusOK,
 		helpers.BuildSuccessResponse("Successfully Get all doctors",
+			response.FromDomainArray(*doctor)))
+}
+
+func (ctrl *DoctorController) GetWaitingList(c echo.Context) error {
+	doctor, err := ctrl.doctorsService.GetWaitingList(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get all doctors waiting list",
 			response.FromDomainArray(*doctor)))
 }
 

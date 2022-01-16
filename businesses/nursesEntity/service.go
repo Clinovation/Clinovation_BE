@@ -75,6 +75,10 @@ func (ns *NursesServices) Login(ctx context.Context, email string, password stri
 		return "", businesses.ErrEmailNotRegistered
 	}
 
+	if nurserDomain.Role != "nurse" {
+		return "", businesses.ErrNurseNotAcc
+	}
+
 	if !helpers.ValidateHash(password, nurserDomain.Password) {
 		return "", businesses.ErrPassword
 	}
@@ -122,6 +126,17 @@ func (ds *NursesServices) ForgetPassword(ctx context.Context, nurserDomain *Doma
 		return &Domain{}, err
 	}
 	return &result, nil
+}
+
+func (ds *NursesServices) GetWaitingList(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	res, err := ds.NursesRepository.GetWaitingList(ctx)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+	return res, nil
 }
 
 func (ds *NursesServices) AcceptNurse(ctx context.Context, id string) (*Domain, error) {

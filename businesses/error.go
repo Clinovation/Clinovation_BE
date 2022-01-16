@@ -16,12 +16,14 @@ var (
 
 	//Doctors errors
 	ErrNotFoundDoctor = errors.New("Doctor Doesn't Exist")
+	ErrDoctorNotAcc = errors.New("The Doctor Has Not Been Accepted")
 
 	//Medical Staff> errors
 	ErrNotFoundMedicalStaff = errors.New("Medical Staff Doesn't Exist")
 
 	//Nurse errors
 	ErrNotFoundNurse = errors.New("Nurse Doesn't Exist")
+	ErrNurseNotAcc = errors.New("The Nurse Has Not Been Accepted ")
 
 	//Patient errors
 	ErrNotFoundPatient = errors.New("Patient Doesn't Exist")

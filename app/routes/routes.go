@@ -48,11 +48,13 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorMedicalStaff := echo.Group("api/v1/doctor")
 	doctorMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	doctorMedicalStaff.PUT("/accept", cl.DoctorsController.AcceptDoctor)
+	doctorMedicalStaff.GET("/waitingList", cl.DoctorsController.GetWaitingList)
 
 	//doctor with doctor role
 	doctor := doctors
 	doctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorValidation())
 	doctor.PUT("/", cl.DoctorsController.UpdateDoctorById)
+	doctor.GET("/jwt", cl.DoctorsController.FindByJwt)
 	doctor.PUT("/uploadAvatar", cl.DoctorsController.UploadAvatar)
 
 	//doctor with doctor or medical staff  role
@@ -60,8 +62,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorAndMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
 	doctorAndMedicalStaff.GET("/:uuid", cl.DoctorsController.FindDoctorByUuid)
 	doctorAndMedicalStaff.GET("/", cl.DoctorsController.GetDoctors)
-	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNameQuery)
-	doctorAndMedicalStaff.GET("/", cl.DoctorsController.FindDoctorByNikQuery)
+	doctorAndMedicalStaff.GET("/queryName", cl.DoctorsController.FindDoctorByNameQuery)
+	doctorAndMedicalStaff.GET("/queryNik", cl.DoctorsController.FindDoctorByNikQuery)
 	doctorAndMedicalStaff.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
 
 	//nurse
@@ -75,10 +77,12 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurseMedicalStaff := echo.Group("api/v1/nurse")
 	nurseMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	nurseMedicalStaff.PUT("/accept", cl.NurseController.AcceptNurse)
+	nurseMedicalStaff.GET("/waitingList", cl.NurseController.GetWaitingList)
 
 	//nurse with nurse role
 	nurse := nurses
 	nurse.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseValidation())
+	nurse.GET("/jwt", cl.NurseController.FindByJwt)
 	nurse.PUT("/", cl.NurseController.UpdateNurseById)
 	nurse.PUT("/uploadAvatar", cl.NurseController.UploadAvatar)
 
@@ -87,8 +91,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurseAndMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseOrMedicalStaffValidation())
 	nurseAndMedicalStaff.GET("/:uuid", cl.NurseController.FindNurseByUuid)
 	nurseAndMedicalStaff.GET("/", cl.NurseController.GetNurses)
-	nurseAndMedicalStaff.GET("/", cl.NurseController.FindNurseByNameQuery)
-	nurseAndMedicalStaff.GET("/", cl.NurseController.FindNurseByNikQuery)
+	nurseAndMedicalStaff.GET("/queryName", cl.NurseController.FindNurseByNameQuery)
+	nurseAndMedicalStaff.GET("/queryNik", cl.NurseController.FindNurseByNikQuery)
 	nurseAndMedicalStaff.DELETE("/", cl.NurseController.DeleteNurseByUuid)
 
 	//medical staff
@@ -101,11 +105,12 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	//medical staff with medical staff role
 	medicalStaff := medicalStaffs
 	medicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
+	medicalStaff.GET("/jwt", cl.MedicalStaffController.FindByJwt)
 	medicalStaff.PUT("/", cl.MedicalStaffController.UpdateMedicalStaffById)
 	medicalStaff.GET("/:uuid", cl.MedicalStaffController.FindMedicalStaffByUuid)
 	medicalStaff.GET("/", cl.MedicalStaffController.GetMedicalStaff)
-	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNameQuery)
-	medicalStaff.GET("/", cl.MedicalStaffController.FindMedicalStaffByNikQuery)
+	medicalStaff.GET("/queryName", cl.MedicalStaffController.FindMedicalStaffByNameQuery)
+	medicalStaff.GET("/queryNik", cl.MedicalStaffController.FindMedicalStaffByNikQuery)
 	medicalStaff.DELETE("/", cl.MedicalStaffController.DeleteMedicalStaffByUuid)
 	medicalStaff.PUT("/uploadAvatar", cl.MedicalStaffController.UploadAvatar)
 
@@ -122,8 +127,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	patientAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
 	patientAllRole.GET("/:uuid", cl.PatientController.FindPatientByUuid)
 	patientAllRole.GET("/", cl.PatientController.GetPatients)
-	patientAllRole.GET("/", cl.PatientController.FindPatientByNameQuery)
-	patientAllRole.GET("/", cl.PatientController.FindPatientByNikQuery)
+	patientAllRole.GET("/queryName", cl.PatientController.FindPatientByNameQuery)
+	patientAllRole.GET("/queryNik", cl.PatientController.FindPatientByNikQuery)
 
 	//work day with medical staff role
 	workDays := echo.Group("api/v1/workDay")

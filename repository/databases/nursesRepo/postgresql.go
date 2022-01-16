@@ -43,6 +43,15 @@ func (r *NursesRepository) GetByNik(ctx context.Context, nik string) (nursesEnti
 	return ToDomain(&rec), nil
 }
 
+func (r *NursesRepository) GetWaitingList(ctx context.Context) (*[]nursesEntity.Domain, error) {
+	var rec []Nurses
+	if err := r.db.Find(&rec, "role = ?", "approve_waiting_list").Error; err != nil {
+		return &[]nursesEntity.Domain{}, err
+	}
+	result := toDomainArray(rec)
+	return &result, nil
+}
+
 func (r *NursesRepository) ForgetPassword(ctx context.Context, nik string, email string) (nursesEntity.Domain, error) {
 	rec := Nurses{}
 	err := r.db.Where("nik = ? AND email = ?", nik, email).Find(&rec).Error
