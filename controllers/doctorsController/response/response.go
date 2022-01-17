@@ -11,7 +11,7 @@ type Doctors struct {
 	Uuid           uuid.UUID `json:"uuid"`
 	Nik            string    `json:"nik"`
 	Name           string    `json:"name"`
-	Email          string    `json:"username"`
+	Email          string    `json:"email"`
 	Dob            string    `json:"dob"`
 	Sex            string    `json:"sex"`
 	Contact        string    `json:"contact"`

@@ -21,6 +21,7 @@ type Domain struct {
 	Weight         string
 	Role           string
 	Avatar         string
+	Record         string
 	Token          string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time

@@ -20,6 +20,7 @@ type Patient struct {
 	Address        string    `gorm:"type:varchar(255)"`
 	Height         string    `gorm:"type:varchar(10)"`
 	Weight         string    `gorm:"type:varchar(10)"`
+	Record         string    `gorm:"type:varchar"`
 	Avatar         string    `gorm:"type:varchar(255)"`
 	Role           string    `gorm:"type:varchar(20)"`
 }
