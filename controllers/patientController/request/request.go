@@ -14,6 +14,7 @@ type PatientRegistration struct {
 	Address       string `json:"address" validate:"required"`
 	Height        string `json:"height" validate:"required"`
 	Weight        string `json:"weight" validate:"required"`
+	Record        string `json:"record" validate:"required"`
 	Avatar        string `json:"avatar"`
 }
 
@@ -32,6 +33,7 @@ func (rec *PatientRegistration) ToDomain() *patientEntity.Domain {
 		Address:       rec.Address,
 		Height:        rec.Height,
 		Weight:        rec.Weight,
+		Record:        rec.Record,
 		Avatar:        rec.Avatar,
 	}
 }
