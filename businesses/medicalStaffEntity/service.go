@@ -169,37 +169,61 @@ func (mss *MedicalStaffServices) DeleteMedicalStaff(ctx context.Context, id stri
 	return res, nil
 }
 
-func (mss *MedicalStaffServices) GetMedicalStaff(ctx context.Context) (*[]Domain, error) {
+func (mss *MedicalStaffServices) GetMedicalStaff(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, mss.ContextTimeout)
 	defer cancel()
 
-	res, err := mss.MedicalStaffsRepository.GetMedicalStaff(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := mss.MedicalStaffsRepository.GetMedicalStaff(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (mss *MedicalStaffServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
+func (mss *MedicalStaffServices) FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, mss.ContextTimeout)
 	defer cancel()
 
-	res, err := mss.MedicalStaffsRepository.GetByName(ctx, name)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundMedicalStaff
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := mss.MedicalStaffsRepository.GetByName(ctx, name, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundMedicalStaff
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (mss *MedicalStaffServices) FindByNik(ctx context.Context, nik string) ([]Domain, error) {
+func (mss *MedicalStaffServices) FindByNik(ctx context.Context, nik string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, mss.ContextTimeout)
 	defer cancel()
 
-	res, err := mss.MedicalStaffsRepository.GetByNikByQuery(ctx, nik)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundMedicalStaff
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := mss.MedicalStaffsRepository.GetByNikByQuery(ctx, nik, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundMedicalStaff
+	}
+	return res, offset, limit, totalData, nil
 }
