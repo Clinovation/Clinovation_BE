@@ -7,10 +7,12 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 type NurseController struct {
@@ -195,58 +197,126 @@ func (ctrl *NurseController) FindByJwt(c echo.Context) error {
 
 func (ctrl *NurseController) FindNurseByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
 
-	nurse, err := ctrl.nursesService.FindByName(c.Request().Context(), name)
+	data, offset, limit, totalData, err := ctrl.nursesService.FindByName(c.Request().Context(), name, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Nurse By Name",
-			response.FromDomainArray(nurse)))
+	res := []response.Nurses{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Nurse by name But Patient Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *NurseController) FindNurseByNikQuery(c echo.Context) error {
 	nik := c.QueryParam("nik")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
 
-	nurse, err := ctrl.nursesService.FindByNik(c.Request().Context(), nik)
+	data, offset, limit, totalData, err := ctrl.nursesService.FindByNik(c.Request().Context(), nik, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Nurse Doesn't Exist",
+			helpers.BuildErrorResponse("Patient Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Nurse By Nik",
-			response.FromDomainArray(nurse)))
+	res := []response.Nurses{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Nurse by nik But Nurse  Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *NurseController) GetNurses(c echo.Context) error {
-	nurse, err := ctrl.nursesService.GetNurses(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+	data, offset, limit, totalData, err := ctrl.nursesService.GetNurses(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Nurse",
-			response.FromDomainArray(*nurse)))
+	res := []response.Nurses{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Nurses But Nurse Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *NurseController) GetWaitingList(c echo.Context) error {
-	nurse, err := ctrl.nursesService.GetWaitingList(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.nursesService.GetWaitingList(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Nurse",
-			response.FromDomainArray(*nurse)))
+	res := []response.Nurses{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Nurses waiting list But Nurse Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *NurseController) UpdateNurseById(c echo.Context) error {

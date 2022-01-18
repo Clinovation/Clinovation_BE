@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -43,13 +44,21 @@ func (r *NursesRepository) GetByNik(ctx context.Context, nik string) (nursesEnti
 	return ToDomain(&rec), nil
 }
 
-func (r *NursesRepository) GetWaitingList(ctx context.Context) (*[]nursesEntity.Domain, error) {
-	var rec []Nurses
-	if err := r.db.Find(&rec, "role = ?", "approve_waiting_list").Error; err != nil {
-		return &[]nursesEntity.Domain{}, err
+func (r *NursesRepository) GetWaitingList(ctx context.Context, offset, limit int) (*[]nursesEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []nursesEntity.Domain{}
+	rec := []Nurses{}
+
+	r.db.Find(&rec, "role = ?", "approve_waiting_list").Count(&totalData)
+
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "approve_waiting_list").Error
+	if err != nil {
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
-	return &result, nil
+
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
 }
 
 func (r *NursesRepository) ForgetPassword(ctx context.Context, nik string, email string) (nursesEntity.Domain, error) {
@@ -139,25 +148,36 @@ func (r *NursesRepository) DeleteNurseByUuid(ctx context.Context, id string) (st
 	return "Nurse was Deleted", nil
 }
 
-func (r *NursesRepository) GetNurses(ctx context.Context) (*[]nursesEntity.Domain, error) {
-	var nurses []Nurses
-	if err := r.db.Find(&nurses).Error; err != nil {
-		return &[]nursesEntity.Domain{}, err
-	}
-	result := toDomainArray(nurses)
-	return &result, nil
-}
-
-func (r *NursesRepository) GetByName(ctx context.Context, name string) ([]nursesEntity.Domain, error) {
+func (r *NursesRepository) GetNurses(ctx context.Context, offset, limit int) (*[]nursesEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []nursesEntity.Domain{}
 	rec := []Nurses{}
 
-	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	r.db.Find(&rec, "role = ?", "nurse").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "nurse").Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
+}
+
+func (r *NursesRepository) GetByName(ctx context.Context, name string, offset, limit int) ([]nursesEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []nursesEntity.Domain{}
+	rec := []Nurses{}
+
+	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }
 
 func (r *NursesRepository) GetByID(ctx context.Context, id uint) (nursesEntity.Domain, error) {
@@ -170,14 +190,18 @@ func (r *NursesRepository) GetByID(ctx context.Context, id uint) (nursesEntity.D
 	return ToDomain(&rec), nil
 }
 
-func (r *NursesRepository) GetByNikByQuery(ctx context.Context, nik string) ([]nursesEntity.Domain, error) {
+func (r *NursesRepository) GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]nursesEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []nursesEntity.Domain{}
 	rec := []Nurses{}
 
-	err := r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }

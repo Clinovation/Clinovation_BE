@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -140,44 +141,68 @@ func (r *DoctorsRepository) DeleteDoctorByUuid(ctx context.Context, id string) (
 	return "doctor was Deleted", nil
 }
 
-func (r *DoctorsRepository) GetDoctors(ctx context.Context) (*[]doctorsEntity.Domain, error) {
-	var doctors []Doctors
-	if err := r.db.Find(&doctors, "role = ?", "doctor").Error; err != nil {
-		return &[]doctorsEntity.Domain{}, err
-	}
-	result := toDomainArray(doctors)
-	return &result, nil
-}
-
-func (r *DoctorsRepository) GetWaitingList(ctx context.Context) (*[]doctorsEntity.Domain, error) {
-	var doctors []Doctors
-	if err := r.db.Find(&doctors, "role = ?", "approve_waiting_list").Error; err != nil {
-		return &[]doctorsEntity.Domain{}, err
-	}
-	result := toDomainArray(doctors)
-	return &result, nil
-}
-
-func (r *DoctorsRepository) GetByName(ctx context.Context, name string) ([]doctorsEntity.Domain, error) {
+func (r *DoctorsRepository) GetDoctors(ctx context.Context, offset, limit int) (*[]doctorsEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []doctorsEntity.Domain{}
 	rec := []Doctors{}
 
-	err := r.db.Find(&rec, "name LIKE ? AND role = ?", "%"+name+"%", "doctor").Error
+	r.db.Find(&rec, "role = ?", "doctor").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "doctor").Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
 }
 
-func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string) ([]doctorsEntity.Domain, error) {
+func (r *DoctorsRepository) GetWaitingList(ctx context.Context, offset, limit int) (*[]doctorsEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []doctorsEntity.Domain{}
 	rec := []Doctors{}
 
-	err := r.db.Find(&rec, "nik LIKE ? AND role = ?", "%"+nik+"%", "doctor").Error
-	if err != nil {
-		return nil, err
-	}
-	result := toDomainArray(rec)
+	r.db.Find(&rec, "role = ?", "approve_waiting_list").Count(&totalData)
 
-	return result, nil
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "approve_waiting_list").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
+
+}
+
+func (r *DoctorsRepository) GetByName(ctx context.Context, name string, offset, limit int) ([]doctorsEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []doctorsEntity.Domain{}
+	rec := []Doctors{}
+
+	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
+}
+
+func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]doctorsEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []doctorsEntity.Domain{}
+	rec := []Doctors{}
+
+	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }

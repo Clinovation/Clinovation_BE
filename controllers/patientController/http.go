@@ -7,10 +7,12 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 type PatientsController struct {
@@ -73,45 +75,97 @@ func (ctrl *PatientsController) FindPatientByUuid(c echo.Context) error {
 
 func (ctrl *PatientsController) FindPatientByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
-
-	patients, err := ctrl.patientsService.FindByName(c.Request().Context(), name)
-	if err != nil {
-		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Patient Data Doesn't Exist",
-				err, helpers.EmptyObj{}))
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Patient By Name",
-			response.FromDomainArray(patients)))
-}
-
-func (ctrl *PatientsController) FindPatientByNikQuery(c echo.Context) error {
-	nik := c.QueryParam("nik")
-
-	patients, err := ctrl.patientsService.FindByNik(c.Request().Context(), nik)
-	if err != nil {
-		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Patient Data Doesn't Exist",
-				err, helpers.EmptyObj{}))
-	}
-
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Patient By Nik",
-			response.FromDomainArray(patients)))
-}
-
-func (ctrl *PatientsController) GetPatients(c echo.Context) error {
-	patients, err := ctrl.patientsService.GetPatients(c.Request().Context())
+	data, offset, limit, totalData, err := ctrl.patientsService.FindByName(c.Request().Context(), name, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Patient Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Patient",
-			response.FromDomainArray(*patients)))
+	res := []response.Patients{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Patient by name But Patient Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
+}
+
+func (ctrl *PatientsController) FindPatientByNikQuery(c echo.Context) error {
+	nik := c.QueryParam("nik")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.patientsService.FindByNik(c.Request().Context(), nik, page)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Patient Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	res := []response.Patients{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Patient But Patient by nik Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
+}
+
+func (ctrl *PatientsController) GetPatients(c echo.Context) error {
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.patientsService.GetPatients(c.Request().Context(), page)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Patient Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	res := []response.Patients{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Patient But Patient Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *PatientsController) UpdatePatientById(c echo.Context) error {

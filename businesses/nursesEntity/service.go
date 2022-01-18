@@ -128,15 +128,24 @@ func (ds *NursesServices) ForgetPassword(ctx context.Context, nurserDomain *Doma
 	return &result, nil
 }
 
-func (ds *NursesServices) GetWaitingList(ctx context.Context) (*[]Domain, error) {
-	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+func (ns *NursesServices) GetWaitingList(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
+	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
-	res, err := ds.NursesRepository.GetWaitingList(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := ns.NursesRepository.GetWaitingList(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
 func (ds *NursesServices) AcceptNurse(ctx context.Context, id string) (*Domain, error) {
@@ -201,37 +210,60 @@ func (ns *NursesServices) DeleteNurse(ctx context.Context, id string) (string, e
 	return res, nil
 }
 
-func (ns *NursesServices) GetNurses(ctx context.Context) (*[]Domain, error) {
+func (ns *NursesServices) GetNurses(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
-	res, err := ns.NursesRepository.GetNurses(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := ns.NursesRepository.GetNurses(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (ns *NursesServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
+func (ns *NursesServices) FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
-	res, err := ns.NursesRepository.GetByName(ctx, name)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundNurse
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := ns.NursesRepository.GetByName(ctx, name, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+	return res, offset, limit, totalData, nil
 }
 
-func (ns *NursesServices) FindByNik(ctx context.Context, nik string) ([]Domain, error) {
+func (ns *NursesServices) FindByNik(ctx context.Context, nik string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
-	res, err := ns.NursesRepository.GetByNikByQuery(ctx, nik)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundNurse
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := ns.NursesRepository.GetByNikByQuery(ctx, nik, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+	return res, offset, limit, totalData, nil
 }
