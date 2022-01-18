@@ -265,19 +265,6 @@ func (ctrl *DoctorController) GetDoctors(c echo.Context) error {
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
-func (ctrl *DoctorController) GetWaitingList(c echo.Context) error {
-	doctor, err := ctrl.doctorsService.GetWaitingList(c.Request().Context())
-	if err != nil {
-		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Doctor Doesn't Exist",
-				err, helpers.EmptyObj{}))
-	}
-
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all doctors waiting list",
-			response.FromDomainArray(*doctor)))
-}
-
 func (ctrl *DoctorController) UpdateDoctorById(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.DoctorRegistration)
