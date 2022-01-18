@@ -76,7 +76,7 @@ func (ds *DoctorsServices) Login(ctx context.Context, email string, password str
 	}
 
 	if doctorDomain.Role != "doctor" {
-		return "",businesses.ErrDoctorNotAcc
+		return "", businesses.ErrDoctorNotAcc
 	}
 
 	if !helpers.ValidateHash(password, doctorDomain.Password) {
@@ -190,48 +190,82 @@ func (ds *DoctorsServices) DeleteDoctor(ctx context.Context, id string) (string,
 	return res, nil
 }
 
-func (ds *DoctorsServices) GetDoctors(ctx context.Context) (*[]Domain, error) {
+func (ds *DoctorsServices) GetDoctors(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	res, err := ds.DoctorsRepository.GetDoctors(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := ds.DoctorsRepository.GetDoctors(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (ds *DoctorsServices) GetWaitingList(ctx context.Context) (*[]Domain, error) {
+func (ds *DoctorsServices) GetWaitingList(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	res, err := ds.DoctorsRepository.GetWaitingList(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := ds.DoctorsRepository.GetWaitingList(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundDoctor
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (ds *DoctorsServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
+func (ds *DoctorsServices) FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	res, err := ds.DoctorsRepository.GetByName(ctx, name)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundDoctor
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := ds.DoctorsRepository.GetByName(ctx, name, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundDoctor
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
-func (ds *DoctorsServices) FindByNik(ctx context.Context, nik string) ([]Domain, error) {
+func (ds *DoctorsServices) FindByNik(ctx context.Context, nik string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
-	res, err := ds.DoctorsRepository.GetByNikByQuery(ctx, nik)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundDoctor
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := ds.DoctorsRepository.GetByNikByQuery(ctx, nik, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundDoctor
+	}
+	return res, offset, limit, totalData, nil
+
 }

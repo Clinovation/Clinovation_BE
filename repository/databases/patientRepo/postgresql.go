@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -103,35 +104,56 @@ func (r *PatientRepository) DeletePatientByUuid(ctx context.Context, id string) 
 	return "Patient Data was Deleted", nil
 }
 
-func (r *PatientRepository) GetPatients(ctx context.Context) (*[]patientEntity.Domain, error) {
-	var patient []Patient
-	if err := r.db.Find(&patient).Error; err != nil {
-		return &[]patientEntity.Domain{}, err
-	}
-	result := toDomainArray(patient)
-	return &result, nil
-}
-
-func (r *PatientRepository) GetByName(ctx context.Context, name string) ([]patientEntity.Domain, error) {
+func (r *PatientRepository) GetPatients(ctx context.Context, offset, limit int) (*[]patientEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []patientEntity.Domain{}
 	rec := []Patient{}
 
-	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+	}
+	return &domain, totalData, nil
 }
 
-func (r *PatientRepository) GetByNikByQuery(ctx context.Context, nik string) ([]patientEntity.Domain, error) {
+func (r *PatientRepository) GetByName(ctx context.Context, name string, offset, limit int) ([]patientEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []patientEntity.Domain{}
 	rec := []Patient{}
 
-	err := r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "name LIKE ?", "%"+name+"%").Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+	}
+	return domain, totalData, nil
+}
+
+func (r *PatientRepository) GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]patientEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []patientEntity.Domain{}
+	rec := []Patient{}
+
+	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+	}
+	return domain, totalData, nil
 }

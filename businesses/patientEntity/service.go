@@ -107,37 +107,57 @@ func (ps *PatientServices) DeletePatient(ctx context.Context, id string) (string
 	return res, nil
 }
 
-func (ps *PatientServices) GetPatients(ctx context.Context) (*[]Domain, error) {
+func (ps *PatientServices) GetPatients(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ps.ContextTimeout)
 	defer cancel()
 
-	res, err := ps.PatientsRepository.GetPatients(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+	res, totalData, err := ps.PatientsRepository.GetPatients(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrInternalServer
+	}
+	return res, offset, limit, totalData, nil
 }
 
-func (ps *PatientServices) FindByName(ctx context.Context, name string) ([]Domain, error) {
+func (ps *PatientServices) FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ps.ContextTimeout)
 	defer cancel()
 
-	res, err := ps.PatientsRepository.GetByName(ctx, name)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundPatient
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-
-	return res, nil
+	res, totalData, err := ps.PatientsRepository.GetByName(ctx, name, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundPatient
+	}
+	return res, offset, limit, totalData, nil
 }
 
-func (ps *PatientServices) FindByNik(ctx context.Context, nik string) ([]Domain, error) {
+func (ps *PatientServices) FindByNik(ctx context.Context, nik string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, ps.ContextTimeout)
 	defer cancel()
 
-	res, err := ps.PatientsRepository.GetByNikByQuery(ctx, nik)
-	if err != nil {
-		return []Domain{}, businesses.ErrNotFoundPatient
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return res, nil
+	res, totalData, err := ps.PatientsRepository.GetByNikByQuery(ctx, nik, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundPatient
+	}
+	return res, offset, limit, totalData, nil
 }

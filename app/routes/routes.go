@@ -47,7 +47,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	//doctor with medical staff role
 	doctorMedicalStaff := echo.Group("api/v1/doctor")
 	doctorMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
-	doctorMedicalStaff.PUT("/accept", cl.DoctorsController.AcceptDoctor)
+	doctorMedicalStaff.PUT("/accept/:uuid", cl.DoctorsController.AcceptDoctor)
 	doctorMedicalStaff.GET("/waitingList", cl.DoctorsController.GetWaitingList)
 
 	//doctor with doctor role
@@ -76,7 +76,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	//nurse with medical staff role
 	nurseMedicalStaff := echo.Group("api/v1/nurse")
 	nurseMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
-	nurseMedicalStaff.PUT("/accept", cl.NurseController.AcceptNurse)
+	nurseMedicalStaff.PUT("/accept/:uuid", cl.NurseController.AcceptNurse)
 	nurseMedicalStaff.GET("/waitingList", cl.NurseController.GetWaitingList)
 
 	//nurse with nurse role
