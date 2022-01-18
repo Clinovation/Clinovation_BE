@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -123,35 +124,50 @@ func (r *MedicalStaffRepository) DeleteMedicalStaffByUuid(ctx context.Context, i
 	return "Medical Staff was Deleted", nil
 }
 
-func (r *MedicalStaffRepository) GetMedicalStaff(ctx context.Context) (*[]medicalStaffEntity.Domain, error) {
-	var medicalStaff []MedicalStaff
-	if err := r.db.Find(&medicalStaff).Error; err != nil {
-		return &[]medicalStaffEntity.Domain{}, err
-	}
-	result := toDomainArray(medicalStaff)
-	return &result, nil
-}
-
-func (r *MedicalStaffRepository) GetByName(ctx context.Context, name string) ([]medicalStaffEntity.Domain, error) {
+func (r *MedicalStaffRepository) GetMedicalStaff(ctx context.Context, offset, limit int) (*[]medicalStaffEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicalStaffEntity.Domain{}
 	rec := []MedicalStaff{}
 
-	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
 }
 
-func (r *MedicalStaffRepository) GetByNikByQuery(ctx context.Context, nik string) ([]medicalStaffEntity.Domain, error) {
+func (r *MedicalStaffRepository) GetByName(ctx context.Context, name string, offset, limit int) ([]medicalStaffEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicalStaffEntity.Domain{}
 	rec := []MedicalStaff{}
 
-	err := r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+name+"%").Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
+}
+
+func (r *MedicalStaffRepository) GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]medicalStaffEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicalStaffEntity.Domain{}
+	rec := []MedicalStaff{}
+
+	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }

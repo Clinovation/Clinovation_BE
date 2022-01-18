@@ -7,10 +7,12 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 type MedicalStaffController struct {
@@ -180,45 +182,95 @@ func (ctrl *MedicalStaffController) FindByJwt(c echo.Context) error {
 
 func (ctrl *MedicalStaffController) FindMedicalStaffByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
 
-	medicalStaff, err := ctrl.medicalStaffService.FindByName(c.Request().Context(), name)
+	data, offset, limit, totalData, err := ctrl.medicalStaffService.FindByName(c.Request().Context(), name, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Nurse Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medical Staff  By Name",
-			response.FromDomainArray(medicalStaff)))
+	res := []response.MedicalStaff{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Doctors by name But Doctor Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicalStaffController) FindMedicalStaffByNikQuery(c echo.Context) error {
 	nik := c.QueryParam("nik")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
 
-	medicalStaff, err := ctrl.medicalStaffService.FindByNik(c.Request().Context(), nik)
+	data, offset, limit, totalData, err := ctrl.medicalStaffService.FindByNik(c.Request().Context(), nik, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Patient Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medical Staff By Nik",
-			response.FromDomainArray(medicalStaff)))
+	res := []response.MedicalStaff{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medical Staff by nik Medical Staff Doctor  Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicalStaffController) GetMedicalStaff(c echo.Context) error {
-	medicalStaff, err := ctrl.medicalStaffService.GetMedicalStaff(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+	data, offset, limit, totalData, err := ctrl.medicalStaffService.GetMedicalStaff(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Medical Staff",
-			response.FromDomainArray(*medicalStaff)))
+	res := []response.MedicalStaff{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medical Staff But Medical Staff Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error {
