@@ -419,3 +419,25 @@ func (ctrl *NurseController) DeleteNurseByUuid(c echo.Context) error {
 		helpers.BuildSuccessResponse("Successfully Deleted a Nurse",
 			nil))
 }
+
+func (ctrl *NurseController) DeleteNurseByMedicalStaff(c echo.Context) error {
+	uuid := c.Param("uuid")
+
+	_, errGet := ctrl.nursesService.FindByUuid(c.Request().Context(), uuid)
+	if errGet != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Nurse doesn't exist",
+				errGet, helpers.EmptyObj{}))
+	}
+
+	_, err := ctrl.nursesService.DeleteNurse(c.Request().Context(), uuid)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusCreated,
+		helpers.BuildSuccessResponse("Successfully Deleted a Nurse",
+			nil))
+}

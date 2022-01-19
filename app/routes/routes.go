@@ -49,6 +49,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	doctorMedicalStaff.PUT("/accept/:uuid", cl.DoctorsController.AcceptDoctor)
 	doctorMedicalStaff.GET("/waitingList", cl.DoctorsController.GetWaitingList)
+	doctorMedicalStaff.DELETE("/:uuid", cl.DoctorsController.DeleteDoctorByMedicalStaff)
 
 	//doctor with doctor role
 	doctor := doctors
@@ -78,6 +79,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurseMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	nurseMedicalStaff.PUT("/accept/:uuid", cl.NurseController.AcceptNurse)
 	nurseMedicalStaff.GET("/waitingList", cl.NurseController.GetWaitingList)
+	nurseMedicalStaff.DELETE("/:uuid", cl.NurseController.DeleteNurseByMedicalStaff)
 
 	//nurse with nurse role
 	nurse := nurses
