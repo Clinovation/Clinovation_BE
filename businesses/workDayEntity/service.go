@@ -57,16 +57,24 @@ func (wds *WorkDaysServices) FindByUuid(ctx context.Context, uuid string) (Domai
 	return result, nil
 }
 
-func (wds *WorkDaysServices) FindByDay(ctx context.Context, day string) (Domain, error) {
+func (wds *WorkDaysServices) FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
-	result, err := wds.WorkDaysRepository.GetByDay(ctx, day)
-	if err != nil {
-		return Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return result, nil
+	res, totalData, err := wds.WorkDaysRepository.GetByDayByQuery(ctx, day, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkDay
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
 func (wds *WorkDaysServices) UpdateById(ctx context.Context, workDayDomain *Domain, id string) (*Domain, error) {
@@ -91,13 +99,22 @@ func (wds *WorkDaysServices) DeleteWorkDay(ctx context.Context, id string) (stri
 	return res, nil
 }
 
-func (wds *WorkDaysServices) GetWorkDays(ctx context.Context) (*[]Domain, error) {
+func (wds *WorkDaysServices) GetWorkDays(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
-	res, err := wds.WorkDaysRepository.GetWorkDays(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := wds.WorkDaysRepository.GetWorkDays(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkDay
+	}
+
+	return res, offset, limit, totalData, nil
 }

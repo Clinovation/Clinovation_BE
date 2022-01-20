@@ -6,8 +6,10 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 type WorkDayController struct {
@@ -56,7 +58,7 @@ func (ctrl *WorkDayController) FindWorkDayByUuid(c echo.Context) error {
 	workDay, err := ctrl.workDaysService.FindByUuid(c.Request().Context(), uuid)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("work Day Doesn't Exist",
+			helpers.BuildErrorResponse("work Day Doesn't Exist By id",
 				err, helpers.EmptyObj{}))
 	}
 
@@ -66,31 +68,66 @@ func (ctrl *WorkDayController) FindWorkDayByUuid(c echo.Context) error {
 }
 
 func (ctrl *WorkDayController) FindWorkDayByDay(c echo.Context) error {
-	day := c.Param("day")
+	day := c.QueryParam("day")
 
-	workDay, err := ctrl.workDaysService.FindByDay(c.Request().Context(), day)
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.workDaysService.FindByDay(c.Request().Context(), day, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("work Day Doesn't Exist",
+			helpers.BuildErrorResponse("Patient Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get work Day By id",
-			response.FromDomain(&workDay)))
+	res := []response.WorkDays{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Work Day by nik But Work Day Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *WorkDayController) GetWorkDays(c echo.Context) error {
-	workDays, err := ctrl.workDaysService.GetWorkDays(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+	data, offset, limit, totalData, err := ctrl.workDaysService.GetWorkDays(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("work Day Doesn't Exist",
+			helpers.BuildErrorResponse("Work Day Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all work Days",
-			response.FromDomainArray(*workDays)))
+	res := []response.WorkDays{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Work Day But Work Day Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *WorkDayController) UpdateWorkDayById(c echo.Context) error {
@@ -127,7 +164,7 @@ func (ctrl *WorkDayController) DeleteWorkDayByUuid(c echo.Context) error {
 	_, errGet := ctrl.workDaysService.FindByUuid(c.Request().Context(), uuid)
 	if errGet != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Work Day doesn't exist",
+			helpers.BuildErrorResponse("Work Day doesn't exist by delete",
 				errGet, helpers.EmptyObj{}))
 	}
 
