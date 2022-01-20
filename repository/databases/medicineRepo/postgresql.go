@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -75,23 +76,45 @@ func (r *MedicineRepository) DeleteMedicineByUuid(ctx context.Context, id string
 	return "Medical Staff was Deleted", nil
 }
 
-func (r *MedicineRepository) GetMedicine(ctx context.Context) (*[]medicineEntity.Domain, error) {
-	var medicine []Medicine
-	if err := r.db.Find(&medicine).Error; err != nil {
-		return &[]medicineEntity.Domain{}, err
-	}
-	result := toDomainArray(medicine)
-	return &result, nil
-}
-
-func (r *MedicineRepository) GetByName(ctx context.Context, name string) ([]medicineEntity.Domain, error) {
+func (r *MedicineRepository) GetMedicine(ctx context.Context, offset, limit int) (*[]medicineEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicineEntity.Domain{}
 	rec := []Medicine{}
 
-	err := r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	result := toDomainArray(rec)
 
-	return result, nil
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
+}
+
+func (r *MedicineRepository) GetByNameByQuery(ctx context.Context, name string, offset, limit int) ([]medicineEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicineEntity.Domain{}
+	rec := []Medicine{}
+
+	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
+}
+
+func (r *MedicineRepository) GetByName(ctx context.Context, name string) (medicineEntity.Domain, error) {
+	rec := Medicine{}
+
+	err := r.db.Where("name = ?", name).First(&rec).Error
+	if err != nil {
+		return medicineEntity.Domain{}, err
+	}
+
+	return ToDomain(&rec), nil
 }

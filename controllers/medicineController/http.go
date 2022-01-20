@@ -6,8 +6,10 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 type MedicineController struct {
@@ -68,29 +70,64 @@ func (ctrl *MedicineController) FindMedicineByUuid(c echo.Context) error {
 func (ctrl *MedicineController) FindMedicineByNameQuery(c echo.Context) error {
 	name := c.QueryParam("name")
 
-	medicine, err := ctrl.medicineService.FindByName(c.Request().Context(), name)
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.medicineService.FindByName(c.Request().Context(), name, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Medicine Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get Medicine  By Name",
-			response.FromDomainArray(medicine)))
+	res := []response.Medicine{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medicine by nik But Medicine Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicineController) GetMedicine(c echo.Context) error {
-	medicine, err := ctrl.medicineService.GetMedicines(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+	data, offset, limit, totalData, err := ctrl.medicineService.GetMedicines(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Medicine Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Medicine",
-			response.FromDomainArray(*medicine)))
+	res := []response.Medicine{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medicine But Medicine Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicineController) UpdateMedicineById(c echo.Context) error {
