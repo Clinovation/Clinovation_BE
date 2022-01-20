@@ -57,16 +57,24 @@ func (wds *WorkHoursServices) FindByUuid(ctx context.Context, uuid string) (Doma
 	return result, nil
 }
 
-func (wds *WorkHoursServices) FindByHour(ctx context.Context, hour string) (Domain, error) {
+func (wds *WorkHoursServices) FindByHour(ctx context.Context, hour string, page int) ([]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
-	result, err := wds.WorkHoursRepository.GetByHour(ctx, hour)
-	if err != nil {
-		return Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
 
-	return result, nil
+	res, totalData, err := wds.WorkHoursRepository.GetByHourByQuery(ctx, hour, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkHour
+	}
+
+	return res, offset, limit, totalData, nil
 }
 
 func (wds *WorkHoursServices) UpdateById(ctx context.Context, workHourDomain *Domain, id string) (*Domain, error) {
@@ -91,13 +99,22 @@ func (wds *WorkHoursServices) DeleteWorkHour(ctx context.Context, id string) (st
 	return res, nil
 }
 
-func (wds *WorkHoursServices) GetWorkHours(ctx context.Context) (*[]Domain, error) {
+func (wds *WorkHoursServices) GetWorkHours(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
-	res, err := wds.WorkHoursRepository.GetWorkHours(ctx)
-	if err != nil {
-		return &[]Domain{}, err
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
 	}
-	return res, nil
+
+	res, totalData, err := wds.WorkHoursRepository.GetWorkHours(ctx, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkHour
+	}
+
+	return res, offset, limit, totalData, nil
 }

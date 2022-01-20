@@ -6,8 +6,10 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 type WorkHourController struct {
@@ -68,29 +70,64 @@ func (ctrl *WorkHourController) FindWorkHourByUuid(c echo.Context) error {
 func (ctrl *WorkHourController) FindWorkHourByHour(c echo.Context) error {
 	hour := c.Param("hour")
 
-	workHour, err := ctrl.workHoursService.FindByHour(c.Request().Context(), hour)
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.workHoursService.FindByHour(c.Request().Context(), hour, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("work Hour Doesn't Exist",
+			helpers.BuildErrorResponse("Work Hour Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get work Hour By id",
-			response.FromDomain(&workHour)))
+	res := []response.WorkHours{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Work Hour by nik But Work Hour Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *WorkHourController) GetWorkHours(c echo.Context) error {
-	workHours, err := ctrl.workHoursService.GetWorkHours(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.workHoursService.GetWorkHours(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("work Hour Doesn't Exist",
+			helpers.BuildErrorResponse("Work Hour Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all work Hours",
-			response.FromDomainArray(*workHours)))
+	res := []response.WorkHours{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Doctors But Doctor Data Doesn't Exist",
+				data))
+	}
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *WorkHourController) UpdateWorkHourById(c echo.Context) error {

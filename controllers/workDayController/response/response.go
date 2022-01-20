@@ -30,3 +30,10 @@ func FromDomainArray(domain []workDayEntity.Domain) []WorkDays {
 	}
 	return res
 }
+
+type Page struct {
+	Offset    int   `json:"offset"`
+	Limit     int   `json:"limit"`
+	TotalData int64 `json:"total_data"`
+}
+

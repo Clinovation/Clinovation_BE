@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -31,15 +32,31 @@ func (r *WorkHoursRepository) CreateNewWorkHour(ctx context.Context, workHourDom
 	return &result, nil
 }
 
-func (r *WorkHoursRepository) GetByHour(ctx context.Context, nik string) (workHourEntity.Domain, error) {
+func (r *WorkHoursRepository) GetByHour(ctx context.Context, hour string) (workHourEntity.Domain, error) {
 	rec := WorkHours{}
 
-	err := r.db.Where("hour = ?", nik).First(&rec).Error
+	err := r.db.Where("hour = ?", hour).First(&rec).Error
 	if err != nil {
 		return workHourEntity.Domain{}, err
 	}
 
 	return ToDomain(&rec), nil
+}
+
+func (r *WorkHoursRepository) GetByHourByQuery(ctx context.Context, hour string, offset, limit int) ([]workHourEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []workHourEntity.Domain{}
+	rec := []WorkHours{}
+
+	r.db.Find(&rec, "hour LIKE ?", "%"+hour+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "hour LIKE ?", "%"+hour+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }
 
 func (r *WorkHoursRepository) GetByUuid(ctx context.Context, uuid string) (workHourEntity.Domain, error) {
@@ -88,12 +105,18 @@ func (r *WorkHoursRepository) DeleteWorkHourByUuid(ctx context.Context, id strin
 	return "Work Hour Was Deleted", nil
 }
 
-func (r *WorkHoursRepository) GetWorkHours(ctx context.Context) (*[]workHourEntity.Domain, error) {
-	var workHour []WorkHours
+func (r *WorkHoursRepository) GetWorkHours(ctx context.Context, offset, limit int) (*[]workHourEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []workHourEntity.Domain{}
+	rec := []WorkHours{}
 
-	if err := r.db.Find(&workHour).Error; err != nil {
-		return &[]workHourEntity.Domain{}, err
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec).Error
+	if err != nil {
+		return nil, 0, err
 	}
-	result := toDomainArray(workHour)
-	return &result, nil
+
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
 }

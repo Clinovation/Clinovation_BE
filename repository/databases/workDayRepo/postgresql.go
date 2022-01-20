@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
 )
 
@@ -31,15 +32,31 @@ func (r *WorkDaysRepository) CreateNewWorkDay(ctx context.Context, workDayDomain
 	return &result, nil
 }
 
-func (r *WorkDaysRepository) GetByDay(ctx context.Context, nik string) (workDayEntity.Domain, error) {
+func (r *WorkDaysRepository) GetByDay(ctx context.Context, day string) (workDayEntity.Domain, error) {
 	rec := WorkDays{}
 
-	err := r.db.Where("day = ?", nik).First(&rec).Error
+	err := r.db.Where("day = ?", day).First(&rec).Error
 	if err != nil {
 		return workDayEntity.Domain{}, err
 	}
 
 	return ToDomain(&rec), nil
+}
+
+func (r *WorkDaysRepository) GetByDayByQuery(ctx context.Context, day string, offset, limit int) ([]workDayEntity.Domain, int64,error) {
+	var totalData int64
+	domain := []workDayEntity.Domain{}
+	rec := []WorkDays{}
+
+	r.db.Find(&rec, "day LIKE ?", "%"+day+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "day LIKE ?", "%"+day+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+
+	return domain, totalData, nil
 }
 
 func (r *WorkDaysRepository) GetByUuid(ctx context.Context, uuid string) (workDayEntity.Domain, error) {
@@ -88,12 +105,18 @@ func (r *WorkDaysRepository) DeleteWorkDayByUuid(ctx context.Context, id string)
 	return "Work Day Was Deleted", nil
 }
 
-func (r *WorkDaysRepository) GetWorkDays(ctx context.Context) (*[]workDayEntity.Domain, error) {
-	var workDay []WorkDays
+func (r *WorkDaysRepository) GetWorkDays(ctx context.Context, offset, limit int) (*[]workDayEntity.Domain,int64, error) {
+	var totalData int64
+	domain := []workDayEntity.Domain{}
+	rec := []WorkDays{}
 
-	if err := r.db.Find(&workDay).Error; err != nil {
-		return &[]workDayEntity.Domain{}, err
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Find(&rec).Error
+	if err != nil {
+		return nil, 0, err
 	}
-	result := toDomainArray(workDay)
-	return &result, nil
+
+	copier.Copy(&domain, &rec)
+
+	return &domain, totalData, nil
 }
