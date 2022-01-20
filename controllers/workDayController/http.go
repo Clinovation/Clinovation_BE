@@ -100,12 +100,12 @@ func (ctrl *WorkDayController) FindWorkDayByDay(c echo.Context) error {
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
-func (ctrl *WorkDayController) GetWorkDays(c echo.Context) error {
+func (ctrl *WorkDayController) GetWorkDaysPagination(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page <= 0 {
 		page = 1
 	}
-	data, offset, limit, totalData, err := ctrl.workDaysService.GetWorkDays(c.Request().Context(), page)
+	data, offset, limit, totalData, err := ctrl.workDaysService.GetWorkDaysPagination(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Work Day Doesn't Exist",
@@ -178,4 +178,17 @@ func (ctrl *WorkDayController) DeleteWorkDayByUuid(c echo.Context) error {
 	return c.JSON(http.StatusCreated,
 		helpers.BuildSuccessResponse("Successfully Deleted a Work Day",
 			nil))
+}
+
+func (ctrl *WorkDayController) GetWorkDays(c echo.Context) error {
+	recipe, err := ctrl.workDaysService.GetWorkDays(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Work Days Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get all Work Days",
+			response.FromDomainArray(*recipe)))
 }

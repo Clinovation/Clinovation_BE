@@ -190,7 +190,7 @@ func (ctrl *MedicalStaffController) FindMedicalStaffByNameQuery(c echo.Context) 
 	data, offset, limit, totalData, err := ctrl.medicalStaffService.FindByName(c.Request().Context(), name, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Nurse Doesn't Exist",
+			helpers.BuildErrorResponse("Medical Staff Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
@@ -204,7 +204,7 @@ func (ctrl *MedicalStaffController) FindMedicalStaffByNameQuery(c echo.Context) 
 	copier.Copy(&res, &data)
 	if len(data) == 0 {
 		return c.JSON(http.StatusNoContent,
-			helpers.BuildSuccessResponse("Successfully Get all Doctors by name But Doctor Data Doesn't Exist",
+			helpers.BuildSuccessResponse("Successfully Get all Medical Staff by name But Medical Staff Data Doesn't Exist",
 				data))
 	}
 

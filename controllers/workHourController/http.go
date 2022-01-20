@@ -100,13 +100,13 @@ func (ctrl *WorkHourController) FindWorkHourByHour(c echo.Context) error {
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
-func (ctrl *WorkHourController) GetWorkHours(c echo.Context) error {
+func (ctrl *WorkHourController) GetWorkHoursPagination(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page <= 0 {
 		page = 1
 	}
 
-	data, offset, limit, totalData, err := ctrl.workHoursService.GetWorkHours(c.Request().Context(), page)
+	data, offset, limit, totalData, err := ctrl.workHoursService.GetWorkHoursPagination(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Work Hour Doesn't Exist",
@@ -178,4 +178,17 @@ func (ctrl *WorkHourController) DeleteWorkHourByUuid(c echo.Context) error {
 	return c.JSON(http.StatusCreated,
 		helpers.BuildSuccessResponse("Successfully Deleted a Work Hour",
 			nil))
+}
+
+func (ctrl *WorkHourController) GetWorkHours(c echo.Context) error {
+	recipe, err := ctrl.workHoursService.GetWorkHours(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Work Hours Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get all Work Hours",
+			response.FromDomainArray(*recipe)))
 }

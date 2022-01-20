@@ -146,7 +146,7 @@ func (r *MedicalStaffRepository) GetByName(ctx context.Context, name string, off
 	rec := []MedicalStaff{}
 
 	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+name+"%").Error
+	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
 	if err != nil {
 		return nil, 0, err
 	}

@@ -138,6 +138,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	workDays.POST("/", cl.WorkDayController.CreateNewWorkDay)
 	workDays.PUT("/:uuid", cl.WorkDayController.UpdateWorkDayById)
 	workDays.GET("/:uuid", cl.WorkDayController.FindWorkDayByUuid)
+	workDays.GET("/pagination", cl.WorkDayController.GetWorkDaysPagination)
 	workDays.GET("/", cl.WorkDayController.GetWorkDays)
 	workDays.GET("/queryDay", cl.WorkDayController.FindWorkDayByDay)
 	workDays.DELETE("/:uuid", cl.WorkDayController.DeleteWorkDayByUuid)
@@ -149,6 +150,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	workHours.PUT("/:uuid", cl.WorkHourController.UpdateWorkHourById)
 	workHours.GET("/:uuid", cl.WorkHourController.FindWorkHourByUuid)
 	workHours.GET("/", cl.WorkHourController.GetWorkHours)
+	workHours.GET("/pagination", cl.WorkHourController.GetWorkHoursPagination)
 	workHours.GET("/queryHour", cl.WorkHourController.FindWorkHourByHour)
 	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
 

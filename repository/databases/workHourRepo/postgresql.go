@@ -105,7 +105,7 @@ func (r *WorkHoursRepository) DeleteWorkHourByUuid(ctx context.Context, id strin
 	return "Work Hour Was Deleted", nil
 }
 
-func (r *WorkHoursRepository) GetWorkHours(ctx context.Context, offset, limit int) (*[]workHourEntity.Domain, int64, error) {
+func (r *WorkHoursRepository) GetWorkHoursPagination(ctx context.Context, offset, limit int) (*[]workHourEntity.Domain, int64, error) {
 	var totalData int64
 	domain := []workHourEntity.Domain{}
 	rec := []WorkHours{}
@@ -119,4 +119,13 @@ func (r *WorkHoursRepository) GetWorkHours(ctx context.Context, offset, limit in
 	copier.Copy(&domain, &rec)
 
 	return &domain, totalData, nil
+}
+
+func (r *WorkHoursRepository) GetWorkHours(ctx context.Context) (*[]workHourEntity.Domain, error) {
+	var recipe []WorkHours
+	if err := r.db.Find(&recipe).Error; err != nil {
+		return &[]workHourEntity.Domain{}, err
+	}
+	result := toDomainArray(recipe)
+	return &result, nil
 }
