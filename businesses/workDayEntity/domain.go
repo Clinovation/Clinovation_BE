@@ -21,7 +21,8 @@ type Service interface {
 	FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error)
 	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
 	DeleteWorkDay(ctx context.Context, id string) (string, error)
-	GetWorkDays(ctx context.Context, page int) (*[]Domain, int, int, int64, error)
+	GetWorkDaysPagination(ctx context.Context, page int) (*[]Domain, int, int, int64, error)
+	GetWorkDays(ctx context.Context) (*[]Domain, error)
 }
 
 type Repository interface {
@@ -32,6 +33,7 @@ type Repository interface {
 	UpdateWorkDay(ctx context.Context, id string, data *Domain) (*Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
 	GetByID(ctx context.Context, id uint) (Domain, error)
-	GetWorkDays(ctx context.Context, offset, limit int) (*[]Domain, int64, error)
+	GetWorkDays(ctx context.Context) (*[]Domain, error)
+	GetWorkDaysPagination(ctx context.Context, offset, limit int) (*[]Domain, int64, error)
 	DeleteWorkDayByUuid(ctx context.Context, id string) (string, error)
 }

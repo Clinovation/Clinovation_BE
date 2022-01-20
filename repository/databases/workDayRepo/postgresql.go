@@ -105,7 +105,7 @@ func (r *WorkDaysRepository) DeleteWorkDayByUuid(ctx context.Context, id string)
 	return "Work Day Was Deleted", nil
 }
 
-func (r *WorkDaysRepository) GetWorkDays(ctx context.Context, offset, limit int) (*[]workDayEntity.Domain,int64, error) {
+func (r *WorkDaysRepository) GetWorkDaysPagination(ctx context.Context, offset, limit int) (*[]workDayEntity.Domain,int64, error) {
 	var totalData int64
 	domain := []workDayEntity.Domain{}
 	rec := []WorkDays{}
@@ -119,4 +119,13 @@ func (r *WorkDaysRepository) GetWorkDays(ctx context.Context, offset, limit int)
 	copier.Copy(&domain, &rec)
 
 	return &domain, totalData, nil
+}
+
+func (r *WorkDaysRepository) GetWorkDays(ctx context.Context) (*[]workDayEntity.Domain, error) {
+	var recipe []WorkDays
+	if err := r.db.Find(&recipe).Error; err != nil {
+		return &[]workDayEntity.Domain{}, err
+	}
+	result := toDomainArray(recipe)
+	return &result, nil
 }

@@ -99,7 +99,7 @@ func (wds *WorkHoursServices) DeleteWorkHour(ctx context.Context, id string) (st
 	return res, nil
 }
 
-func (wds *WorkHoursServices) GetWorkHours(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
+func (wds *WorkHoursServices) GetWorkHoursPagination(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
@@ -111,10 +111,21 @@ func (wds *WorkHoursServices) GetWorkHours(ctx context.Context, page int) (*[]Do
 		offset = (page - 1) * 5
 	}
 
-	res, totalData, err := wds.WorkHoursRepository.GetWorkHours(ctx, offset, limit)
+	res, totalData, err := wds.WorkHoursRepository.GetWorkHoursPagination(ctx, offset, limit)
 	if err != nil {
 		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkHour
 	}
 
 	return res, offset, limit, totalData, nil
+}
+
+func (wds *WorkHoursServices) GetWorkHours(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
+	defer cancel()
+
+	res, err := wds.WorkHoursRepository.GetWorkHours(ctx)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+	return res, nil
 }

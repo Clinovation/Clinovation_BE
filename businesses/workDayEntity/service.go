@@ -99,7 +99,7 @@ func (wds *WorkDaysServices) DeleteWorkDay(ctx context.Context, id string) (stri
 	return res, nil
 }
 
-func (wds *WorkDaysServices) GetWorkDays(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
+func (wds *WorkDaysServices) GetWorkDaysPagination(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
 	defer cancel()
 
@@ -111,10 +111,21 @@ func (wds *WorkDaysServices) GetWorkDays(ctx context.Context, page int) (*[]Doma
 		offset = (page - 1) * 5
 	}
 
-	res, totalData, err := wds.WorkDaysRepository.GetWorkDays(ctx, offset, limit)
+	res, totalData, err := wds.WorkDaysRepository.GetWorkDaysPagination(ctx, offset, limit)
 	if err != nil {
 		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundWorkDay
 	}
 
 	return res, offset, limit, totalData, nil
+}
+
+func (wds *WorkDaysServices) GetWorkDays(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, wds.ContextTimeout)
+	defer cancel()
+
+	res, err := wds.WorkDaysRepository.GetWorkDays(ctx)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+	return res, nil
 }
