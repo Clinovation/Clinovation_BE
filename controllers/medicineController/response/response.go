@@ -35,3 +35,9 @@ func FromDomainArray(domain []medicineEntity.Domain) []Medicine {
 	}
 	return res
 }
+
+type Page struct {
+	Offset    int   `json:"offset"`
+	Limit     int   `json:"limit"`
+	TotalData int64 `json:"total_data"`
+}
