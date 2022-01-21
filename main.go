@@ -26,7 +26,6 @@ import (
 
 	ConfigJWT "github.com/Clinovation/Clinovation_BE/app/configs/auth"
 	configDB "github.com/Clinovation/Clinovation_BE/app/configs/databases"
-	_middleware "github.com/Clinovation/Clinovation_BE/app/middlewares/logger"
 	_domainFactory "github.com/Clinovation/Clinovation_BE/repository"
 
 	"os"

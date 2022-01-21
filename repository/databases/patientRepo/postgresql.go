@@ -128,7 +128,7 @@ func (r *PatientRepository) GetByName(ctx context.Context, name string, offset, 
 	rec := []Patient{}
 
 	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "patients.name LIKE ?", "%"+name+"%").Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -146,7 +146,7 @@ func (r *PatientRepository) GetByNikByQuery(ctx context.Context, nik string, off
 	rec := []Patient{}
 
 	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "patients.nik LIKE ?", "%"+nik+"%").Error
 	if err != nil {
 		return nil, 0, err
 	}
