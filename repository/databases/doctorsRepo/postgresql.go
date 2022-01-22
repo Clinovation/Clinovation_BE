@@ -147,13 +147,16 @@ func (r *DoctorsRepository) GetDoctors(ctx context.Context, offset, limit int) (
 	rec := []Doctors{}
 
 	r.db.Find(&rec, "role = ?", "doctor").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "doctor").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("WorkDay").Joins("WorkHour").Find(&rec, "role = ?", "doctor").Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	copier.Copy(&domain, &rec)
-
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 	return &domain, totalData, nil
 }
 
@@ -164,13 +167,16 @@ func (r *DoctorsRepository) GetWaitingList(ctx context.Context, offset, limit in
 
 	r.db.Find(&rec, "role = ?", "approve_waiting_list").Count(&totalData)
 
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "role = ?", "approve_waiting_list").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("WorkDay").Joins("WorkHour").Find(&rec, "role = ?", "approve_waiting_list").Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	copier.Copy(&domain, &rec)
-
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 	return &domain, totalData, nil
 
 }
@@ -181,12 +187,16 @@ func (r *DoctorsRepository) GetByName(ctx context.Context, name string, offset, 
 	rec := []Doctors{}
 
 	r.db.Find(&rec, "name LIKE ?", "%"+name+"%").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "name LIKE ?", "%"+name+"%").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("WorkDay").Joins("WorkHour").Find(&rec, "name LIKE ?", "%"+name+"%").Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 
 	return domain, totalData, nil
 }
@@ -197,12 +207,16 @@ func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string, off
 	rec := []Doctors{}
 
 	r.db.Find(&rec, "nik LIKE ?", "%"+nik+"%").Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
+	err := r.db.Limit(limit).Offset(offset).Joins("WorkDay").Joins("WorkHour").Find(&rec, "nik LIKE ?", "%"+nik+"%").Error
 	if err != nil {
 		return nil, 0, err
 	}
 
 	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 
 	return domain, totalData, nil
 }

@@ -57,17 +57,21 @@ func (ss *ScheduleServices) CreateSchedule(ctx context.Context, scheduleDomain *
 	}
 
 	if doctor.Role != "" && doctor.Role != "approve_waiting_list" {
-		scheduleDomain.Role = "doctor"
+		scheduleDomain.UserRole = "doctor"
 		scheduleDomain.UserID = doctor.ID
+		scheduleDomain.Username = doctor.Name
 	}
 
 	if nurse.Role != "" && nurse.Role != "approve_waiting_list" {
-		scheduleDomain.Role = "nurse"
+		scheduleDomain.UserRole = "nurse"
 		scheduleDomain.UserID = nurse.ID
+		scheduleDomain.Username = nurse.Name
 	}
 
 	scheduleDomain.WorkHourID = workHour.ID
+	scheduleDomain.WorkHour = workHour.Hour
 	scheduleDomain.WorkDayID = workDay.ID
+	scheduleDomain.WorkDay = workDay.Day
 
 	res, err := ss.SchedulesRepository.CreateNewSchedule(ctx, scheduleDomain)
 	if err != nil {
@@ -116,17 +120,21 @@ func (ss *ScheduleServices) UpdateById(ctx context.Context, scheduleDomain *Doma
 	}
 
 	if doctor.Role != "" && doctor.Role != "approve_waiting_list" {
-		scheduleDomain.Role = "doctor"
+		scheduleDomain.UserRole = "doctor"
 		scheduleDomain.UserID = doctor.ID
+		scheduleDomain.Username = doctor.Name
 	}
 
 	if nurse.Role != "" && nurse.Role != "approve_waiting_list" {
-		scheduleDomain.Role = "nurse"
+		scheduleDomain.UserRole = "nurse"
 		scheduleDomain.UserID = nurse.ID
+		scheduleDomain.Username = nurse.Name
 	}
 
 	scheduleDomain.WorkHourID = workHour.ID
+	scheduleDomain.WorkHour = workHour.Hour
 	scheduleDomain.WorkDayID = workDay.ID
+	scheduleDomain.WorkDay = workDay.Day
 
 	res, err := ss.SchedulesRepository.UpdateSchedule(ctx, id, scheduleDomain)
 	if err != nil {

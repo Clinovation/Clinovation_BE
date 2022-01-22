@@ -2,28 +2,35 @@ package doctorsEntity
 
 import (
 	"context"
+	"errors"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
+	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"strings"
 	"time"
 )
 
 type DoctorsServices struct {
-	DoctorsRepository Repository
-	jwtAuth           *auth.ConfigJWT
-	ContextTimeout    time.Duration
+	DoctorsRepository  Repository
+	WorkDayRepository  workDayEntity.Repository
+	WorkHourRepository workHourEntity.Repository
+	jwtAuth            *auth.ConfigJWT
+	ContextTimeout     time.Duration
 }
 
-func NewDoctorsServices(repoDoctor Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
+func NewDoctorsServices(repoDoctor Repository, repoWorkDayRepo workDayEntity.Repository, repoWorkHourRepo workHourEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
 	return &DoctorsServices{
-		DoctorsRepository: repoDoctor,
-		jwtAuth:           auth,
-		ContextTimeout:    timeout,
+		DoctorsRepository:  repoDoctor,
+		WorkDayRepository:  repoWorkDayRepo,
+		WorkHourRepository: repoWorkHourRepo,
+		jwtAuth:            auth,
+		ContextTimeout:     timeout,
 	}
 }
 
-func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (*Domain, error) {
+func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain, workDayID string, workHourID string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
@@ -53,6 +60,21 @@ func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain) (
 	if err != nil {
 		return nil, businesses.ErrInternalServer
 	}
+
+	workDay, err := ds.WorkDayRepository.GetByUuid(ctx, workDayID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Day Doesn't Exist")
+	}
+
+	workHour, err := ds.WorkHourRepository.GetByUuid(ctx, workHourID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Hour Doesn't Exist")
+	}
+
+	doctorDomain.WorkDayID = workDay.ID
+	//doctorDomain.WorkDay = workDay.Day
+	doctorDomain.WorkHourID = workHour.ID
+	//doctorDomain.WorkHour = workHour.Hour
 
 	res, err := ds.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
 	if err != nil {

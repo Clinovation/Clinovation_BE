@@ -21,13 +21,17 @@ type Domain struct {
 	Specialist     string
 	WorkExperience string
 	Avatar         string
+	WorkDay        string
+	WorkDayID      uint
+	WorkHour       string
+	WorkHourID     uint
 	Token          string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
 
 type Service interface {
-	Register(ctx context.Context, data *Domain) (*Domain, error)
+	Register(ctx context.Context, data *Domain, workDayID string, workHourID string) (*Domain, error)
 	Login(ctx context.Context, email string, password string) (string, error)
 	FindByUuid(ctx context.Context, uuid string) (Domain, error)
 	ForgetPassword(ctx context.Context, data *Domain) (*Domain, error)
