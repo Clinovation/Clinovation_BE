@@ -10,9 +10,12 @@ type Domain struct {
 	ID         uint
 	Uuid       uuid.UUID
 	WorkHourID uint
+	WorkHour   string
 	WorkDayID  uint
-	UserID     uint
-	Role       string
+	WorkDay    string
+	UserID   uint
+	Username   string
+	UserRole   string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

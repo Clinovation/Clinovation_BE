@@ -8,7 +8,7 @@ type ScheduleRegistration struct {
 	UserID     uint   `json:"user_id"`
 	WorkDayID  uint   `json:"work_day_id"`
 	WorkHourID uint   `json:"work_hour_id"`
-	Role       string `json:"role"`
+	UserRole   string `json:"user_role"`
 }
 
 func (rec *ScheduleRegistration) ToDomain() *scheduleEntity.Domain {
@@ -16,6 +16,6 @@ func (rec *ScheduleRegistration) ToDomain() *scheduleEntity.Domain {
 		UserID:     rec.UserID,
 		WorkDayID:  rec.WorkDayID,
 		WorkHourID: rec.WorkHourID,
-		Role:       rec.Role,
+		UserRole:   rec.UserRole,
 	}
 }

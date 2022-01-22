@@ -31,6 +31,9 @@ func (ctrl *DoctorController) Registration(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.DoctorRegistration)
 
+	workDayID := c.QueryParam("workDayID")
+	workHourID := c.QueryParam("workHourID")
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
 			helpers.BuildErrorResponse("The Data You Entered is Wrong",
@@ -43,7 +46,7 @@ func (ctrl *DoctorController) Registration(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	res, err := ctrl.doctorsService.Register(ctx, req.ToDomain())
+	res, err := ctrl.doctorsService.Register(ctx, req.ToDomain(), workDayID, workHourID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",

@@ -13,7 +13,7 @@ type Schedule struct {
 	UserID     uint      `gorm:"type:uint"`
 	WorkDayID  uint      `gorm:"type:uint"`
 	WorkHourID uint      `gorm:"type:uint"`
-	Role       string    `gorm:"type:varchar(20)"`
+	UserRole   string    `gorm:"type:varchar(20)"`
 }
 
 func ToDomain(rec *Schedule) scheduleEntity.Domain {
@@ -23,7 +23,7 @@ func ToDomain(rec *Schedule) scheduleEntity.Domain {
 		WorkDayID:  rec.WorkDayID,
 		WorkHourID: rec.WorkHourID,
 		UserID:     rec.UserID,
-		Role:       rec.Role,
+		UserRole:   rec.UserRole,
 	}
 }
 
@@ -34,7 +34,7 @@ func FromDomain(scheduleDomain *scheduleEntity.Domain) *Schedule {
 		WorkDayID:  scheduleDomain.WorkDayID,
 		UserID:     scheduleDomain.UserID,
 		WorkHourID: scheduleDomain.WorkHourID,
-		Role:       scheduleDomain.Role,
+		UserRole:   scheduleDomain.UserRole,
 	}
 }
 

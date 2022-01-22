@@ -54,16 +54,6 @@ func main() {
 	echoApp.Use(middleware.CORS())
 	echoApp.Use(middleware.LoggerWithConfig(_middleware.LoggerConfig()))
 
-	//doctor
-	doctorRepo := _domainFactory.NewDoctorRepository(db)
-	doctorService := doctorsEntity.NewDoctorsServices(doctorRepo, &jwt, timeoutContext)
-	doctorCtrl := doctorsController.NewDoctorController(doctorService, &jwt)
-
-	//nurse
-	nurseRepo := _domainFactory.NewNurseRepository(db)
-	nurseService := nursesEntity.NewNursesServices(nurseRepo, &jwt, timeoutContext)
-	nurseCtrl := nursesController.NewNursesController(nurseService, &jwt)
-
 	//medical staff
 	medicalStaffRepo := _domainFactory.NewMedicalStaffRepository(db)
 	medicalStaffService := medicalStaffEntity.NewMedicalStaffServices(medicalStaffRepo, &jwt, timeoutContext)
@@ -83,6 +73,16 @@ func main() {
 	workHourRepo := _domainFactory.NewWorkHourRepository(db)
 	workHourService := workHourEntity.NewWorkHoursServices(workHourRepo, &jwt, timeoutContext)
 	workHourCtrl := workHourController.NewWorkHourController(workHourService, &jwt)
+
+	//doctor
+	doctorRepo := _domainFactory.NewDoctorRepository(db)
+	doctorService := doctorsEntity.NewDoctorsServices(doctorRepo, workDayRepo, workHourRepo, &jwt, timeoutContext)
+	doctorCtrl := doctorsController.NewDoctorController(doctorService, &jwt)
+
+	//nurse
+	nurseRepo := _domainFactory.NewNurseRepository(db)
+	nurseService := nursesEntity.NewNursesServices(nurseRepo, &jwt, timeoutContext)
+	nurseCtrl := nursesController.NewNursesController(nurseService, &jwt)
 
 	//schedule
 	scheduleRepo := _domainFactory.NewScheduleRepository(db)
