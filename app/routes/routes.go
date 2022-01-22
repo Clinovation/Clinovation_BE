@@ -134,22 +134,22 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 
 	//work day with medical staff role
 	workDays := echo.Group("api/v1/workDay")
+	workDays.GET("/", cl.WorkDayController.GetWorkDays)
 	workDays.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	workDays.POST("/", cl.WorkDayController.CreateNewWorkDay)
 	workDays.PUT("/:uuid", cl.WorkDayController.UpdateWorkDayById)
 	workDays.GET("/:uuid", cl.WorkDayController.FindWorkDayByUuid)
 	workDays.GET("/pagination", cl.WorkDayController.GetWorkDaysPagination)
-	workDays.GET("/", cl.WorkDayController.GetWorkDays)
 	workDays.GET("/queryDay", cl.WorkDayController.FindWorkDayByDay)
 	workDays.DELETE("/:uuid", cl.WorkDayController.DeleteWorkDayByUuid)
 
 	//work Hour with medical staff role
 	workHours := echo.Group("api/v1/workHour")
+	workHours.GET("/", cl.WorkHourController.GetWorkHours)
 	workHours.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	workHours.POST("/", cl.WorkHourController.CreateNewWorkHour)
 	workHours.PUT("/:uuid", cl.WorkHourController.UpdateWorkHourById)
 	workHours.GET("/:uuid", cl.WorkHourController.FindWorkHourByUuid)
-	workHours.GET("/", cl.WorkHourController.GetWorkHours)
 	workHours.GET("/pagination", cl.WorkHourController.GetWorkHoursPagination)
 	workHours.GET("/queryHour", cl.WorkHourController.FindWorkHourByHour)
 	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
