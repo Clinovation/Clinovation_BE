@@ -56,6 +56,8 @@ func FromDomain(doctorDomain *doctorsEntity.Domain) *Doctors {
 	return &Doctors{
 		ID:             doctorDomain.ID,
 		Uuid:           doctorDomain.Uuid,
+		WorkDayID:      doctorDomain.WorkDayID,
+		WorkHourID:     doctorDomain.WorkHourID,
 		Nik:            doctorDomain.Nik,
 		Name:           doctorDomain.Name,
 		Email:          doctorDomain.Email,

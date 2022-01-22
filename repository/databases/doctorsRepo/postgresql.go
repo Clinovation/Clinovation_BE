@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
+	"log"
 )
 
 type DoctorsRepository struct {
@@ -26,7 +27,9 @@ func (r *DoctorsRepository) CreateNewDoctor(ctx context.Context, doctorDomain *d
 	// 	rec.Role = "doctor"
 	err := r.db.Create(&rec).Error
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("masuk err DB",err)
+		log.Println("masuk err DB",err)
+
 		return nil, err
 	}
 	result := ToDomain(rec)

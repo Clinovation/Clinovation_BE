@@ -3,11 +3,13 @@ package doctorsEntity
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"log"
 	"strings"
 	"time"
 )
@@ -71,13 +73,17 @@ func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain, w
 		return &Domain{}, errors.New("Work Hour Doesn't Exist")
 	}
 
+	fmt.Println("ini work day",workDay)
+	fmt.Println("ini work hour",workHour)
+
 	doctorDomain.WorkDayID = workDay.ID
 	//doctorDomain.WorkDay = workDay.Day
 	doctorDomain.WorkHourID = workHour.ID
 	//doctorDomain.WorkHour = workHour.Hour
-
 	res, err := ds.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
 	if err != nil {
+		fmt.Println("masuk err service", err)
+		log.Println("masuk err service", err)
 		return nil, businesses.ErrInternalServer
 	}
 
