@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalRecordEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
+	"log"
 )
 
 type MedicalRecordRepository struct {
@@ -75,11 +77,22 @@ func (r *MedicalRecordRepository) DeleteMedicalRecordByUuid(ctx context.Context,
 	return "MedicalRecord Data was Deleted", nil
 }
 
-func (r *MedicalRecordRepository) GetMedicalRecords(ctx context.Context) (*[]medicalRecordEntity.Domain, error) {
-	var medicalRecord []MedicalRecord
-	if err := r.db.Find(&medicalRecord).Error; err != nil {
-		return &[]medicalRecordEntity.Domain{}, err
+func (r *MedicalRecordRepository) GetMedicalRecordsQueue(ctx context.Context, userID uint, offset, limit int) (*[]medicalRecordEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicalRecordEntity.Domain{}
+	rec := []MedicalRecord{}
+
+	r.db.Find(&rec, "user_id = ?", userID).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("Patient").Joins("MedicalStaff").Find(&rec, "user_id = ?", userID).Error
+	if err != nil {
+		log.Println(err)
+		return nil, 0, err
 	}
-	result := toDomainArray(medicalRecord)
-	return &result, nil
+
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+		domain[i].Patient = rec[i].Patient.Name
+	}
+	return &domain, totalData, nil
 }

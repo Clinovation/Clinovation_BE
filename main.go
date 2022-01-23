@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Clinovation/Clinovation_BE/app/routes"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/medicalRecordEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
@@ -13,6 +14,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
+	"github.com/Clinovation/Clinovation_BE/controllers/medicalRecordController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalStaffController"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
@@ -99,24 +101,31 @@ func main() {
 	medicineService := medicineEntity.NewMedicineServices(medicineRepo, &jwt, timeoutContext)
 	medicineCtrl := medicineController.NewMedicineController(medicineService, &jwt)
 
+	//Medical Record
+	medicalRecordRepo := _domainFactory.NewMedicalRecordRepository(db)
+	medicalRecordService := medicalRecordEntity.NewMedicalRecordServices(medicalRecordRepo, doctorRepo, nurseRepo, medicalStaffRepo, patientRepo, &jwt, timeoutContext)
+	medicalRecordCtrl := medicalRecordController.NewMedicalRecordsController(medicalRecordService, &jwt)
+
 	//Recipe
 	recipeRepo := _domainFactory.NewRecipeRepository(db)
 	recipeService := recipeEntity.NewRecipeServices(recipeRepo, &jwt, timeoutContext)
 	recipeCtrl := recipeController.NewRecipeController(recipeService, &jwt)
 
+
 	//routes
 	routesInit := routes.ControllerList{
-		JWTMiddleware:          jwt.Init(),
-		DoctorsController:      *doctorCtrl,
-		NurseController:        *nurseCtrl,
-		PatientController:      *patientCtrl,
-		WorkDayController:      *workDayCtrl,
-		WorkHourController:     *workHourCtrl,
-		ScheduleController:     *scheduleCtrl,
-		QueueController:        *queueCtrl,
-		MedicineController:     *medicineCtrl,
-		RecipeController:       *recipeCtrl,
-		MedicalStaffController: *medicalStaffCtrl,
+		JWTMiddleware:           jwt.Init(),
+		DoctorsController:       *doctorCtrl,
+		NurseController:         *nurseCtrl,
+		PatientController:       *patientCtrl,
+		WorkDayController:       *workDayCtrl,
+		WorkHourController:      *workHourCtrl,
+		ScheduleController:      *scheduleCtrl,
+		QueueController:         *queueCtrl,
+		MedicineController:      *medicineCtrl,
+		RecipeController:        *recipeCtrl,
+		MedicalStaffController:  *medicalStaffCtrl,
+		MedicalRecordController: *medicalRecordCtrl,
 	}
 	routesInit.RouteRegister(echoApp)
 

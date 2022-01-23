@@ -2,45 +2,57 @@ package medicalRecordRepo
 
 import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalRecordEntity"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalStaffRepo"
+	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type MedicalRecord struct {
 	gorm.Model
-	ID           uint      `gorm:"primary_key:auto_increment"`
-	Uuid         uuid.UUID `gorm:"type:varchar(255)"`
-	UserID       uint      `gorm:"type:uint"`
-	PatientID    uint      `gorm:"type:uint"`
-	RecipeID     uint      `gorm:"type:uint"`
-	Consultation string    `gorm:"type:uint"`
-	Symptom      string    `gorm:"type:uint"`
-	Note         string    `gorm:"type:uint"`
+	ID             uint                          `gorm:"primary_key:auto_increment"`
+	Uuid           uuid.UUID                     `gorm:"type:varchar(255)"`
+	PatientID      uint                          `gorm:"type:uint"`
+	Patient        patientRepo.Patient           `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION"`
+	UserID         uint                          `gorm:"type:uint"`
+	Username       string                        `gorm:"type:varchar"`
+	UserRole       string                        `gorm:"type:varchar"`
+	UserSpecialist string                        `gorm:"type:varchar"`
+	MedicalStaffID uint                          `gorm:"type:uint"`
+	MedicalStaff   medicalStaffRepo.MedicalStaff `gorm:"constraint:OnUpdate:NO ACTION,OnDelete:NO ACTION"`
+	Consultation   string                        `gorm:"type:varchar"`
+	NewRecord      string                        `gorm:"type:varchar"`
 }
 
 func ToDomain(rec *MedicalRecord) medicalRecordEntity.Domain {
 	return medicalRecordEntity.Domain{
-		ID:           rec.ID,
-		Uuid:         rec.Uuid,
-		PatientID:    rec.PatientID,
-		RecipeID:     rec.RecipeID,
-		UserID:       rec.UserID,
-		Consultation: rec.Consultation,
-		Symptom:      rec.Symptom,
-		Note:         rec.Note,
+		ID:             rec.ID,
+		Uuid:           rec.Uuid,
+		PatientID:      rec.PatientID,
+		Patient:        rec.Patient.Name,
+		UserID:         rec.UserID,
+		Username:       rec.Username,
+		UserRole:       rec.UserRole,
+		UserSpecialist: rec.UserSpecialist,
+		MedicalStaffID: rec.MedicalStaffID,
+		MedicalStaff:   rec.MedicalStaff.Name,
+		Consultation:   rec.Consultation,
+		NewRecord:      rec.NewRecord,
 	}
 }
 
 func FromDomain(medicalRecordDomain *medicalRecordEntity.Domain) *MedicalRecord {
 	return &MedicalRecord{
-		ID:           medicalRecordDomain.ID,
-		Uuid:         medicalRecordDomain.Uuid,
-		PatientID:    medicalRecordDomain.PatientID,
-		UserID:       medicalRecordDomain.UserID,
-		RecipeID:     medicalRecordDomain.RecipeID,
-		Consultation: medicalRecordDomain.Consultation,
-		Symptom:      medicalRecordDomain.Symptom,
-		Note:         medicalRecordDomain.Note,
+		ID:             medicalRecordDomain.ID,
+		Uuid:           medicalRecordDomain.Uuid,
+		PatientID:      medicalRecordDomain.PatientID,
+		UserID:         medicalRecordDomain.UserID,
+		Username:       medicalRecordDomain.Username,
+		UserRole:       medicalRecordDomain.UserRole,
+		UserSpecialist: medicalRecordDomain.UserSpecialist,
+		MedicalStaffID: medicalRecordDomain.MedicalStaffID,
+		Consultation:   medicalRecordDomain.Consultation,
+		NewRecord:      medicalRecordDomain.NewRecord,
 	}
 }
 

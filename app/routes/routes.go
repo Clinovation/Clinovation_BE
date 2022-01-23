@@ -231,13 +231,13 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	recipeWithAllRole.GET("/", cl.RecipeController.GetRecipe)
 
 	//medical Record with doctor role
-	medicalRecord := echo.Group("api/v1/medicalRecord/patient")
+	medicalRecord := echo.Group("api/v1/medicalRecord")
 	medicalRecord.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
 	medicalRecord.POST("/", cl.MedicalRecordController.CreateMedicalRecord)
-	medicalRecord.GET("/", cl.MedicalRecordController.GetMedicalRecords)
+	medicalRecord.GET("/queue", cl.MedicalRecordController.GetMedicalRecordsQueue)
 	medicalRecord.PUT("/:uuid", cl.MedicalRecordController.UpdateMedicalRecordById)
 	medicalRecord.DELETE("/:uuid", cl.MedicalRecordController.DeleteMedicalRecordByUuid)
-	queueWithAllRole.GET("/:uuid", cl.MedicalRecordController.FindMedicalRecordByUuid)
+	medicalRecord.GET("/:uuid", cl.MedicalRecordController.FindMedicalRecordByUuid)
 }
 
 func MedicalStaffValidation() echo.MiddlewareFunc {

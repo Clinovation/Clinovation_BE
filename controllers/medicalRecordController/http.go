@@ -6,8 +6,11 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalRecordController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/medicalRecordController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 type MedicalRecordsController struct {
@@ -28,9 +31,22 @@ func (ctrl *MedicalRecordsController) CreateMedicalRecord(c echo.Context) error 
 
 	patientID := c.QueryParam("patientID")
 	userID := c.QueryParam("userID")
-	recipeID := c.QueryParam("recipeID")
+	medicalStaff := auth.GetDoctor(c)
+	medicalStaffID := medicalStaff.Uuid
 
-	res, err := ctrl.medicalRecordsService.CreateMedicalRecord(ctx, req.ToDomain(), userID, recipeID, patientID)
+	if err := c.Bind(&req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("The Data You Entered is Wrong",
+				err, helpers.EmptyObj{}))
+	}
+
+	if err := c.Validate(req); err != nil {
+		return c.JSON(http.StatusBadRequest,
+			helpers.BuildErrorResponse("An Error Occurred While Validating The Request Data",
+				err, helpers.EmptyObj{}))
+	}
+
+	res, err := ctrl.medicalRecordsService.CreateMedicalRecord(ctx, req.ToDomain(), userID, medicalStaffID, patientID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -57,17 +73,39 @@ func (ctrl *MedicalRecordsController) FindMedicalRecordByUuid(c echo.Context) er
 			response.FromDomain(&medicalRecord)))
 }
 
-func (ctrl *MedicalRecordsController) GetMedicalRecords(c echo.Context) error {
-	medicalRecords, err := ctrl.medicalRecordsService.GetMedicalRecords(c.Request().Context())
+func (ctrl *MedicalRecordsController) GetMedicalRecordsQueue(c echo.Context) error {
+	user := auth.GetDoctor(c)
+	userID := user.Uuid
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.medicalRecordsService.GetMedicalRecordsQueue(c.Request().Context(), userID, page)
 	if err != nil {
+		log.Println(err)
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Doctor Medical Record Doesn't Exist",
+			helpers.BuildErrorResponse("Medical Record Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Doctor Medical Record",
-			response.FromDomainArray(*medicalRecords)))
+	res := []response.MedicalRecords{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medical Record by nik But Medical Record  Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *MedicalRecordsController) UpdateMedicalRecordById(c echo.Context) error {
@@ -86,12 +124,12 @@ func (ctrl *MedicalRecordsController) UpdateMedicalRecordById(c echo.Context) er
 	}
 
 	uuid := c.Param("uuid")
-
 	patientID := c.QueryParam("patientID")
 	userID := c.QueryParam("userID")
-	recipeID := c.QueryParam("recipeID")
+	medicalStaff := auth.GetDoctor(c)
+	medicalStaffID := medicalStaff.Uuid
 
-	res, err := ctrl.medicalRecordsService.UpdateById(ctx, req.ToDomain(), userID, recipeID, patientID, uuid)
+	res, err := ctrl.medicalRecordsService.UpdateById(ctx, req.ToDomain(), userID, medicalStaffID, patientID, uuid)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",

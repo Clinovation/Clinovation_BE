@@ -78,7 +78,7 @@ func (ctrl *WorkDayController) FindWorkDayByDay(c echo.Context) error {
 	data, offset, limit, totalData, err := ctrl.workDaysService.FindByDay(c.Request().Context(), day, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Patient Doesn't Exist",
+			helpers.BuildErrorResponse("Work Day Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
@@ -93,7 +93,7 @@ func (ctrl *WorkDayController) FindWorkDayByDay(c echo.Context) error {
 
 	if len(data) == 0 {
 		return c.JSON(http.StatusNoContent,
-			helpers.BuildSuccessResponse("Successfully Get all Work Day by nik But Work Day Data Doesn't Exist",
+			helpers.BuildSuccessResponse("Successfully Get all Work Day by day But Work Day Data Doesn't Exist",
 				data))
 	}
 
