@@ -65,6 +65,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	doctorAndMedicalStaff.GET("/", cl.DoctorsController.GetDoctors)
 	doctorAndMedicalStaff.GET("/queryName", cl.DoctorsController.FindDoctorByNameQuery)
 	doctorAndMedicalStaff.GET("/queryNik", cl.DoctorsController.FindDoctorByNikQuery)
+	doctorAndMedicalStaff.GET("/queryDay", cl.DoctorsController.FindDoctorByDayQuery)
 	doctorAndMedicalStaff.DELETE("/", cl.DoctorsController.DeleteDoctorByUuid)
 
 	//nurse

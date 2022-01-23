@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/Clinovation/Clinovation_BE/businesses/recipeEntity"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
+	"log"
 )
 
 type RecipeRepository struct {
@@ -75,11 +77,22 @@ func (r *RecipeRepository) DeleteRecipeByUuid(ctx context.Context, id string) (s
 	return "Medical Staff was Deleted", nil
 }
 
-func (r *RecipeRepository) GetRecipe(ctx context.Context) (*[]recipeEntity.Domain, error) {
-	var recipe []Recipe
-	if err := r.db.Find(&recipe).Error; err != nil {
-		return &[]recipeEntity.Domain{}, err
+func (r *RecipeRepository) GetRecipe(ctx context.Context, offset, limit int) (*[]recipeEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []recipeEntity.Domain{}
+	rec := []Recipe{}
+
+	r.db.Find(&rec).Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("Medicine").Find(&rec).Error
+	if err != nil {
+		log.Println(err)
+		return nil, 0, err
 	}
-	result := toDomainArray(recipe)
-	return &result, nil
+
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].Medicine = rec[i].Medicine.Name
+		domain[i].Patient = rec[i].Patient.Name
+	}
+	return &domain, totalData, nil
 }

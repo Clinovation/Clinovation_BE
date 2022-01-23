@@ -108,7 +108,7 @@ func main() {
 
 	//Recipe
 	recipeRepo := _domainFactory.NewRecipeRepository(db)
-	recipeService := recipeEntity.NewRecipeServices(recipeRepo, &jwt, timeoutContext)
+	recipeService := recipeEntity.NewRecipeServices(recipeRepo, doctorRepo, nurseRepo, patientRepo, medicalRecordRepo, &jwt, timeoutContext)
 	recipeCtrl := recipeController.NewRecipeController(recipeService, &jwt)
 
 
