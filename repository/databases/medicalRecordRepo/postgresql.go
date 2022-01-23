@@ -52,7 +52,6 @@ func (r *MedicalRecordRepository) GetByUuid(ctx context.Context, uuid string) (m
 	domain.PatientSex = rec.Patient.Sex
 	domain.PatientStatusMartial = rec.Patient.StatusMartial
 
-	//return ToDomain(&rec), nil
 	return domain, nil
 }
 
