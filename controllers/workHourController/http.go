@@ -93,7 +93,7 @@ func (ctrl *WorkHourController) FindWorkHourByHour(c echo.Context) error {
 
 	if len(data) == 0 {
 		return c.JSON(http.StatusNoContent,
-			helpers.BuildSuccessResponse("Successfully Get all Work Hour by nik But Work Hour Data Doesn't Exist",
+			helpers.BuildSuccessResponse("Successfully Get all Work Hour by hour But Work Hour Data Doesn't Exist",
 				data))
 	}
 

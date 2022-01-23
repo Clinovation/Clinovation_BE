@@ -5,21 +5,13 @@ import (
 )
 
 type MedicalRecordRegistration struct {
-	UserID       uint   `json:"user_id"`
-	PatientID    uint   `json:"patient_id"`
-	RecipeID     uint   `json:"recipe_id"`
-	Consultation string `json:"consultation"`
-	Symptom      string `json:"symptom"`
-	NewNote      string `json:"new_note"`
+	Consultation string `json:"consultation" validate:"required"`
+	NewRecord    string `json:"new_record" `
 }
 
 func (rec *MedicalRecordRegistration) ToDomain() *medicalRecordEntity.Domain {
 	return &medicalRecordEntity.Domain{
-		UserID:       rec.UserID,
-		PatientID:    rec.PatientID,
-		RecipeID:     rec.RecipeID,
 		Consultation: rec.Consultation,
-		Symptom:      rec.Symptom,
-		NewNote:      rec.NewNote,
+		NewRecord:    rec.NewRecord,
 	}
 }

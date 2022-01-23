@@ -7,30 +7,36 @@ import (
 )
 
 type MedicalRecords struct {
-	Uuid         uuid.UUID `json:"uuid"`
-	UserID       uint      `json:"user_id"`
-	RecipeID     uint      `json:"recipe_id"`
-	PatientID    uint      `json:"patient_id"`
-	Consultation string    `json:"consultation"`
-	Symptom      string    `json:"symptom"`
-	Note         string    `json:"note"`
-	NewNote      string    `json:"new_note"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	Uuid           uuid.UUID `json:"uuid"`
+	PatientID      uint      `json:"patient_id"`
+	Patient        string    `json:"patient"`
+	UserID         uint      `json:"user_id"`
+	Username       string    `json:"username"`
+	UserRole       string    `json:"user_role"`
+	UserSpecialist string    `json:"user_specialist"`
+	MedicalStaffID uint      `json:"medical_staff_id"`
+	MedicalStaff   string    `json:"medical_staff"`
+	Consultation   string    `json:"consultation"`
+	NewRecord      string    `json:"new_record"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
 
 func FromDomain(domain *medicalRecordEntity.Domain) *MedicalRecords {
 	return &MedicalRecords{
-		Uuid:         domain.Uuid,
-		UserID:       domain.UserID,
-		RecipeID:     domain.RecipeID,
-		PatientID:    domain.PatientID,
-		Consultation: domain.Consultation,
-		Symptom:      domain.Symptom,
-		Note:         domain.Note,
-		NewNote:      domain.NewNote,
-		CreatedAt:    domain.CreatedAt,
-		UpdatedAt:    domain.UpdatedAt,
+		Uuid:           domain.Uuid,
+		PatientID:      domain.PatientID,
+		Patient:        domain.Patient,
+		UserID:         domain.UserID,
+		Username:       domain.Username,
+		UserRole:       domain.UserRole,
+		UserSpecialist: domain.UserSpecialist,
+		MedicalStaffID: domain.MedicalStaffID,
+		MedicalStaff:   domain.MedicalStaff,
+		Consultation:   domain.Consultation,
+		NewRecord:      domain.NewRecord,
+		CreatedAt:      domain.CreatedAt,
+		UpdatedAt:      domain.UpdatedAt,
 	}
 }
 
@@ -40,4 +46,10 @@ func FromDomainArray(domain []medicalRecordEntity.Domain) []MedicalRecords {
 		res = append(res, *FromDomain(&v))
 	}
 	return res
+}
+
+type Page struct {
+	Offset    int   `json:"offset"`
+	Limit     int   `json:"limit"`
+	TotalData int64 `json:"total_data"`
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/helpers"
-	"log"
 	"strings"
 	"time"
 )
@@ -82,8 +81,6 @@ func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain, w
 	//doctorDomain.WorkHour = workHour.Hour
 	res, err := ds.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
 	if err != nil {
-		fmt.Println("masuk err service", err)
-		log.Println("masuk err service", err)
 		return nil, businesses.ErrInternalServer
 	}
 
