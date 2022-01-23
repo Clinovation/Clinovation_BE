@@ -17,7 +17,7 @@ type Domain struct {
 	PatientWeight        string
 	PatientNik           string
 	PatientSex           string
-	PatientStatusMartial string
+	PatientStatusMartial string	
 	UserID               uint
 	Username             string
 	UserRole             string
