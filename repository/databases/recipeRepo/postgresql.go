@@ -43,12 +43,19 @@ func (r *RecipeRepository) GetByID(ctx context.Context, id uint) (recipeEntity.D
 }
 
 func (r *RecipeRepository) GetByUuid(ctx context.Context, uuid string) (recipeEntity.Domain, error) {
+	domain := recipeEntity.Domain{}
 	rec := Recipe{}
-	err := r.db.Where("uuid = ?", uuid).First(&rec).Error
+	err := r.db.Joins("Medicine").Joins("Patient").Find(&rec, "recipes.uuid = ?", uuid).Error
 	if err != nil {
 		return recipeEntity.Domain{}, err
 	}
-	return ToDomain(&rec), nil
+
+	copier.Copy(&domain, &rec)
+
+	domain.Medicine = rec.Medicine.Name
+	domain.Patient = rec.Patient.Name
+
+	return domain, nil
 }
 
 func (r *RecipeRepository) UpdateRecipe(ctx context.Context, id string, recipeDomain *recipeEntity.Domain) (*recipeEntity.Domain, error) {
@@ -83,7 +90,7 @@ func (r *RecipeRepository) GetRecipe(ctx context.Context, offset, limit int) (*[
 	rec := []Recipe{}
 
 	r.db.Find(&rec).Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Joins("Medicine").Find(&rec).Error
+	err := r.db.Limit(limit).Offset(offset).Joins("Medicine").Joins("Patient").Find(&rec).Error
 	if err != nil {
 		log.Println(err)
 		return nil, 0, err

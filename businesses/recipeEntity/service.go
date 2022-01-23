@@ -26,13 +26,14 @@ type RecipeServices struct {
 }
 
 func NewRecipeServices(repoRecipe Repository, repoDoctor doctorsEntity.Repository, repoNurse nursesEntity.Repository,
-	repoPatient patientEntity.Repository, repoSMedicalRecord medicalRecordEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
+	repoPatient patientEntity.Repository, repoMedicalRecord medicalRecordEntity.Repository, repoMedicine medicineEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
 	return &RecipeServices{
 		RecipesRepository:       repoRecipe,
 		DoctorsRepository:       repoDoctor,
 		NursesRepository:        repoNurse,
 		PatientRepository:       repoPatient,
-		MedicalRecordRepository: repoSMedicalRecord,
+		MedicalRecordRepository: repoMedicalRecord,
+		MedicineRepository:      repoMedicine,
 		jwtAuth:                 auth,
 		ContextTimeout:          timeout,
 	}
