@@ -8,7 +8,6 @@ import (
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -84,7 +83,6 @@ func (ctrl *MedicalRecordsController) GetMedicalRecordsQueue(c echo.Context) err
 
 	data, offset, limit, totalData, err := ctrl.medicalRecordsService.GetMedicalRecordsQueue(c.Request().Context(), userID, page)
 	if err != nil {
-		log.Println(err)
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Medical Record Doesn't Exist",
 				err, helpers.EmptyObj{}))

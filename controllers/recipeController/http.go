@@ -6,8 +6,10 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/recipeController/request"
 	"github.com/Clinovation/Clinovation_BE/controllers/recipeController/response"
 	"github.com/Clinovation/Clinovation_BE/helpers"
+	"github.com/jinzhu/copier"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"strconv"
 )
 
 type RecipeController struct {
@@ -26,6 +28,12 @@ func (ctrl *RecipeController) CreateNewRecipe(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.RecipeRegistration)
 
+	patientID := c.QueryParam("patientID")
+	medicineID := c.QueryParam("medicineID")
+	medicalRecordID := c.QueryParam("medicalRecordID")
+	user := auth.GetUser(c)
+	userID := user.Uuid
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
 			helpers.BuildErrorResponse("The Data You Entered is Wrong",
@@ -38,7 +46,7 @@ func (ctrl *RecipeController) CreateNewRecipe(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	res, err := ctrl.recipeService.CreateNewRecipe(ctx, req.ToDomain())
+	res, err := ctrl.recipeService.CreateNewRecipe(ctx, req.ToDomain(), userID, medicalRecordID, medicineID, patientID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -66,16 +74,34 @@ func (ctrl *RecipeController) FindRecipeByUuid(c echo.Context) error {
 }
 
 func (ctrl *RecipeController) GetRecipe(c echo.Context) error {
-	recipe, err := ctrl.recipeService.GetRecipes(c.Request().Context())
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.recipeService.GetRecipes(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Recipe Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
-	return c.JSON(http.StatusOK,
-		helpers.BuildSuccessResponse("Successfully Get all Recipe",
-			response.FromDomainArray(*recipe)))
+	res := []response.Recipe{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Recipes by nik But Recipes  Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
 func (ctrl *RecipeController) UpdateRecipeById(c echo.Context) error {
@@ -94,8 +120,13 @@ func (ctrl *RecipeController) UpdateRecipeById(c echo.Context) error {
 	}
 
 	uuid := c.Param("uuid")
+	patientID := c.QueryParam("patientID")
+	medicineID := c.QueryParam("medicineID")
+	medicalRecordID := c.QueryParam("medicalRecordID")
+	user := auth.GetUser(c)
+	userID := user.Uuid
 
-	res, err := ctrl.recipeService.UpdateById(ctx, req.ToDomain(), uuid)
+	res, err := ctrl.recipeService.UpdateById(ctx, req.ToDomain(), uuid, userID, medicalRecordID, medicineID, patientID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",

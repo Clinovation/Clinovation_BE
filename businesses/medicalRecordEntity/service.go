@@ -3,6 +3,7 @@ package medicalRecordEntity
 import (
 	"context"
 	"errors"
+	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
@@ -74,10 +75,6 @@ func (ss *MedicalRecordServices) CreateMedicalRecord(ctx context.Context, medica
 	medicalRecordDomain.MedicalStaffID = medicalStaff.ID
 	medicalRecordDomain.PatientID = patient.ID
 
-
-	log.Println("service",medicalRecordDomain.NewRecord)
-	log.Println("service",medicalRecordDomain.Consultation)
-
 	res, err := ss.MedicalRecordsRepository.CreateNewMedicalRecord(ctx, medicalRecordDomain)
 	if err != nil {
 		return nil, businesses.ErrInternalServer
@@ -146,8 +143,20 @@ func (ss *MedicalRecordServices) UpdateById(ctx context.Context, medicalRecordDo
 		medicalRecordDomain.UserSpecialist = ""
 	}
 
+	log.Println(patient)
+	fmt.Println(patient)
+
 	medicalRecordDomain.MedicalStaffID = medicalStaff.ID
 	medicalRecordDomain.PatientID = patient.ID
+
+	medicalRecordDomain.PatientName = patient.Name
+	medicalRecordDomain.PatientAddress = patient.Address
+	medicalRecordDomain.PatientDob = patient.Dob
+	medicalRecordDomain.PatientHeight = patient.Height
+	medicalRecordDomain.PatientNik = patient.Nik
+	medicalRecordDomain.PatientSex = patient.Sex
+	medicalRecordDomain.PatientStatusMartial = patient.StatusMartial
+	medicalRecordDomain.PatientWeight = patient.Weight
 
 	res, err := ss.MedicalRecordsRepository.UpdateMedicalRecord(ctx, id, medicalRecordDomain)
 	if err != nil {
@@ -181,9 +190,9 @@ func (ss *MedicalRecordServices) GetMedicalRecordsQueue(ctx context.Context, use
 		return &[]Domain{}, -1, -1, -1, errors.New("User Doen't Exist")
 	}
 
-	if doctor.ID != 0{
+	if doctor.ID != 0 {
 		userId = doctor.ID
-	}else {
+	} else {
 		userId = nurse.ID
 	}
 
@@ -197,7 +206,6 @@ func (ss *MedicalRecordServices) GetMedicalRecordsQueue(ctx context.Context, use
 
 	res, totalData, err := ss.MedicalRecordsRepository.GetMedicalRecordsQueue(ctx, userId, offset, limit)
 	if err != nil {
-		log.Println(err)
 		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundMedicalRecord
 	}
 

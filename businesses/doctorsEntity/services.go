@@ -72,8 +72,8 @@ func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain, w
 		return &Domain{}, errors.New("Work Hour Doesn't Exist")
 	}
 
-	fmt.Println("ini work day",workDay)
-	fmt.Println("ini work hour",workHour)
+	fmt.Println("ini work day", workDay)
+	fmt.Println("ini work hour", workHour)
 
 	doctorDomain.WorkDayID = workDay.ID
 	//doctorDomain.WorkDay = workDay.Day
@@ -268,6 +268,26 @@ func (ds *DoctorsServices) FindByName(ctx context.Context, name string, page int
 	}
 
 	res, totalData, err := ds.DoctorsRepository.GetByName(ctx, name, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundDoctor
+	}
+
+	return res, offset, limit, totalData, nil
+}
+
+func (ds *DoctorsServices) FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error) {
+	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
+	defer cancel()
+
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
+	}
+
+	res, totalData, err := ds.DoctorsRepository.GetByDay(ctx, day, offset, limit)
 	if err != nil {
 		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundDoctor
 	}

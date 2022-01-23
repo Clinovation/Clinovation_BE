@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 	"gorm.io/gorm"
-	"log"
 )
 
 type MedicalRecordRepository struct {
@@ -83,16 +82,14 @@ func (r *MedicalRecordRepository) GetMedicalRecordsQueue(ctx context.Context, us
 	rec := []MedicalRecord{}
 
 	r.db.Find(&rec, "user_id = ?", userID).Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Joins("Patient").Joins("MedicalStaff").Find(&rec, "user_id = ?", userID).Error
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "user_id = ?", userID).Error
 	if err != nil {
-		log.Println(err)
 		return nil, 0, err
 	}
 
 	copier.Copy(&domain, &rec)
 	for i := 0; i < len(rec); i++ {
 		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
-		domain[i].Patient = rec[i].Patient.Name
 	}
 	return &domain, totalData, nil
 }

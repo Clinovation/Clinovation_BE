@@ -7,20 +7,27 @@ import (
 )
 
 type Domain struct {
-	ID             uint
-	Uuid           uuid.UUID
-	PatientID      uint
-	Patient        string
-	UserID         uint
-	Username       string
-	UserRole       string
-	UserSpecialist string
-	MedicalStaffID uint
-	MedicalStaff   string
-	Consultation   string
-	NewRecord      string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID                   uint
+	Uuid                 uuid.UUID
+	PatientID            uint
+	PatientName          string
+	PatientAddress       string
+	PatientDob           string
+	PatientHeight        string
+	PatientWeight        string
+	PatientNik           string
+	PatientSex           string
+	PatientStatusMartial string
+	UserID               uint
+	Username             string
+	UserRole             string
+	UserSpecialist       string
+	MedicalStaffID       uint
+	MedicalStaff         string
+	Consultation         string
+	NewRecord            string
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
 }
 
 type Service interface {

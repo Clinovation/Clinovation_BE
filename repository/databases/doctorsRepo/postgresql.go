@@ -199,6 +199,26 @@ func (r *DoctorsRepository) GetByName(ctx context.Context, name string, offset, 
 	return domain, totalData, nil
 }
 
+func (r *DoctorsRepository) GetByDay(ctx context.Context, day string, offset, limit int) ([]doctorsEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []doctorsEntity.Domain{}
+	rec := []Doctors{}
+
+	r.db.Find(&rec, "day LIKE ?", "%"+day+"%").Count(&totalData)
+	err := r.db.Limit(limit).Offset(offset).Joins("WorkDay").Joins("WorkHour").Find(&rec, "day LIKE ?", "%"+day+"%").Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
+
+	return domain, totalData, nil
+}
+
 func (r *DoctorsRepository) GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]doctorsEntity.Domain, int64, error) {
 	var totalData int64
 	domain := []doctorsEntity.Domain{}
