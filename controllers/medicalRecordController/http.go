@@ -73,7 +73,7 @@ func (ctrl *MedicalRecordsController) FindMedicalRecordByUuid(c echo.Context) er
 }
 
 func (ctrl *MedicalRecordsController) GetMedicalRecordsQueue(c echo.Context) error {
-	user := auth.GetDoctor(c)
+	user := auth.GetUser(c)
 	userID := user.Uuid
 
 	page, _ := strconv.Atoi(c.QueryParam("page"))
