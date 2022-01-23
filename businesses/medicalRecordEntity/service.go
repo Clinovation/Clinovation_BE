@@ -3,14 +3,12 @@ package medicalRecordEntity
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/businesses/doctorsEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/medicalStaffEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
-	"log"
 	"time"
 )
 
@@ -143,20 +141,17 @@ func (ss *MedicalRecordServices) UpdateById(ctx context.Context, medicalRecordDo
 		medicalRecordDomain.UserSpecialist = ""
 	}
 
-	log.Println(patient)
-	fmt.Println(patient)
-
 	medicalRecordDomain.MedicalStaffID = medicalStaff.ID
 	medicalRecordDomain.PatientID = patient.ID
 
-	medicalRecordDomain.PatientName = patient.Name
-	medicalRecordDomain.PatientAddress = patient.Address
-	medicalRecordDomain.PatientDob = patient.Dob
-	medicalRecordDomain.PatientHeight = patient.Height
-	medicalRecordDomain.PatientNik = patient.Nik
-	medicalRecordDomain.PatientSex = patient.Sex
-	medicalRecordDomain.PatientStatusMartial = patient.StatusMartial
-	medicalRecordDomain.PatientWeight = patient.Weight
+	//medicalRecordDomain.PatientName = patient.Name
+	//medicalRecordDomain.PatientAddress = patient.Address
+	//medicalRecordDomain.PatientDob = patient.Dob
+	//medicalRecordDomain.PatientHeight = patient.Height
+	//medicalRecordDomain.PatientNik = patient.Nik
+	//medicalRecordDomain.PatientSex = patient.Sex
+	//medicalRecordDomain.PatientStatusMartial = patient.StatusMartial
+	//medicalRecordDomain.PatientWeight = patient.Weight
 
 	res, err := ss.MedicalRecordsRepository.UpdateMedicalRecord(ctx, id, medicalRecordDomain)
 	if err != nil {

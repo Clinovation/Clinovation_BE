@@ -28,16 +28,32 @@ func (r *MedicalRecordRepository) CreateNewMedicalRecord(ctx context.Context, me
 		return nil, err
 	}
 	result := ToDomain(rec)
+
 	return &result, nil
 }
 
 func (r *MedicalRecordRepository) GetByUuid(ctx context.Context, uuid string) (medicalRecordEntity.Domain, error) {
+	domain := medicalRecordEntity.Domain{}
 	rec := MedicalRecord{}
-	err := r.db.Where("uuid = ?", uuid).First(&rec).Error
+	err := r.db.Joins("MedicalStaff").Joins("Patient").Find(&rec, "medical_records.uuid = ?", uuid).Error
 	if err != nil {
 		return medicalRecordEntity.Domain{}, err
 	}
-	return ToDomain(&rec), nil
+
+	copier.Copy(&domain, &rec)
+
+	domain.MedicalStaff = rec.MedicalStaff.Name
+	domain.PatientName = rec.Patient.Name
+	domain.PatientAddress = rec.Patient.Address
+	domain.PatientDob = rec.Patient.Dob
+	domain.PatientHeight = rec.Patient.Height
+	domain.PatientWeight = rec.Patient.Weight
+	domain.PatientNik = rec.Patient.Nik
+	domain.PatientSex = rec.Patient.Sex
+	domain.PatientStatusMartial = rec.Patient.StatusMartial
+
+	//return ToDomain(&rec), nil
+	return domain, nil
 }
 
 func (r *MedicalRecordRepository) UpdateMedicalRecord(ctx context.Context, id string, medicalRecordDomain *medicalRecordEntity.Domain) (*medicalRecordEntity.Domain, error) {
@@ -82,7 +98,7 @@ func (r *MedicalRecordRepository) GetMedicalRecordsQueue(ctx context.Context, us
 	rec := []MedicalRecord{}
 
 	r.db.Find(&rec, "user_id = ?", userID).Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Find(&rec, "user_id = ?", userID).Error
+	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Joins("Patient").Find(&rec, "user_id = ?", userID).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -90,6 +106,14 @@ func (r *MedicalRecordRepository) GetMedicalRecordsQueue(ctx context.Context, us
 	copier.Copy(&domain, &rec)
 	for i := 0; i < len(rec); i++ {
 		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+		domain[i].PatientName = rec[i].Patient.Name
+		domain[i].PatientAddress = rec[i].Patient.Address
+		domain[i].PatientDob = rec[i].Patient.Dob
+		domain[i].PatientHeight = rec[i].Patient.Height
+		domain[i].PatientWeight = rec[i].Patient.Weight
+		domain[i].PatientNik = rec[i].Patient.Nik
+		domain[i].PatientSex = rec[i].Patient.Sex
+		domain[i].PatientStatusMartial = rec[i].Patient.StatusMartial
 	}
 	return &domain, totalData, nil
 }
