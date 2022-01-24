@@ -17,6 +17,8 @@ type MedicalRecords struct {
 	PatientSex           string    `json:"patient_sex"`
 	PatientStatusMartial string    `json:"patient_status_martial"`
 	PatientWeight        string    `json:"patient_weight"`
+	PatientUuid          string    `json:"patient_uuid"`
+	PatientAvatar        string    `json:"patient_avatar"`
 	UserID               uint      `json:"user_id"`
 	Username             string    `json:"username"`
 	UserRole             string    `json:"user_role"`
@@ -41,6 +43,8 @@ func FromDomain(domain *medicalRecordEntity.Domain) *MedicalRecords {
 		PatientSex:           domain.PatientSex,
 		PatientStatusMartial: domain.PatientStatusMartial,
 		PatientWeight:        domain.PatientWeight,
+		PatientAvatar:        domain.PatientAvatar,
+		PatientUuid:          domain.PatientUuid,
 		UserID:               domain.UserID,
 		Username:             domain.Username,
 		UserRole:             domain.UserRole,
