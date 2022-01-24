@@ -215,7 +215,8 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	medicineWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
 	medicineWithAllRole.GET("/:uuid", cl.MedicineController.FindMedicineByUuid)
 	medicineWithAllRole.GET("/queryName", cl.MedicineController.FindMedicineByNameQuery)
-	medicineWithAllRole.GET("/", cl.MedicineController.GetMedicine)
+	medicineWithAllRole.GET("/", cl.MedicineController.GetMedicines)
+	medicineWithAllRole.GET("/pagination", cl.MedicineController.GetMedicinePagination)
 
 	//recipe with medical staff role
 	recipe := echo.Group("api/v1/recipe")

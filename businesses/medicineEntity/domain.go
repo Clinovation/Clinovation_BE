@@ -24,7 +24,8 @@ type Service interface {
 	FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error)
 	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
 	DeleteMedicine(ctx context.Context, id string) (string, error)
-	GetMedicines(ctx context.Context, page int) (*[]Domain, int, int, int64, error)
+	GetMedicinesPagination(ctx context.Context, page int) (*[]Domain, int, int, int64, error)
+	GetMedicines(ctx context.Context) (*[]Domain, error)
 }
 
 type Repository interface {
@@ -33,7 +34,8 @@ type Repository interface {
 	UpdateMedicine(ctx context.Context, id string, data *Domain) (*Domain, error)
 	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
-	GetMedicine(ctx context.Context, offset, limit int) (*[]Domain, int64, error)
+	GetMedicinePagination(ctx context.Context, offset, limit int) (*[]Domain, int64, error)
+	GetMedicine(ctx context.Context) (*[]Domain, error)
 	GetByNameByQuery(ctx context.Context, name string, offset, limit int) ([]Domain, int64, error)
 	GetByName(ctx context.Context, name string) (Domain, error)
 	DeleteMedicineByUuid(ctx context.Context, id string) (string, error)

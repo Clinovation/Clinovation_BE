@@ -122,10 +122,10 @@ func (r *WorkHoursRepository) GetWorkHoursPagination(ctx context.Context, offset
 }
 
 func (r *WorkHoursRepository) GetWorkHours(ctx context.Context) (*[]workHourEntity.Domain, error) {
-	var recipe []WorkHours
-	if err := r.db.Find(&recipe).Error; err != nil {
+	var workHour []WorkHours
+	if err := r.db.Find(&workHour).Error; err != nil {
 		return &[]workHourEntity.Domain{}, err
 	}
-	result := toDomainArray(recipe)
+	result := toDomainArray(workHour)
 	return &result, nil
 }
