@@ -100,12 +100,12 @@ func (ctrl *MedicineController) FindMedicineByNameQuery(c echo.Context) error {
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
-func (ctrl *MedicineController) GetMedicine(c echo.Context) error {
+func (ctrl *MedicineController) GetMedicinePagination(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	if page <= 0 {
 		page = 1
 	}
-	data, offset, limit, totalData, err := ctrl.medicineService.GetMedicines(c.Request().Context(), page)
+	data, offset, limit, totalData, err := ctrl.medicineService.GetMedicinesPagination(c.Request().Context(), page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
 			helpers.BuildErrorResponse("Medicine Doesn't Exist",
@@ -178,4 +178,17 @@ func (ctrl *MedicineController) DeleteMedicineByUuid(c echo.Context) error {
 	return c.JSON(http.StatusCreated,
 		helpers.BuildSuccessResponse("Successfully Deleted a Medicine",
 			nil))
+}
+
+func (ctrl *MedicineController) GetMedicines(c echo.Context) error {
+	recipe, err := ctrl.medicineService.GetMedicines(c.Request().Context())
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Medicine Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	return c.JSON(http.StatusOK,
+		helpers.BuildSuccessResponse("Successfully Get all Medicine",
+			response.FromDomainArray(*recipe)))
 }

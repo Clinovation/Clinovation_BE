@@ -67,7 +67,7 @@ func (qs *MedicineServices) DeleteMedicine(ctx context.Context, id string) (stri
 	return res, nil
 }
 
-func (qs *MedicineServices) GetMedicines(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
+func (qs *MedicineServices) GetMedicinesPagination(ctx context.Context, page int) (*[]Domain, int, int, int64, error) {
 	ctx, cancel := context.WithTimeout(ctx, qs.ContextTimeout)
 	defer cancel()
 
@@ -79,7 +79,7 @@ func (qs *MedicineServices) GetMedicines(ctx context.Context, page int) (*[]Doma
 		offset = (page - 1) * 5
 	}
 
-	res, totalData, err := qs.medicinesRepository.GetMedicine(ctx, offset, limit)
+	res, totalData, err := qs.medicinesRepository.GetMedicinePagination(ctx, offset, limit)
 	if err != nil {
 		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundMedicine
 	}
@@ -105,4 +105,15 @@ func (qs *MedicineServices) FindByName(ctx context.Context, name string, page in
 	}
 
 	return res, offset, limit, totalData, nil
+}
+
+func (qs *MedicineServices) GetMedicines(ctx context.Context) (*[]Domain, error) {
+	ctx, cancel := context.WithTimeout(ctx, qs.ContextTimeout)
+	defer cancel()
+
+	res, err := qs.medicinesRepository.GetMedicine(ctx)
+	if err != nil {
+		return &[]Domain{}, err
+	}
+	return res, nil
 }

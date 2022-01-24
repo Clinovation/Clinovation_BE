@@ -76,7 +76,7 @@ func (r *MedicineRepository) DeleteMedicineByUuid(ctx context.Context, id string
 	return "Medical Staff was Deleted", nil
 }
 
-func (r *MedicineRepository) GetMedicine(ctx context.Context, offset, limit int) (*[]medicineEntity.Domain, int64, error) {
+func (r *MedicineRepository) GetMedicinePagination(ctx context.Context, offset, limit int) (*[]medicineEntity.Domain, int64, error) {
 	var totalData int64
 	domain := []medicineEntity.Domain{}
 	rec := []Medicine{}
@@ -117,4 +117,13 @@ func (r *MedicineRepository) GetByName(ctx context.Context, name string) (medici
 	}
 
 	return ToDomain(&rec), nil
+}
+
+func (r *MedicineRepository) GetMedicine(ctx context.Context) (*[]medicineEntity.Domain, error) {
+	var medicine []Medicine
+	if err := r.db.Find(&medicine).Error; err != nil {
+		return &[]medicineEntity.Domain{}, err
+	}
+	result := toDomainArray(medicine)
+	return &result, nil
 }
