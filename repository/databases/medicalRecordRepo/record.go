@@ -37,6 +37,8 @@ func ToDomain(rec *MedicalRecord) medicalRecordEntity.Domain {
 		PatientNik:           rec.Patient.Nik,
 		PatientSex:           rec.Patient.Sex,
 		PatientStatusMartial: rec.Patient.StatusMartial,
+		PatientAvatar:        rec.Patient.Avatar,
+		PatientUuid:          rec.Patient.Uuid.String(),
 		UserID:               rec.UserID,
 		Username:             rec.Username,
 		UserRole:             rec.UserRole,

@@ -217,7 +217,7 @@ func (ctrl *DoctorController) FindDoctorByDayQuery(c echo.Context) error {
 	data, offset, limit, totalData, err := ctrl.doctorsService.FindByDay(c.Request().Context(), day, page)
 	if err != nil {
 		return c.JSON(http.StatusNotFound,
-			helpers.BuildErrorResponse("Patient Doesn't Exist",
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
 				err, helpers.EmptyObj{}))
 	}
 
