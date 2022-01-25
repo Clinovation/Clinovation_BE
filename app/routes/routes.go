@@ -237,6 +237,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	medicalRecord.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
 	medicalRecord.POST("/", cl.MedicalRecordController.CreateMedicalRecord)
 	medicalRecord.GET("/queue", cl.MedicalRecordController.GetMedicalRecordsQueue)
+	medicalRecord.GET("/medicalStaff/queue", cl.MedicalRecordController.GetMedicalRecordsByMedicalStaff)
 	medicalRecord.PUT("/:uuid", cl.MedicalRecordController.UpdateMedicalRecordById)
 	medicalRecord.DELETE("/:uuid", cl.MedicalRecordController.DeleteMedicalRecordByUuid)
 	medicalRecord.GET("/:uuid", cl.MedicalRecordController.FindMedicalRecordByUuid)

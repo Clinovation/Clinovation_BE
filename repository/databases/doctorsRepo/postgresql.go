@@ -64,12 +64,19 @@ func (r *DoctorsRepository) GetByID(ctx context.Context, id uint) (doctorsEntity
 }
 
 func (r *DoctorsRepository) GetByUuid(ctx context.Context, uuid string) (doctorsEntity.Domain, error) {
+	domain := doctorsEntity.Domain{}
 	rec := Doctors{}
-	err := r.db.Where("uuid = ?", uuid).First(&rec).Error
+	err := r.db.Joins("WorkDay").Joins("WorkHour").Find(&rec, "doctors.uuid = ?", uuid).Error
 	if err != nil {
 		return doctorsEntity.Domain{}, err
 	}
-	return ToDomain(&rec), nil
+
+	copier.Copy(&domain, &rec)
+
+	domain.WorkDay = rec.WorkDay.Day
+	domain.WorkHour = rec.WorkHour.Hour
+
+	return domain, nil
 }
 
 func (r *DoctorsRepository) ForgetPassword(ctx context.Context, nik string, email string) (doctorsEntity.Domain, error) {
