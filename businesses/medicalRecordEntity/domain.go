@@ -38,6 +38,7 @@ type Service interface {
 	UpdateById(ctx context.Context, data *Domain, userID string, medicalStaffID string, patientId string, id string) (*Domain, error)
 	DeleteMedicalRecord(ctx context.Context, id string) (string, error)
 	GetMedicalRecordsQueue(ctx context.Context, userID string, page int) (*[]Domain, int, int, int64, error)
+	GetMedicalRecordsByMedicalStaff(ctx context.Context, userID string, page int) (*[]Domain, int, int, int64, error)
 }
 
 type Repository interface {
@@ -47,5 +48,6 @@ type Repository interface {
 	GetByID(ctx context.Context, id uint) (Domain, error)
 	GetByUuid(ctx context.Context, uuid string) (Domain, error)
 	GetMedicalRecordsQueue(ctx context.Context, userID uint, offset, limit int) (*[]Domain, int64, error)
+	GetMedicalRecordsByMedicalStaff(ctx context.Context, userID uint, offset, limit int) (*[]Domain, int64, error)
 	DeleteMedicalRecordByUuid(ctx context.Context, id string) (string, error)
 }

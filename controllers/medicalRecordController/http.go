@@ -108,6 +108,41 @@ func (ctrl *MedicalRecordsController) GetMedicalRecordsQueue(c echo.Context) err
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
+func (ctrl *MedicalRecordsController) GetMedicalRecordsByMedicalStaff(c echo.Context) error {
+	user := auth.GetUser(c)
+	userID := user.Uuid
+
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.medicalRecordsService.GetMedicalRecordsByMedicalStaff(c.Request().Context(), userID, page)
+	if err != nil {
+		log.Println(err)
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Medical Record Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	res := []response.MedicalRecords{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(*data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Medical Record by nik But Medical Record  Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
+}
+
 func (ctrl *MedicalRecordsController) UpdateMedicalRecordById(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.MedicalRecordRegistration)

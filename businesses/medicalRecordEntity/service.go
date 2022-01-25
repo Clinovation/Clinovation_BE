@@ -206,3 +206,33 @@ func (ss *MedicalRecordServices) GetMedicalRecordsQueue(ctx context.Context, use
 
 	return res, offset, limit, totalData, nil
 }
+
+func (ss *MedicalRecordServices) GetMedicalRecordsByMedicalStaff(ctx context.Context, userID string, page int) (*[]Domain, int, int, int64, error) {
+	ctx, cancel := context.WithTimeout(ctx, ss.ContextTimeout)
+	defer cancel()
+
+	var userId uint
+
+	medicalStaff, errMedicalStaff := ss.MedicalStaffRepository.GetByUuid(ctx, userID)
+
+	if errMedicalStaff != nil {
+		return &[]Domain{}, -1, -1, -1, errors.New("Medical Staff Doen't Exist")
+	}
+
+	userId = medicalStaff.ID
+
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
+	}
+
+	res, totalData, err := ss.MedicalRecordsRepository.GetMedicalRecordsByMedicalStaff(ctx, userId, offset, limit)
+	if err != nil {
+		return &[]Domain{}, -1, -1, -1, businesses.ErrNotFoundMedicalRecord
+	}
+
+	return res, offset, limit, totalData, nil
+}

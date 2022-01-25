@@ -99,7 +99,33 @@ func (r *MedicalRecordRepository) GetMedicalRecordsQueue(ctx context.Context, us
 	rec := []MedicalRecord{}
 
 	r.db.Find(&rec, "user_id = ?", userID).Count(&totalData)
-	err := r.db.Limit(limit).Offset(offset).Joins("MedicalStaff").Joins("Patient").Find(&rec, "user_id = ?", userID).Error
+	err := r.db.Order("created_at desc").Limit(limit).Offset(offset).Joins("MedicalStaff").Joins("Patient").Find(&rec, "user_id = ?", userID).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].MedicalStaff = rec[i].MedicalStaff.Name
+		domain[i].PatientName = rec[i].Patient.Name
+		domain[i].PatientAddress = rec[i].Patient.Address
+		domain[i].PatientDob = rec[i].Patient.Dob
+		domain[i].PatientHeight = rec[i].Patient.Height
+		domain[i].PatientWeight = rec[i].Patient.Weight
+		domain[i].PatientNik = rec[i].Patient.Nik
+		domain[i].PatientSex = rec[i].Patient.Sex
+		domain[i].PatientStatusMartial = rec[i].Patient.StatusMartial
+	}
+	return &domain, totalData, nil
+}
+
+func (r *MedicalRecordRepository) GetMedicalRecordsByMedicalStaff(ctx context.Context, userID uint, offset, limit int) (*[]medicalRecordEntity.Domain, int64, error) {
+	var totalData int64
+	domain := []medicalRecordEntity.Domain{}
+	rec := []MedicalRecord{}
+
+	r.db.Find(&rec, "medical_records.medical_staff_id = ?", userID).Count(&totalData)
+	err := r.db.Order("created_at desc").Limit(limit).Offset(offset).Joins("MedicalStaff").Joins("Patient").Find(&rec, "medical_records.medical_staff_id = ?", userID).Error
 	if err != nil {
 		return nil, 0, err
 	}
