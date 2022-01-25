@@ -19,6 +19,19 @@ type DoctorRegistration struct {
 	Avatar         string `json:"avatar"`
 }
 
+type DoctorUpdate struct {
+	Nik            string `json:"nik" `
+	Name           string `json:"name" `
+	Email          string `json:"email" `
+	Dob            string `json:"dob" `
+	Sex            string `json:"sex" `
+	Contact        string `json:"contact" `
+	Password       string `json:"password" `
+	Specialist     string `json:"specialist" `
+	WorkExperience string `json:"work_experience" `
+	Avatar         string `json:"avatar"`
+}
+
 type DoctorLogin struct {
 	Uuid     uuid.UUID `json:"uuid"`
 	Email    string    `json:"email" validate:"required,email"`
@@ -39,6 +52,21 @@ type DoctorUploadAvatar struct {
 }
 
 func (rec *DoctorRegistration) ToDomain() *doctorsEntity.Domain {
+	return &doctorsEntity.Domain{
+		Nik:            rec.Nik,
+		Name:           rec.Name,
+		Email:          rec.Email,
+		Dob:            rec.Dob,
+		Sex:            rec.Sex,
+		Contact:        rec.Contact,
+		Password:       rec.Password,
+		Specialist:     rec.Specialist,
+		WorkExperience: rec.WorkExperience,
+		Avatar:         rec.Avatar,
+	}
+}
+
+func (rec *DoctorUpdate) ToDomainUpdate() *doctorsEntity.Domain {
 	return &doctorsEntity.Domain{
 		Nik:            rec.Nik,
 		Name:           rec.Name,
