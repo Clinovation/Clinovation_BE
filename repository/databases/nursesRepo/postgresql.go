@@ -57,6 +57,10 @@ func (r *NursesRepository) GetWaitingList(ctx context.Context, offset, limit int
 	}
 
 	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 
 	return &domain, totalData, nil
 }
@@ -160,6 +164,10 @@ func (r *NursesRepository) GetNurses(ctx context.Context, offset, limit int) (*[
 	}
 
 	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 
 	return &domain, totalData, nil
 }
@@ -176,6 +184,10 @@ func (r *NursesRepository) GetByName(ctx context.Context, name string, offset, l
 	}
 
 	copier.Copy(&domain, &rec)
+	for i := 0; i < len(rec); i++ {
+		domain[i].WorkDay = rec[i].WorkDay.Day
+		domain[i].WorkHour = rec[i].WorkHour.Hour
+	}
 
 	return domain, totalData, nil
 }
