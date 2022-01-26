@@ -9,9 +9,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
-	"github.com/Clinovation/Clinovation_BE/controllers/queueController"
 	"github.com/Clinovation/Clinovation_BE/controllers/recipeController"
-	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
@@ -28,8 +26,6 @@ type ControllerList struct {
 	PatientController       patientController.PatientsController
 	WorkDayController       workDayController.WorkDayController
 	WorkHourController      workHourController.WorkHourController
-	ScheduleController      scheduleController.SchedulesController
-	QueueController         queueController.QueuesController
 	MedicineController      medicineController.MedicineController
 	RecipeController        recipeController.RecipeController
 	MedicalRecordController medicalRecordController.MedicalRecordsController
@@ -155,54 +151,6 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	workHours.GET("/pagination", cl.WorkHourController.GetWorkHoursPagination)
 	workHours.GET("/queryHour", cl.WorkHourController.FindWorkHourByHour)
 	workHours.DELETE("/:uuid", cl.WorkHourController.DeleteWorkHourByUuid)
-
-	//schedule with medical staff role
-	schedule := echo.Group("api/v1/schedule")
-	schedule.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
-	schedule.POST("/", cl.ScheduleController.CreateSchedule)
-	schedule.PUT("/:uuid", cl.ScheduleController.UpdateScheduleById)
-	schedule.DELETE("/:uuid", cl.ScheduleController.DeleteScheduleByUuid)
-
-	//schedule with doctor,medical staff and nurse role
-	scheduleWithAllRole := echo.Group("api/v1/schedule")
-	scheduleWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
-	scheduleWithAllRole.GET("/:uuid", cl.ScheduleController.FindScheduleByUuid)
-
-	//schedule with doctor role
-	scheduleWithMedialStaffOrDoctor := echo.Group("api/v1/schedule")
-	scheduleWithMedialStaffOrDoctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
-	scheduleWithMedialStaffOrDoctor.GET("/doctor", cl.ScheduleController.GetDoctorSchedules)
-	scheduleWithMedialStaffOrDoctor.GET("/doctor/:day", cl.ScheduleController.GetDoctorSchedulesByDay)
-	scheduleWithMedialStaffOrDoctor.GET("/doctor/:hour", cl.ScheduleController.GetDoctorSchedulesByHour)
-
-	//schedule with nurse role
-	scheduleWithMedialStaffOrNurse := echo.Group("api/v1/schedule")
-	scheduleWithMedialStaffOrNurse.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseOrMedicalStaffValidation())
-	scheduleWithMedialStaffOrNurse.GET("/nurse", cl.ScheduleController.GetNurseSchedules)
-	scheduleWithMedialStaffOrNurse.GET("/nurse/:day", cl.ScheduleController.GetNurseSchedulesByDay)
-	scheduleWithMedialStaffOrNurse.GET("/nurse/:hour", cl.ScheduleController.GetNurseSchedulesByHour)
-
-	//queue with medical staff role
-	queue := echo.Group("api/v1/queue")
-	queue.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
-	queue.POST("/", cl.QueueController.CreateQueue)
-	queue.PUT("/:uuid", cl.QueueController.UpdateQueueById)
-	queue.DELETE("/:uuid", cl.QueueController.DeleteQueueByUuid)
-
-	//queue with doctor,medical staff and nurse role
-	queueWithAllRole := echo.Group("api/v1/queue")
-	queueWithAllRole.Use(middleware.JWTWithConfig(cl.JWTMiddleware), AllRole())
-	queueWithAllRole.GET("/:uuid", cl.QueueController.FindQueueByUuid)
-
-	//queue with doctor role
-	queueWithMedialStaffOrDoctor := echo.Group("api/v1/queue")
-	queueWithMedialStaffOrDoctor.Use(middleware.JWTWithConfig(cl.JWTMiddleware), DoctorOrMedicalStaffValidation())
-	queueWithMedialStaffOrDoctor.GET("/doctor", cl.QueueController.GetDoctorQueues)
-
-	//queue with nurse role
-	queueWithMedialStaffOrNurse := echo.Group("api/v1/queue")
-	queueWithMedialStaffOrNurse.Use(middleware.JWTWithConfig(cl.JWTMiddleware), NurseOrMedicalStaffValidation())
-	queueWithMedialStaffOrNurse.GET("/nurse", cl.QueueController.GetNurseQueues)
 
 	//medicine with medical staff role
 	medicine := echo.Group("api/v1/medicine")

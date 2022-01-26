@@ -8,9 +8,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
-	"github.com/Clinovation/Clinovation_BE/businesses/queueEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/recipeEntity"
-	"github.com/Clinovation/Clinovation_BE/businesses/scheduleEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/controllers/doctorsController"
@@ -19,9 +17,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/controllers/medicineController"
 	"github.com/Clinovation/Clinovation_BE/controllers/nursesController"
 	"github.com/Clinovation/Clinovation_BE/controllers/patientController"
-	"github.com/Clinovation/Clinovation_BE/controllers/queueController"
 	"github.com/Clinovation/Clinovation_BE/controllers/recipeController"
-	"github.com/Clinovation/Clinovation_BE/controllers/scheduleController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workDayController"
 	"github.com/Clinovation/Clinovation_BE/controllers/workHourController"
 	"github.com/Clinovation/Clinovation_BE/helpers"
@@ -86,16 +82,6 @@ func main() {
 	nurseService := nursesEntity.NewNursesServices(nurseRepo, workDayRepo, workHourRepo, &jwt, timeoutContext)
 	nurseCtrl := nursesController.NewNursesController(nurseService, &jwt)
 
-	//schedule
-	scheduleRepo := _domainFactory.NewScheduleRepository(db)
-	scheduleService := scheduleEntity.NewScheduleServices(scheduleRepo, doctorRepo, nurseRepo, workDayRepo, workHourRepo, &jwt, timeoutContext)
-	scheduleCtrl := scheduleController.NewSchedulesController(scheduleService, &jwt)
-
-	//queue
-	queueRepo := _domainFactory.NewQueueRepository(db)
-	queueService := queueEntity.NewQueueServices(queueRepo, doctorRepo, nurseRepo, scheduleRepo, patientRepo, &jwt, timeoutContext)
-	queueCtrl := queueController.NewQueuesController(queueService, &jwt)
-
 	//medicine
 	medicineRepo := _domainFactory.NewMedicineRepository(db)
 	medicineService := medicineEntity.NewMedicineServices(medicineRepo, &jwt, timeoutContext)
@@ -119,8 +105,6 @@ func main() {
 		PatientController:       *patientCtrl,
 		WorkDayController:       *workDayCtrl,
 		WorkHourController:      *workHourCtrl,
-		ScheduleController:      *scheduleCtrl,
-		QueueController:         *queueCtrl,
 		MedicineController:      *medicineCtrl,
 		RecipeController:        *recipeCtrl,
 		MedicalStaffController:  *medicalStaffCtrl,

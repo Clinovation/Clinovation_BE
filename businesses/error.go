@@ -16,23 +16,17 @@ var (
 
 	//Doctors errors
 	ErrNotFoundDoctor = errors.New("Doctor Doesn't Exist")
-	ErrDoctorNotAcc = errors.New("The Doctor Has Not Been Accepted")
+	ErrDoctorNotAcc   = errors.New("The Doctor Has Not Been Accepted")
 
 	//Medical Staff> errors
 	ErrNotFoundMedicalStaff = errors.New("Medical Staff Doesn't Exist")
 
 	//Nurse errors
 	ErrNotFoundNurse = errors.New("Nurse Doesn't Exist")
-	ErrNurseNotAcc = errors.New("The Nurse Has Not Been Accepted ")
+	ErrNurseNotAcc   = errors.New("The Nurse Has Not Been Accepted ")
 
 	//Patient errors
 	ErrNotFoundPatient = errors.New("Patient Doesn't Exist")
-
-	//Schedule errors
-	ErrNotFoundSchedule = errors.New("Schedule Doesn't Exist")
-
-	//queue errors
-	ErrNotFoundQueue = errors.New("Queue Doesn't Exist")
 
 	//medicine errors
 	ErrNotFoundMedicine = errors.New("Medicine Doesn't Exist")
@@ -40,7 +34,7 @@ var (
 	//recipe errors
 	ErrNotFoundRecipe = errors.New("Recipe Doesn't Exist")
 
-	//recipe errors
+	//Medical Record errors
 	ErrNotFoundMedicalRecord = errors.New("Medical Record Doesn't Exist")
 
 	//ErrDuplicateWorkDay
