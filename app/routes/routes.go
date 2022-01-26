@@ -80,6 +80,7 @@ func (cl *ControllerList) RouteRegister(echo *echo.Echo) {
 	nurseMedicalStaff.Use(middleware.JWTWithConfig(cl.JWTMiddleware), MedicalStaffValidation())
 	nurseMedicalStaff.PUT("/accept/:uuid", cl.NurseController.AcceptNurse)
 	nurseMedicalStaff.GET("/waitingList", cl.NurseController.GetWaitingList)
+	nurseMedicalStaff.GET("/queryDay", cl.NurseController.FindNurseByDayQuery)
 	nurseMedicalStaff.DELETE("/:uuid", cl.NurseController.DeleteNurseByMedicalStaff)
 
 	//nurse with nurse role

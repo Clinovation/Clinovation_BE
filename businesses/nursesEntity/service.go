@@ -13,20 +13,20 @@ import (
 )
 
 type NursesServices struct {
-	NursesRepository Repository
+	NursesRepository   Repository
 	WorkDayRepository  workDayEntity.Repository
 	WorkHourRepository workHourEntity.Repository
-	jwtAuth          *auth.ConfigJWT
-	ContextTimeout   time.Duration
+	jwtAuth            *auth.ConfigJWT
+	ContextTimeout     time.Duration
 }
 
-func NewNursesServices(repoNurse Repository,repoWorkDayRepo workDayEntity.Repository, repoWorkHourRepo workHourEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
+func NewNursesServices(repoNurse Repository, repoWorkDayRepo workDayEntity.Repository, repoWorkHourRepo workHourEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
 	return &NursesServices{
-		NursesRepository: repoNurse,
+		NursesRepository:   repoNurse,
 		WorkDayRepository:  repoWorkDayRepo,
 		WorkHourRepository: repoWorkHourRepo,
-		jwtAuth:          auth,
-		ContextTimeout:   timeout,
+		jwtAuth:            auth,
+		ContextTimeout:     timeout,
 	}
 }
 
@@ -187,7 +187,7 @@ func (ds *NursesServices) AcceptNurse(ctx context.Context, id string) (*Domain, 
 	return result, nil
 }
 
-func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string,workDayID string, workHourID string) (*Domain, error) {
+func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string, workDayID string, workHourID string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
@@ -303,5 +303,25 @@ func (ns *NursesServices) FindByNik(ctx context.Context, nik string, page int) (
 	if err != nil {
 		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
 	}
+	return res, offset, limit, totalData, nil
+}
+
+func (ns *NursesServices) FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error) {
+	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
+	defer cancel()
+
+	var offset int
+	limit := 5
+	if page == 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * 5
+	}
+
+	res, totalData, err := ns.NursesRepository.GetByDay(ctx, day, offset, limit)
+	if err != nil {
+		return []Domain{}, -1, -1, -1, businesses.ErrNotFoundNurse
+	}
+
 	return res, offset, limit, totalData, nil
 }
