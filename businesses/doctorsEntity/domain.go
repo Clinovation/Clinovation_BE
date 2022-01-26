@@ -39,7 +39,7 @@ type Service interface {
 	FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error)
 	FindByNik(ctx context.Context, nik string, page int) ([]Domain, int, int, int64, error)
 	FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error)
-	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
+	UpdateById(ctx context.Context, data *Domain, id string, workDayID string, workHourID string) (*Domain, error)
 	AcceptDoctor(ctx context.Context, id string) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteDoctor(ctx context.Context, id string) (string, error)

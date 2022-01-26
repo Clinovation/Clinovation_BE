@@ -83,7 +83,7 @@ func main() {
 
 	//nurse
 	nurseRepo := _domainFactory.NewNurseRepository(db)
-	nurseService := nursesEntity.NewNursesServices(nurseRepo, &jwt, timeoutContext)
+	nurseService := nursesEntity.NewNursesServices(nurseRepo, workDayRepo, workHourRepo, &jwt, timeoutContext)
 	nurseCtrl := nursesController.NewNursesController(nurseService, &jwt)
 
 	//schedule

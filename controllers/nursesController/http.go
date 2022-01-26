@@ -31,6 +31,9 @@ func (ctrl *NurseController) Registration(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.NurseRegistration)
 
+	workDayID := c.QueryParam("workDayID")
+	workHourID := c.QueryParam("workHourID")
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
 			helpers.BuildErrorResponse("The Data You Entered is Wrong",
@@ -43,7 +46,7 @@ func (ctrl *NurseController) Registration(c echo.Context) error {
 				err, helpers.EmptyObj{}))
 	}
 
-	res, err := ctrl.nursesService.Register(ctx, req.ToDomain())
+	res, err := ctrl.nursesService.Register(ctx, req.ToDomain(), workDayID, workHourID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
@@ -321,7 +324,10 @@ func (ctrl *NurseController) GetWaitingList(c echo.Context) error {
 
 func (ctrl *NurseController) UpdateNurseById(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := new(request.NurseRegistration)
+	req := new(request.NurseUpdate)
+
+	workDayID := c.QueryParam("workDayID")
+	workHourID := c.QueryParam("workHourID")
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
@@ -337,7 +343,7 @@ func (ctrl *NurseController) UpdateNurseById(c echo.Context) error {
 	nurse := auth.GetNurse(c)
 	nurseId := nurse.Uuid
 
-	res, err := ctrl.nursesService.UpdateById(ctx, req.ToDomain(), nurseId)
+	res, err := ctrl.nursesService.UpdateById(ctx, req.ToDomainUpdate(), nurseId, workDayID, workHourID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",

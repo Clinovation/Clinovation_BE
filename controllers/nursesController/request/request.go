@@ -18,6 +18,18 @@ type NurseRegistration struct {
 	Avatar         string `json:"avatar"`
 }
 
+type NurseUpdate struct {
+	Nik            string `json:"nik" `
+	Name           string `json:"name" `
+	Email          string `json:"email" `
+	Dob            string `json:"dob" `
+	Sex            string `json:"sex" `
+	Contact        string `json:"contact" `
+	Password       string `json:"password" `
+	WorkExperience string `json:"work_experience" `
+	Avatar         string `json:"avatar"`
+}
+
 type ForgetPassword struct {
 	Email string `json:"email" validate:"required,email"`
 	Nik   string `json:"nik" validate:"required"`
@@ -51,6 +63,20 @@ func (rec *NurseRegistration) ToDomain() *nursesEntity.Domain {
 	}
 }
 
+func (rec *NurseUpdate) ToDomainUpdate() *nursesEntity.Domain {
+	return &nursesEntity.Domain{
+		Nik:            rec.Nik,
+		Name:           rec.Name,
+		Email:          rec.Email,
+		Dob:            rec.Dob,
+		Sex:            rec.Sex,
+		Contact:        rec.Contact,
+		Password:       rec.Password,
+		WorkExperience: rec.WorkExperience,
+		Avatar:         rec.Avatar,
+	}
+}
+
 func (rec *ForgetPassword) ToDomainForget() *nursesEntity.Domain {
 	return &nursesEntity.Domain{
 		Nik:   rec.Nik,
@@ -63,4 +89,3 @@ func (rec *ChangePassword) ToDomainChange() *nursesEntity.Domain {
 		Password: rec.Password,
 	}
 }
-
