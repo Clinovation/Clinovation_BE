@@ -322,6 +322,38 @@ func (ctrl *NurseController) GetWaitingList(c echo.Context) error {
 	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
 }
 
+func (ctrl *NurseController) FindNurseByDayQuery(c echo.Context) error {
+	day := c.QueryParam("day")
+	page, _ := strconv.Atoi(c.QueryParam("page"))
+	if page <= 0 {
+		page = 1
+	}
+
+	data, offset, limit, totalData, err := ctrl.nursesService.FindByDay(c.Request().Context(), day, page)
+	if err != nil {
+		return c.JSON(http.StatusNotFound,
+			helpers.BuildErrorResponse("Doctor Doesn't Exist",
+				err, helpers.EmptyObj{}))
+	}
+
+	res := []response.Nurses{}
+	resPage := response.Page{
+		Limit:     limit,
+		Offset:    offset,
+		TotalData: totalData,
+	}
+
+	copier.Copy(&res, &data)
+
+	if len(data) == 0 {
+		return c.JSON(http.StatusNoContent,
+			helpers.BuildSuccessResponse("Successfully Get all Nurses by nik But Nurse Data Doesn't Exist",
+				data))
+	}
+
+	return helpers.NewSuccessResponse(c, http.StatusOK, res, resPage)
+}
+
 func (ctrl *NurseController) UpdateNurseById(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.NurseUpdate)

@@ -39,6 +39,7 @@ type Service interface {
 	ForgetPassword(ctx context.Context, data *Domain) (*Domain, error)
 	ChangePassword(ctx context.Context, data *Domain, id string) (*Domain, error)
 	AcceptNurse(ctx context.Context, id string) (*Domain, error)
+	FindByDay(ctx context.Context, day string, page int) ([]Domain, int, int, int64, error)
 	UpdateById(ctx context.Context, data *Domain, id string, workDayID string, workHourID string) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteNurse(ctx context.Context, id string) (string, error)
@@ -61,5 +62,6 @@ type Repository interface {
 	GetWaitingList(ctx context.Context, offset, limit int) (*[]Domain, int64, error)
 	GetByName(ctx context.Context, name string, offset, limit int) ([]Domain, int64, error)
 	GetByNikByQuery(ctx context.Context, nik string, offset, limit int) ([]Domain, int64, error)
+	GetByDay(ctx context.Context, day string, offset, limit int) ([]Domain, int64, error)
 	DeleteNurseByUuid(ctx context.Context, id string) (string, error)
 }
