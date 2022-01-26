@@ -17,6 +17,10 @@ type Nurses struct {
 	Contact        string    `json:"contact"`
 	WorkExperience string    `json:"work_experience"`
 	Avatar         string    `json:"avatar"`
+	WorkDayID      uint      `json:"work_day_id"`
+	WorkDay        string    `json:"work_day"`
+	WorkHourID     uint      `json:"work_hour_id"`
+	WorkHour       string    `json:"work_hour"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
@@ -32,6 +36,10 @@ func FromDomain(domain *nursesEntity.Domain) *Nurses {
 		Contact:        domain.Contact,
 		WorkExperience: domain.WorkExperience,
 		Avatar:         domain.Avatar,
+		WorkDayID:      domain.WorkDayID,
+		WorkDay:        domain.WorkDay,
+		WorkHourID:     domain.WorkHourID,
+		WorkHour:       domain.WorkHour,
 		CreatedAt:      domain.CreatedAt,
 		UpdatedAt:      domain.UpdatedAt,
 	}
