@@ -275,7 +275,7 @@ func (ctrl *MedicalStaffController) GetMedicalStaff(c echo.Context) error {
 
 func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := new(request.MedicalStaffRegistration)
+	req := new(request.MedicalStaffUpdate)
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
@@ -291,7 +291,7 @@ func (ctrl *MedicalStaffController) UpdateMedicalStaffById(c echo.Context) error
 	medicalStaff := auth.GetMedicalStaff(c)
 	medicalStaffId := medicalStaff.Uuid
 
-	res, err := ctrl.medicalStaffService.UpdateById(ctx, req.ToDomain(), medicalStaffId)
+	res, err := ctrl.medicalStaffService.UpdateById(ctx, req.ToDomainUpdate(), medicalStaffId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",
