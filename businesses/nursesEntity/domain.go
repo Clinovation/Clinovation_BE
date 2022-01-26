@@ -21,13 +21,17 @@ type Domain struct {
 	Specialist     string
 	WorkExperience string
 	Avatar         string
+	WorkDay        string
+	WorkDayID      uint
+	WorkHour       string
+	WorkHourID     uint
 	Token          string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
 
 type Service interface {
-	Register(ctx context.Context, data *Domain) (*Domain, error)
+	Register(ctx context.Context, data *Domain, workDayID string, workHourID string) (*Domain, error)
 	Login(ctx context.Context, email string, password string) (string, error)
 	FindByUuid(ctx context.Context, uuid string) (Domain, error)
 	FindByName(ctx context.Context, name string, page int) ([]Domain, int, int, int64, error)
@@ -35,7 +39,7 @@ type Service interface {
 	ForgetPassword(ctx context.Context, data *Domain) (*Domain, error)
 	ChangePassword(ctx context.Context, data *Domain, id string) (*Domain, error)
 	AcceptNurse(ctx context.Context, id string) (*Domain, error)
-	UpdateById(ctx context.Context, data *Domain, id string) (*Domain, error)
+	UpdateById(ctx context.Context, data *Domain, id string, workDayID string, workHourID string) (*Domain, error)
 	UploadAvatar(ctx context.Context, id string, fileLocation string) (*Domain, error)
 	DeleteNurse(ctx context.Context, id string) (string, error)
 	GetNurses(ctx context.Context, page int) (*[]Domain, int, int, int64, error)

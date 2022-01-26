@@ -2,8 +2,11 @@ package nursesEntity
 
 import (
 	"context"
+	"errors"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
+	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
+	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/helpers"
 	"strings"
 	"time"
@@ -11,19 +14,23 @@ import (
 
 type NursesServices struct {
 	NursesRepository Repository
+	WorkDayRepository  workDayEntity.Repository
+	WorkHourRepository workHourEntity.Repository
 	jwtAuth          *auth.ConfigJWT
 	ContextTimeout   time.Duration
 }
 
-func NewNursesServices(repoNurse Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
+func NewNursesServices(repoNurse Repository,repoWorkDayRepo workDayEntity.Repository, repoWorkHourRepo workHourEntity.Repository, auth *auth.ConfigJWT, timeout time.Duration) Service {
 	return &NursesServices{
 		NursesRepository: repoNurse,
+		WorkDayRepository:  repoWorkDayRepo,
+		WorkHourRepository: repoWorkHourRepo,
 		jwtAuth:          auth,
 		ContextTimeout:   timeout,
 	}
 }
 
-func (ns *NursesServices) Register(ctx context.Context, nurserDomain *Domain) (*Domain, error) {
+func (ns *NursesServices) Register(ctx context.Context, nurserDomain *Domain, workDayID string, workHourID string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
@@ -53,6 +60,21 @@ func (ns *NursesServices) Register(ctx context.Context, nurserDomain *Domain) (*
 	if err != nil {
 		return nil, businesses.ErrInternalServer
 	}
+
+	workDay, err := ns.WorkDayRepository.GetByUuid(ctx, workDayID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Day Doesn't Exist")
+	}
+
+	workHour, err := ns.WorkHourRepository.GetByUuid(ctx, workHourID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Hour Doesn't Exist")
+	}
+
+	nurserDomain.WorkDayID = workDay.ID
+	//doctorDomain.WorkDay = workDay.Day
+	nurserDomain.WorkHourID = workHour.ID
+	//doctorDomain.WorkHour = workHour.Hour
 
 	res, err := ns.NursesRepository.CreateNewNurse(ctx, nurserDomain)
 	if err != nil {
@@ -165,7 +187,7 @@ func (ds *NursesServices) AcceptNurse(ctx context.Context, id string) (*Domain, 
 	return result, nil
 }
 
-func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string) (*Domain, error) {
+func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, id string,workDayID string, workHourID string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ns.ContextTimeout)
 	defer cancel()
 
@@ -175,6 +197,22 @@ func (ns *NursesServices) UpdateById(ctx context.Context, nurserDomain *Domain, 
 	}
 
 	nurserDomain.Password = passwordHash
+
+	workDay, err := ns.WorkDayRepository.GetByUuid(ctx, workDayID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Day Doesn't Exist")
+	}
+
+	workHour, err := ns.WorkHourRepository.GetByUuid(ctx, workHourID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Hour Doesn't Exist")
+	}
+
+	nurserDomain.WorkDayID = workDay.ID
+	//doctorDomain.WorkDay = workDay.Day
+	nurserDomain.WorkHourID = workHour.ID
+	//doctorDomain.WorkHour = workHour.Hour
+
 	result, err := ns.NursesRepository.UpdateNurse(ctx, id, nurserDomain)
 	if err != nil {
 		return &Domain{}, err

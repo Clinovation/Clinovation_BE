@@ -304,6 +304,9 @@ func (ctrl *DoctorController) UpdateDoctorById(c echo.Context) error {
 	ctx := c.Request().Context()
 	req := new(request.DoctorUpdate)
 
+	workDayID := c.QueryParam("workDayID")
+	workHourID := c.QueryParam("workHourID")
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest,
 			helpers.BuildErrorResponse("An error occurred while input the data",
@@ -318,7 +321,7 @@ func (ctrl *DoctorController) UpdateDoctorById(c echo.Context) error {
 	doctor := auth.GetDoctor(c)
 	doctorId := doctor.Uuid
 
-	res, err := ctrl.doctorsService.UpdateById(ctx, req.ToDomainUpdate(), doctorId)
+	res, err := ctrl.doctorsService.UpdateById(ctx, req.ToDomainUpdate(), doctorId, workDayID, workHourID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			helpers.BuildErrorResponse("Something Gone Wrong,Please Contact Administrator",

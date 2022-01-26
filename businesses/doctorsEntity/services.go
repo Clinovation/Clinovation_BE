@@ -3,13 +3,11 @@ package doctorsEntity
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/Clinovation/Clinovation_BE/app/middlewares/auth"
 	"github.com/Clinovation/Clinovation_BE/businesses"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/helpers"
-	"log"
 	"strings"
 	"time"
 )
@@ -73,17 +71,12 @@ func (ds *DoctorsServices) Register(ctx context.Context, doctorDomain *Domain, w
 		return &Domain{}, errors.New("Work Hour Doesn't Exist")
 	}
 
-	fmt.Println("ini work day", workDay)
-	fmt.Println("ini work hour", workHour)
-
 	doctorDomain.WorkDayID = workDay.ID
 	//doctorDomain.WorkDay = workDay.Day
 	doctorDomain.WorkHourID = workHour.ID
 	//doctorDomain.WorkHour = workHour.Hour
 	res, err := ds.DoctorsRepository.CreateNewDoctor(ctx, doctorDomain)
 	if err != nil {
-		fmt.Println("masuk err service", err)
-		log.Println("masuk err service", err)
 		return nil, businesses.ErrInternalServer
 	}
 
@@ -128,7 +121,7 @@ func (ds *DoctorsServices) FindByUuid(ctx context.Context, uuid string) (Domain,
 	return result, nil
 }
 
-func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain, id string) (*Domain, error) {
+func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain, id string, workDayID string, workHourID string) (*Domain, error) {
 	ctx, cancel := context.WithTimeout(ctx, ds.ContextTimeout)
 	defer cancel()
 
@@ -138,6 +131,22 @@ func (ds *DoctorsServices) UpdateById(ctx context.Context, doctorDomain *Domain,
 	}
 
 	doctorDomain.Password = passwordHash
+
+	workDay, err := ds.WorkDayRepository.GetByUuid(ctx, workDayID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Day Doesn't Exist")
+	}
+
+	workHour, err := ds.WorkHourRepository.GetByUuid(ctx, workHourID)
+	if err != nil {
+		return &Domain{}, errors.New("Work Hour Doesn't Exist")
+	}
+
+	doctorDomain.WorkDayID = workDay.ID
+	//doctorDomain.WorkDay = workDay.Day
+	doctorDomain.WorkHourID = workHour.ID
+	//doctorDomain.WorkHour = workHour.Hour
+
 	result, err := ds.DoctorsRepository.UpdateDoctor(ctx, id, doctorDomain)
 	if err != nil {
 		return &Domain{}, err
