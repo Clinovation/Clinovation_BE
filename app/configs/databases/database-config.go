@@ -5,9 +5,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicalRecordRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicineRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
-	"github.com/Clinovation/Clinovation_BE/repository/databases/queueRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/recipeRepo"
-	"github.com/Clinovation/Clinovation_BE/repository/databases/scheduleRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/workDayRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/workHourRepo"
 	"os"
@@ -56,8 +54,6 @@ func dbMigrate(db *gorm.DB) {
 		&nursesRepo.Nurses{},
 		&workDayRepo.WorkDays{},
 		&workHourRepo.WorkHours{},
-		&scheduleRepo.Schedule{},
-		&queueRepo.Queue{},
 		&medicineRepo.Medicine{},
 		&recipeRepo.Recipe{},
 		&medicalRecordRepo.MedicalRecord{},

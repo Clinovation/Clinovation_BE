@@ -7,9 +7,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/businesses/medicineEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/nursesEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/patientEntity"
-	"github.com/Clinovation/Clinovation_BE/businesses/queueEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/recipeEntity"
-	"github.com/Clinovation/Clinovation_BE/businesses/scheduleEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workDayEntity"
 	"github.com/Clinovation/Clinovation_BE/businesses/workHourEntity"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/doctorsRepo"
@@ -18,9 +16,7 @@ import (
 	"github.com/Clinovation/Clinovation_BE/repository/databases/medicineRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/nursesRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/patientRepo"
-	"github.com/Clinovation/Clinovation_BE/repository/databases/queueRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/recipeRepo"
-	"github.com/Clinovation/Clinovation_BE/repository/databases/scheduleRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/workDayRepo"
 	"github.com/Clinovation/Clinovation_BE/repository/databases/workHourRepo"
 
@@ -49,14 +45,6 @@ func NewWorkDayRepository(db *gorm.DB) workDayEntity.Repository {
 
 func NewWorkHourRepository(db *gorm.DB) workHourEntity.Repository {
 	return workHourRepo.NewWorkHoursRepository(db)
-}
-
-func NewScheduleRepository(db *gorm.DB) scheduleEntity.Repository {
-	return scheduleRepo.NewScheduleRepository(db)
-}
-
-func NewQueueRepository(db *gorm.DB) queueEntity.Repository {
-	return queueRepo.NewQueueRepository(db)
 }
 
 func NewMedicineRepository(db *gorm.DB) medicineEntity.Repository {
